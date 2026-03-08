@@ -1,0 +1,66 @@
+# ═══════════════════════════════════════════════════════════
+#  RebSam — Configuration Netlify
+# ═══════════════════════════════════════════════════════════
+
+[build]
+  publish = "."
+  command = ""          # Site statique — pas de build
+
+# ── Redirects ──────────────────────────────────────────────
+[[redirects]]
+  from = "/halakha"
+  to   = "/#faq"
+  status = 301
+
+[[redirects]]
+  from = "/ask"
+  to   = "/#hero"
+  status = 301
+
+[[redirects]]
+  from = "/torah"
+  to   = "/#sources"
+  status = 301
+
+# Fallback SPA (utile si tu passes en React plus tard)
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
+
+# ── Headers de sécurité ────────────────────────────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options           = "DENY"
+    X-Content-Type-Options    = "nosniff"
+    X-XSS-Protection          = "1; mode=block"
+    Referrer-Policy           = "strict-origin-when-cross-origin"
+    Permissions-Policy        = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    Content-Security-Policy   = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.anthropic.com; frame-ancestors 'none';"
+
+# ── Cache statique (performances) ─────────────────────────
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000, immutable"
+
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000, immutable"
+
+# ── Plugins Netlify ────────────────────────────────────────
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
