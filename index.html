@@ -53,6 +53,8 @@
   }
   </script>
 
+  <!-- AOS – Animate On Scroll -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Heebo:wght@300;400;500;600;700;800;900&family=Frank+Ruhl+Libre:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -83,9 +85,13 @@
       --header-bg: rgba(255,255,255,.96);
       --card-bg: rgba(255,255,255,.88);
       --faq-bg: linear-gradient(160deg,#e8eef8 0%,#eef3fb 35%,#f0f4fd 65%,#eaeff9 100%);
+      --gold: #d4af37; --gold-dark: #b8952e; --gold-light: #e8c84a;
+      --gold-glow: rgba(212,175,55,.3);
+      --navy: #1e293b; --navy-dark: #0f172a; --navy-light: #334155;
       --radius-xl: 1.25rem; --radius-2xl: 1.5rem; --radius-full: 9999px;
       --shadow-sm: 0 1px 3px rgba(0,0,0,.08); --shadow-md: 0 4px 16px rgba(0,0,0,.10);
       --shadow-lg: 0 10px 40px rgba(0,0,0,.12); --shadow-2xl: 0 25px 60px rgba(0,0,0,.18);
+      --shadow-gold: 0 6px 28px rgba(212,175,55,.35);
     }
     /* ── DARK MODE ── */
     html.dark {
@@ -101,8 +107,12 @@
       --header-bg: rgba(15,23,41,.97);
       --card-bg: rgba(26,37,64,.92);
       --faq-bg: linear-gradient(160deg,#0d1628 0%,#0f1a2e 35%,#111d32 65%,#0d1628 100%);
+      --gold: #e8c84a; --gold-dark: #d4af37; --gold-light: #f0d96a;
+      --gold-glow: rgba(232,200,74,.25);
+      --navy: #0f172a; --navy-dark: #080e1a; --navy-light: #1e293b;
       --shadow-sm: 0 1px 3px rgba(0,0,0,.35); --shadow-md: 0 4px 16px rgba(0,0,0,.45);
       --shadow-lg: 0 10px 40px rgba(0,0,0,.55); --shadow-2xl: 0 25px 60px rgba(0,0,0,.7);
+      --shadow-gold: 0 6px 28px rgba(232,200,74,.2);
     }
     /* Dark mode toggle button */
     #dark-toggle {
@@ -179,6 +189,16 @@
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,86,210,.45); }
     .btn-ghost { background: transparent; color: var(--secondary); border: 1.5px solid rgba(45,55,72,.2); }
     .btn-ghost:hover { border-color: var(--primary); color: var(--primary); background: rgba(0,86,210,.04); }
+    /* ✡ GOLD BUTTON — boutons d'action premium */
+    .btn-gold { background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%); color: var(--navy-dark); box-shadow: var(--shadow-gold); font-weight: 700; letter-spacing: .01em; }
+    .btn-gold:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 40px rgba(212,175,55,.55); filter: brightness(1.05); }
+    .btn-gold::before { content:'✡'; margin-right:.35rem; font-size:.85em; opacity:.75; }
+    .nav-cta { background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 60%, var(--gold-dark) 100%); color: var(--navy-dark) !important; box-shadow: var(--shadow-gold); font-weight: 700; }
+    .nav-cta:hover { background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%); box-shadow: 0 8px 32px rgba(212,175,55,.5); transform: translateY(-1px); }
+    .hero-avatar-btn { background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%) !important; color: var(--navy-dark) !important; box-shadow: var(--shadow-gold) !important; font-weight: 700 !important; }
+    .hero-avatar-btn:hover { transform: translateY(-2px) !important; box-shadow: 0 10px 40px rgba(212,175,55,.55) !important; }
+    .footer-cta { background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 60%, var(--gold-dark) 100%) !important; color: var(--navy-dark) !important; box-shadow: var(--shadow-gold) !important; }
+    .footer-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(212,175,55,.5) !important; }
 
     /* HERO */
     #hero { position: relative; min-height: 100vh; display: flex; align-items: center; padding: 7rem 0 4rem; overflow: hidden; }
@@ -236,6 +256,36 @@
     .hero-avatar-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 36px rgba(124,111,205,.5); }
     @media (max-width: 640px) { .hero-avatar-img { max-width: 180px; } }
     .hero-p strong { font-weight: 600; color: var(--hero-text); }
+
+    /* ── BUCKET STATS COUNTER ── */
+    #stats { padding: 4rem 0; background: var(--navy); position: relative; overflow: hidden; }
+    #stats::before { content:''; position:absolute; inset:0; background: linear-gradient(135deg, rgba(212,175,55,.07) 0%, transparent 60%); }
+    html.dark #stats { background: var(--navy-dark); }
+    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2rem; position:relative; z-index:1; }
+    @media (max-width:900px) { .stats-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width:480px) { .stats-grid { grid-template-columns: 1fr 1fr; gap:1rem; } }
+    .stat-card { text-align: center; padding: 1.75rem 1rem; }
+    .stat-icon { font-size: 2rem; margin-bottom: .75rem; display:block; }
+    .stat-number { font-family:'Outfit',sans-serif; font-size: clamp(2rem,5vw,3rem); font-weight: 900; color: var(--gold); line-height:1; letter-spacing:-.02em; margin-bottom: .35rem; }
+    .stat-label { font-size: .8125rem; color: rgba(255,255,255,.55); font-weight:500; letter-spacing:.04em; text-transform:uppercase; }
+    /* Bucket fill visual */
+    .bucket-wrap { display:flex; flex-direction:column; align-items:center; gap:.5rem; }
+    .bucket-bar { width:100%; max-width:200px; height:8px; background:rgba(255,255,255,.1); border-radius:9999px; overflow:hidden; margin: .5rem auto 0; }
+    .bucket-fill { height:100%; border-radius:9999px; background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light)); width:0%; transition: width 1.8s cubic-bezier(.4,0,.2,1); }
+
+    /* ── SOURCES SECTION ── */
+    #sources { padding: 5rem 0; background: var(--faq-bg); position:relative; overflow:hidden; }
+    .sources-grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap:1rem; margin-top:2.5rem; }
+    @media (max-width:640px) { .sources-grid { grid-template-columns: repeat(2,1fr); } }
+    .source-tag { display:flex; align-items:center; gap:.65rem; background: var(--card-bg); border:1.5px solid var(--border); border-radius:.875rem; padding:.875rem 1.125rem; transition:all .3s; cursor:default; }
+    .source-tag:hover { border-color: var(--gold); box-shadow: 0 4px 20px var(--gold-glow); transform:translateY(-3px); }
+    .source-tag:hover .source-dot { background: var(--gold); box-shadow: 0 0 10px var(--gold-glow); }
+    .source-dot { width:.55rem; height:.55rem; border-radius:50%; background:var(--primary); flex-shrink:0; transition:all .3s; }
+    .source-name { font-size:.875rem; font-weight:600; color:var(--secondary-dark); line-height:1.3; }
+    .source-name small { display:block; font-weight:400; font-size:.75rem; color:var(--text-muted); margin-top:.1rem; }
+    .sources-more { text-align:center; margin-top:2rem; }
+    .sources-more p { color:var(--text-muted); font-size:.9375rem; }
+    .sources-more span { color:var(--gold); font-weight:700; }
 
     /* SECTIONS */
     .section-heading { text-align: center; margin-bottom: 3rem; }
@@ -508,17 +558,17 @@
       <p data-i18n="pillars_sub">RebSam répond toujours selon ces 3 engagements — sans exception.</p>
     </div>
     <div class="pillars-grid">
-      <div class="feature-card">
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="0">
         <div class="feature-card-icon">✓</div>
         <h3 data-i18n="p1_title">Sources Validées</h3>
         <p data-i18n="p1_desc">Pas d'invention. Pas d'hallucination. Chaque réponse est ancrée dans nos textes sacrés — Shulchan Aruch, Mishna Berura, Poskim contemporains et bien d'autres.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
         <div class="feature-card-icon">🔒</div>
         <h3 data-i18n="p2_title">Privé & Sécurisé</h3>
         <p data-i18n="p2_desc">Circuit fermé. Vos questions les plus intimes restent strictement privées : zéro collecte, zéro revente, zéro entraînement externe.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
         <div class="feature-card-icon">⚡</div>
         <h3 data-i18n="p3_title">Rapide & Fiable</h3>
         <p data-i18n="p3_desc">Réponses en moins d'une seconde. Technologie RAG qui scanne 1 972 ouvrages vérifiés pour chaque question.</p>
@@ -536,21 +586,82 @@
       <p data-i18n="hiw_sub">Simple, rapide et transparent.</p>
     </div>
     <div class="steps-grid">
-      <div class="step-item">
+      <div class="step-item" data-aos="fade-up" data-aos-delay="0">
         <div class="step-icon step-icon-blue">1️⃣</div>
         <h3 class="step-title" data-i18n="step1_title">Posez votre question</h3>
         <p class="step-desc" data-i18n="step1_desc">En français, hébreu ou anglais. Aucune limite.</p>
       </div>
-      <div class="step-item">
+      <div class="step-item" data-aos="fade-up" data-aos-delay="150">
         <div class="step-icon step-icon-indigo">2️⃣</div>
         <h3 class="step-title" data-i18n="step2_title">RebSam analyse</h3>
         <p class="step-desc" data-i18n="step2_desc">Scanne ses 1 972 sources vérifiées en moins d'une seconde.</p>
       </div>
-      <div class="step-item">
+      <div class="step-item" data-aos="fade-up" data-aos-delay="300">
         <div class="step-icon step-icon-cyan">3️⃣</div>
         <h3 class="step-title" data-i18n="step3_title">Recevez une réponse</h3>
         <p class="step-desc" data-i18n="step3_desc">Avec les sources exactes et les explications précises.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ✡ STATS / BUCKET COUNTER -->
+<section id="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card" data-aos="fade-up" data-aos-delay="0">
+        <span class="stat-icon">📚</span>
+        <div class="stat-number" id="cnt-books">0</div>
+        <div class="stat-label">Ouvrages intégrés</div>
+        <div class="bucket-bar"><div class="bucket-fill" id="fill-books"></div></div>
+      </div>
+      <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
+        <span class="stat-icon">💾</span>
+        <div class="stat-number" id="cnt-data">0</div>
+        <div class="stat-label">Go de données pures</div>
+        <div class="bucket-bar"><div class="bucket-fill" id="fill-data"></div></div>
+      </div>
+      <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
+        <span class="stat-icon">⚡</span>
+        <div class="stat-number" id="cnt-speed">0</div>
+        <div class="stat-label">Seconde par réponse</div>
+        <div class="bucket-bar"><div class="bucket-fill" id="fill-speed"></div></div>
+      </div>
+      <div class="stat-card" data-aos="fade-up" data-aos-delay="300">
+        <span class="stat-icon">🌍</span>
+        <div class="stat-number" id="cnt-lang">0</div>
+        <div class="stat-label">Langues disponibles</div>
+        <div class="bucket-bar"><div class="bucket-fill" id="fill-lang"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ✡ SOURCES — Bibliothèque Sacrée -->
+<section id="sources" data-aos="fade-up">
+  <div class="container">
+    <div class="section-heading">
+      <span class="section-eyebrow">Bibliothèque Sacrée</span>
+      <h2 class="font-logo">1 972 Ouvrages. Zéro Invention.</h2>
+      <p>Chaque réponse de RebSam est ancrée dans l'un de ces textes fondamentaux — avec le Livre, le Siman et le Seif exacts.</p>
+    </div>
+    <div class="sources-grid">
+      <div class="source-tag" data-aos="zoom-in" data-aos-delay="0"><div class="source-dot"></div><div class="source-name">שולחן ערוך<small>Choulhan Aroukh</small></div></div>
+      <div class="source-tag" data-aos="zoom-in" data-aos-delay="40"><div class="source-dot"></div><div class="source-name">משנה ברורה<small>Michna Beroura</small></div></div>
+      <div class="source-tag" data-aos="zoom-in" data-aos-delay="80"><div class="source-dot"></div><div class="source-name">ילקוט יוסף<small>Yalkout Yossef</small></div></div>
+      <div class="source-tag" data-aos="zoom-in" data-aos-delay="120"><div class="source-dot"></div><div class="source-name">אגרות משה<small>Igrot Moshé</small></div></div>
+      <div class="source-tag" data-aos="zoom-in" data-aos-delay="160"><div class="source-dot"></div><div class="source-name">פניני הלכה<small>Peninei Halakha</small></div></div>
+      <div class="source-tag" data-aos="zoom-in" data-aos-delay="200"><div class="source-dot"></div><div class="source-name">עיונים בהלכה<small>Iyounim Halacha</small></div></div>
+      <div class="source-tag" data-aos="zoom-in" data-aos-delay="240"><div class="source-dot"></div><div class="source-name">ש"ע הרב<small>Choulhan Aroukh HaRav</small></div></div>
+      <div class="source-tag" data-aos="zoom-in" data-aos-delay="280"><div class="source-dot"></div><div class="source-name">חזון איש<small>Hazon Ich</small></div></div>
+      <div class="source-tag" data-aos="zoom-in" data-aos-delay="320"><div class="source-dot"></div><div class="source-name">שו"ת<small>Responsa – Tshouva</small></div></div>
+      <div class="source-tag" data-aos="zoom-in" data-aos-delay="360"><div class="source-dot"></div><div class="source-name">ביאור הלכה<small>Biur Halakha</small></div></div>
+      <div class="source-tag" data-aos="zoom-in" data-aos-delay="400"><div class="source-dot"></div><div class="source-name">כף החיים<small>Kaf HaHaïm</small></div></div>
+      <div class="source-tag" data-aos="zoom-in" data-aos-delay="440"><div class="source-dot"></div><div class="source-name">רמב"ם<small>Rambam – Michné Torah</small></div></div>
+    </div>
+    <div class="sources-more" data-aos="fade-up" data-aos-delay="500">
+      <p>… et <span>+ 1 960 autres ouvrages</span> numérisés, vérifiés, indexés.</p>
     </div>
   </div>
 </section>
@@ -977,6 +1088,53 @@
       sendMessage();
     }
   });
+
+  /* ═══════════════════════════════════════════════
+     AOS — init
+  ═══════════════════════════════════════════════ */
+  AOS.init({ duration: 700, easing: 'ease-out-cubic', once: true, offset: 60 });
+
+  /* ═══════════════════════════════════════════════
+     ANIMATED COUNTERS — Bucket Stats
+  ═══════════════════════════════════════════════ */
+  function animateCounter(el, target, decimals, duration, suffix) {
+    let start = 0, startTime = null;
+    function step(ts) {
+      if (!startTime) startTime = ts;
+      const prog = Math.min((ts - startTime) / duration, 1);
+      const ease = 1 - Math.pow(1 - prog, 3);
+      const val = start + (target - start) * ease;
+      el.textContent = decimals ? val.toFixed(decimals) : Math.floor(val).toLocaleString('fr-FR') + (suffix||'');
+      if (prog < 1) requestAnimationFrame(step);
+      else el.textContent = decimals ? target.toFixed(decimals) : target.toLocaleString('fr-FR') + (suffix||'');
+    }
+    requestAnimationFrame(step);
+  }
+
+  let countersStarted = false;
+  function startCounters() {
+    if (countersStarted) return;
+    const statsEl = document.getElementById('stats');
+    if (!statsEl) return;
+    const rect = statsEl.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 1.1) {
+      countersStarted = true;
+      animateCounter(document.getElementById('cnt-books'), 1972, 0, 2000, '');
+      animateCounter(document.getElementById('cnt-data'),  1.69, 2, 1800, '');
+      animateCounter(document.getElementById('cnt-speed'), 1,    0, 1200, 's');
+      animateCounter(document.getElementById('cnt-lang'),  3,    0, 900,  '');
+      // Fill bars
+      setTimeout(()=>{ document.getElementById('fill-books').style.width='100%'; },200);
+      setTimeout(()=>{ document.getElementById('fill-data').style.width='85%';  },400);
+      setTimeout(()=>{ document.getElementById('fill-speed').style.width='95%'; },600);
+      setTimeout(()=>{ document.getElementById('fill-lang').style.width='60%';  },800);
+    }
+  }
+  window.addEventListener('scroll', startCounters, {passive:true});
+  window.addEventListener('load', startCounters);
+
 </script>
+<!-- AOS JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.min.js"></script>
 </body>
 </html>
