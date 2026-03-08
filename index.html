@@ -989,23 +989,14 @@
   }
 
   // ── FAQ Toggle
-  function toggleFaq(button)
   function toggleFaq(button) {
     const item = button.parentElement;
     const isOpen = item.classList.contains('open');
-    
-    // Close all other items
-    document.querySelectorAll('.faq-item').forEach(el => {
-      el.classList.remove('open');
-    });
-    
-    // Toggle current item
-    if (!isOpen) {
-      item.classList.add('open');
-    }
+    document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
   }
 
-  // Chat Functions
+  // ── Chat Functions
   function openChat() {
     document.getElementById('chat-overlay').classList.add('open');
     document.getElementById('chat-input').focus();
@@ -1019,7 +1010,6 @@
     const input = document.getElementById('chat-input');
     const message = input.value.trim();
     if (message) {
-      // Add user message to chat
       const chatBox = document.getElementById('chat-box');
       const msgRow = document.createElement('div');
       msgRow.className = 'msg-row user';
@@ -1027,23 +1017,6 @@
       chatBox.appendChild(msgRow);
       input.value = '';
       chatBox.scrollTop = chatBox.scrollHeight;
-    }
-  }
-
-  // Language Switching
-  function setLang(lang) {
-    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    
-    if (lang === 'he') {
-      document.documentElement.dir = 'rtl';
-      document.documentElement.lang = 'he';
-    } else if (lang === 'en') {
-      document.documentElement.dir = 'ltr';
-      document.documentElement.lang = 'en';
-    } else {
-      document.documentElement.dir = 'ltr';
-      document.documentElement.lang = 'fr';
     }
   }
 
