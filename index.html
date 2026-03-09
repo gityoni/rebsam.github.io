@@ -499,7 +499,10 @@
     <button class="lang-btn active" onclick="setLang('fr')">FR</button>
     <button class="lang-btn" onclick="setLang('he')">עברית</button>
     <button class="lang-btn" onclick="setLang('en')">EN</button>
-    <button id="dark-toggle-mob" onclick="toggleDark()" aria-label="Mode sombre" style="width:2rem;height:2rem;border-radius:50%;background:none;border:1.5px solid var(--border);cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;">☀️</button>
+    <button id="dark-toggle-mob" onclick="toggleDark()" aria-label="Mode sombre" style="width:2rem;height:2rem;border-radius:50%;background:none;border:1.5px solid var(--border);cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;">
+      <svg id="icon-sun-mob" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg id="icon-moon-mob" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
   </div>
 </div>
 
@@ -612,7 +615,7 @@
   <div class="container">
     <div class="section-heading">
       <span class="section-eyebrow">Bibliothèque Sacrée</span>
-      <h2 class="font-logo">1 972 Ouvrages. Zéro Invention.</h2>
+      <h2 class="font-logo">Des milliers de Sifrey Kodesh. Zéro Invention.</h2>
       <p>Chaque réponse de RebSam est ancrée dans l'un de ces textes fondamentaux — avec le Livre, le Siman et le Seif exacts.</p>
     </div>
     <div class="sources-grid">
@@ -753,7 +756,7 @@
   </div>
 </button>
 
-<a class="float-btn" id="btn-wa" href="https://api.whatsapp.com/send?phone=YOUR_PHONE_NUMBER" target="_blank" rel="noopener noreferrer">
+<a class="float-btn" id="btn-wa" href="https://wa.me/15551790835" target="_blank" rel="noopener noreferrer">
   <div class="float-inner float-wa-bg">
     <div class="float-glow float-wa-glow"></div>
     <span class="float-label">WhatsApp</span>
@@ -796,23 +799,23 @@
       nav_home: 'Accueil', nav_how: 'Comment ça marche', nav_values: 'Nos Valeurs',
       nav_cta: 'Essayer RebSam',
       hero_badge: 'Votre expert en Halacha, disponible 24h/24',
-      hero_tagline: 'Un Rebbe dans votre dose d'IA quotidienne.',
+      hero_tagline: 'Un Rebbe dans votre dose d\'IA quotidienne.',
       hero_pt1: 'Rendre la consultation halakhique instantanée pour la communauté mondiale.',
-      hero_pt2: 'Élimine les "hallucinations" des IA classiques en ne répondant qu'à partir des sources de nos sages.',
+      hero_pt2: 'Élimine les "hallucinations" des IA classiques en ne répondant qu\'à partir des sources de nos sages.',
       hero_pt3: 'Digitalise et rend interactive une bibliothèque immense qui serait autrement difficile à consulter rapidement.',
       hero_cta2: 'Découvrir le Projet', hero_cta: 'Pose ta première question à RebSam',
       pillars_eyebrow: 'Nos engagements', pillars_title: 'Nos 3 Piliers de Confiance',
       pillars_sub: 'RebSam répond toujours selon ces 3 engagements — sans exception.',
-      p1_title: 'Sources Validées', p1_desc: 'Pas d'invention. Pas d'hallucination. Chaque réponse est ancrée dans nos textes sacrés — Shulchan Aruch, Mishna Berura, Poskim contemporains et bien d'autres.',
+      p1_title: 'Sources Validées', p1_desc: 'Pas d\'invention. Pas d\'hallucination. Chaque réponse est ancrée dans nos textes sacrés — Shulchan Aruch, Mishna Berura, Poskim contemporains et bien d\'autres.',
       p2_title: 'Privé & Sécurisé', p2_desc: 'Circuit fermé. Vos questions les plus intimes restent strictement privées : zéro collecte, zéro revente, zéro entraînement externe.',
-      p3_title: 'Rapide & Fiable', p3_desc: 'Réponses en moins d'une seconde. Technologie RAG qui scanne 1 972 ouvrages vérifiés pour chaque question.',
+      p3_title: 'Rapide & Fiable', p3_desc: 'Réponses en moins d\'une seconde. Technologie RAG qui scanne 1 972 ouvrages vérifiés pour chaque question.',
       hiw_eyebrow: 'Processus', hiw_title: 'Comment ça marche ?', hiw_sub: 'Simple, rapide et transparent.',
       step1_title: 'Posez votre question', step1_desc: 'En français, hébreu ou anglais. Aucune limite.',
-      step2_title: 'RebSam analyse', step2_desc: 'Scanne ses 1 972 sources vérifiées en moins d'une seconde.',
+      step2_title: 'RebSam analyse', step2_desc: 'Scanne ses 1 972 sources vérifiées en moins d\'une seconde.',
       step3_title: 'Recevez une réponse', step3_desc: 'Avec les sources exactes et les explications précises.',
       faq_eyebrow: 'Questions Fréquentes', faq_title: 'Tout ce que tu dois savoir', faq_sub: 'Pour utiliser RebSam en toute sérénité.',
-      faq_q1: 'Puis-je vraiment faire confiance aux réponses de RebSam ?', faq_a1: 'RebSam est un compagnon d'étude extrêmement fiable — il cite toujours ses sources avec précision (Livre, Siman, Seif). Mais pour un Psak formel, consulte toujours ton Rav. Lui seul connaît tous les détails de ta situation.',
-      faq_q2: 'Sur quels textes sacrés RebSam s'appuie-t-il ?', faq_a2: 'RebSam puise dans plus de 1 972 ouvrages vérifiés : Choulhan Aroukh, Michna Beroura, Yalkout Yossef, Igrot Moshé, Peninei Halakha, Iyounim Halacha, Chass et bien d'autres.',
+      faq_q1: 'Puis-je vraiment faire confiance aux réponses de RebSam ?', faq_a1: 'RebSam est un compagnon d\'étude extrêmement fiable — il cite toujours ses sources avec précision (Livre, Siman, Seif). Mais pour un Psak formel, consulte toujours ton Rav. Lui seul connaît tous les détails de ta situation.',
+      faq_q2: 'Sur quels textes sacrés RebSam s\'appuie-t-il ?', faq_a2: 'RebSam puise dans plus de 1 972 ouvrages vérifiés : Choulhan Aroukh, Michna Beroura, Yalkout Yossef, Igrot Moshé, Peninei Halakha, Iyounim Halacha, Chass et bien d\'autres.',
       faq_q3: 'Mes questions restent-elles confidentielles ?', faq_a3: 'Oui. RebSam fonctionne en circuit fermé. Zéro collecte, zéro revente, zéro entraînement externe.',
       faq_q4: 'RebSam connaît-il les coutumes ashkénazes et séfarades ?', faq_a4: 'Oui ! RebSam intègre les Poskim des deux traditions. Il peut adapter sa réponse selon ton minhag.',
       faq_q5: 'En quoi RebSam est-il différent de ChatGPT ?', faq_a5: 'RebSam utilise la technologie RAG pour scanner uniquement ses 1 972 ouvrages vérifiés. Zéro hallucination, zéro invention.',
@@ -841,7 +844,7 @@
       step2_title: 'RebSam analyzes', step2_desc: 'Scans 1,972 verified sources in under a second.',
       step3_title: 'Receive an answer', step3_desc: 'With exact sources and precise explanations.',
       faq_eyebrow: 'Frequently Asked Questions', faq_title: 'Everything you need to know', faq_sub: 'To use RebSam with complete peace of mind.',
-      faq_q1: 'Can I really trust RebSam's answers?', faq_a1: 'RebSam is an extremely reliable study companion — it always cites its sources precisely (Book, Siman, Seif). But for a formal Psak, always consult your Rav.',
+      faq_q1: 'Can I really trust RebSam\'s answers?', faq_a1: 'RebSam is an extremely reliable study companion — it always cites its sources precisely (Book, Siman, Seif). But for a formal Psak, always consult your Rav.',
       faq_q2: 'Which sacred texts does RebSam draw from?', faq_a2: 'RebSam draws from over 1,972 verified works: Choulhan Aruch, Mishna Berura, Yalkout Yossef, Igrot Moshe, Peninei Halakha and many more.',
       faq_q3: 'Do my questions remain confidential?', faq_a3: 'Yes. RebSam operates on a closed circuit. Zero collection, zero resale, zero external training.',
       faq_q4: 'Does RebSam know Ashkenaz and Sephardic customs?', faq_a4: 'Yes! RebSam integrates Poskim from both traditions and can adapt its answer to your minhag.',
@@ -929,8 +932,12 @@
     }
     const sun = document.getElementById('icon-sun');
     const moon = document.getElementById('icon-moon');
+    const sunMob = document.getElementById('icon-sun-mob');
+    const moonMob = document.getElementById('icon-moon-mob');
     if (sun) sun.style.display = isDark ? 'none' : 'block';
     if (moon) moon.style.display = isDark ? 'block' : 'none';
+    if (sunMob) sunMob.style.display = isDark ? 'none' : 'block';
+    if (moonMob) moonMob.style.display = isDark ? 'block' : 'none';
     localStorage.setItem('rebsam-dark', isDark ? '1' : '0');
   }
 
