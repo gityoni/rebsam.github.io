@@ -1087,7 +1087,7 @@
     try {
       const langInstruction = LANG_INSTRUCTIONS[currentLang] || LANG_INSTRUCTIONS.fr;
       const prompt = langInstruction + message;
-      const url = MAKE_WEBHOOK_URL + '?prompt=' + encodeURIComponent(prompt);
+      const url = MAKE_WEBHOOK_URL + '?prompt=' + encodeURIComponent(prompt) + '&lang=' + encodeURIComponent(currentLang);
       const res = await fetch(url);
       const rawText = await res.text();
       let reply;
