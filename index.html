@@ -392,7 +392,7 @@
     #chat-overlay.open { display: flex; }
     #chat-modal { position: relative; width: 100%; max-width: 680px; height: min(80vh,680px); background: #fff; border-radius: 1.5rem; box-shadow: var(--shadow-2xl); display: flex; flex-direction: column; animation: modalIn .35s cubic-bezier(.4,0,.2,1) both; }
     @keyframes modalIn { from{opacity:0;transform:scale(.95) translateY(20px);} to{opacity:1;transform:scale(1) translateY(0);} }
-    .chat-header { background: linear-gradient(90deg, var(--primary-pastel) 0%, var(--primary-pastel-dark) 100%); padding: 1.125rem 1.25rem; display: flex; align-items: center; justify-content: space-between; }
+    .chat-header { background: linear-gradient(90deg, var(--primary-pastel) 0%, var(--primary-pastel-dark) 100%); padding: 1.125rem 1.25rem; display: flex; align-items: center; justify-content: space-between; border-radius: 1.5rem 1.5rem 0 0; }
     .chat-header-left { display: flex; align-items: center; gap: .75rem; }
     .chat-avatar { width: 2.75rem; height: 2.75rem; border-radius: 50%; background: rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center; font-family: 'Outfit', sans-serif; font-weight: 700; color: #fff; font-size: .9rem; }
     .chat-header-name { font-weight: 700; color: #fff; font-size: .9375rem; }
@@ -425,7 +425,7 @@
     .chat-input-area { padding: 1rem; background: #fff; border-top: 1px solid #f3f4f6; flex-shrink: 0; }
     .chat-input-row { display: flex; align-items: flex-end; gap: .75rem; background: #f9fafb; border-radius: 1rem; padding: .75rem 1rem; border: 1.5px solid #e5e7eb; transition: border-color .25s, box-shadow .25s; }
     .chat-input-row:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,86,210,.1); }
-    #chat-input { flex: 1; background: none; border: none; outline: none; font-family: 'Inter', sans-serif; font-size: .875rem; color: var(--secondary-dark); resize: none; min-height: 1.4rem; max-height: 6rem; }
+    #chat-input { flex: 1; background: none; border: none; outline: none; font-family: 'Inter', sans-serif; font-size: .875rem; color: var(--secondary-dark); resize: none; min-height: 1.4rem; max-height: 8rem; overflow-y: auto; line-height: 1.5; }
     #chat-input::placeholder { color: #9ca3af; }
     #chat-input:disabled { opacity: .5; }
     #chat-send { width: 2.5rem; height: 2.5rem; border-radius: .75rem; background: var(--primary); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .25s; flex-shrink: 0; }
@@ -771,8 +771,8 @@
       <div class="chat-header-left">
         <div class="chat-avatar font-logo">RS</div>
         <div>
-          <div class="chat-header-name">RebSam</div>
-          <div class="chat-header-status"><span class="dot"></span><span data-i18n="chat_status">En ligne · Expert Halacha</span></div>
+          <div class="chat-header-name font-logo" style="font-size:1.1rem;letter-spacing:-.01em;">RebSam</div>
+          <div class="chat-header-status"><span class="dot"></span><span data-i18n="chat_status">En ligne · Je vous réponds tout de suite…</span></div>
         </div>
       </div>
       <button class="chat-close" onclick="closeChat()">✕</button>
@@ -780,7 +780,7 @@
     <div id="chat-box"></div>
     <div class="chat-input-area">
       <div class="chat-input-row">
-        <input type="text" id="chat-input" placeholder="Pose ta question..." data-i18n-placeholder="chat_placeholder" />
+        <textarea id="chat-input" rows="1" placeholder="Pose ta question..." data-i18n-placeholder="chat_placeholder"></textarea>
         <button id="chat-send" onclick="sendMessage()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
         </button>
@@ -823,7 +823,7 @@
       footer_cta: 'Lancer la démo', footer_product: 'Produit', footer_how: 'Comment ça marche',
       footer_values: 'Nos Valeurs', footer_faq: 'FAQ', chat_placeholder: 'Pose ta question...',
       chat_hint: 'Les données restent privées. Circuit fermé garanti.',
-      chat_status: 'En ligne · Expert Halacha'
+      chat_status: 'En ligne · Je vous réponds tout de suite…'
     },
     en: {
       nav_home: 'Home', nav_how: 'How it works', nav_values: 'Our Values',
@@ -853,7 +853,7 @@
       footer_cta: 'Launch demo', footer_product: 'Product', footer_how: 'How it works',
       footer_values: 'Our Values', footer_faq: 'FAQ', chat_placeholder: 'Ask your question...',
       chat_hint: 'Data stays private. Closed circuit guaranteed.',
-      chat_status: 'Online · Halacha Expert'
+      chat_status: 'Online · Answering right away…'
     },
     he: {
       nav_home: 'ראשי', nav_how: 'איך זה עובד', nav_values: 'הערכים שלנו',
@@ -883,7 +883,7 @@
       footer_cta: 'הפעל הדגמה', footer_product: 'מוצר', footer_how: 'איך זה עובד',
       footer_values: 'הערכים שלנו', footer_faq: 'שאלות נפוצות', chat_placeholder: 'שאל את שאלתך...',
       chat_hint: '.הנתונים נשארים פרטיים. מעגל סגור מובטח',
-      chat_status: 'מקוון · מומחה הלכה'
+      chat_status: 'מקוון · עונה מיד…'
     }
   };
 
@@ -978,6 +978,15 @@
   // ── Chat Functions
   function openChat() {
     document.getElementById('chat-overlay').classList.add('open');
+    const chatBox = document.getElementById('chat-box');
+    if (chatBox.children.length === 0) {
+      const introText = {
+        fr: 'Chalom ! 🌿 Je suis RebSam, ton compagnon d\'étude halakhique.<br><br>Pose-moi n\'importe quelle question : Kacherout, Chabbat, Niddah, Tefila, relations, business… Je réponds avec les sources exactes, sans jugement, 24h/24.',
+        en: 'Shalom! 🌿 I am RebSam, your halachic study companion.<br><br>Ask me any question: Kashrut, Shabbat, Niddah, Tefila, relationships, business… I answer with exact sources, without judgment, 24/7.',
+        he: '!שלום 🌿 אני רבסם, חבר הלימוד ההלכתי שלך.<br><br>שאל אותי כל שאלה: כשרות, שבת, נידה, תפילה, יחסים, עסקים… אני עונה עם המקורות המדויקים, ללא שיפוטיות, 24/7.'
+      };
+      appendMsg('sam', introText[currentLang] || introText.fr);
+    }
     document.getElementById('chat-input').focus();
   }
 
@@ -1082,11 +1091,16 @@
   });
 
   // Enter key to send message
-  document.getElementById('chat-input').addEventListener('keypress', function(e) {
+  const chatInputEl = document.getElementById('chat-input');
+  chatInputEl.addEventListener('keypress', function(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
+  });
+  chatInputEl.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 128) + 'px';
   });
 
   /* ═══════════════════════════════════════════════
