@@ -1033,7 +1033,7 @@
       } catch {
         reply = rawText;
       }
-      loadingRow.querySelector('.msg-bubble').innerHTML = reply;
+      loadingRow.querySelector('.msg-bubble').innerHTML = (typeof marked !== 'undefined') ? marked.parse(reply) : reply;
     } catch (err) {
       loadingRow.querySelector('.msg-bubble').textContent =
         currentLang === 'he' ? 'שגיאה. נסה שוב.' :
@@ -1135,5 +1135,6 @@
 </script>
 <!-- AOS JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </body>
 </html>
