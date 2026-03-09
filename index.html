@@ -392,7 +392,7 @@
     #chat-overlay.open { display: flex; }
     #chat-modal { position: relative; width: 100%; max-width: 680px; height: min(80vh,680px); background: #fff; border-radius: 1.5rem; box-shadow: var(--shadow-2xl); display: flex; flex-direction: column; animation: modalIn .35s cubic-bezier(.4,0,.2,1) both; }
     @keyframes modalIn { from{opacity:0;transform:scale(.95) translateY(20px);} to{opacity:1;transform:scale(1) translateY(0);} }
-    .chat-header { background: linear-gradient(90deg, var(--primary-pastel) 0%, var(--primary-pastel-dark) 100%); padding: 1.125rem 1.25rem; display: flex; align-items: center; justify-content: space-between; }
+    .chat-header { background: linear-gradient(90deg, var(--primary-pastel) 0%, var(--primary-pastel-dark) 100%); padding: 1.125rem 1.25rem; display: flex; align-items: center; justify-content: space-between; border-radius: 1.5rem 1.5rem 0 0; }
     .chat-header-left { display: flex; align-items: center; gap: .75rem; }
     .chat-avatar { width: 2.75rem; height: 2.75rem; border-radius: 50%; background: rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center; font-family: 'Outfit', sans-serif; font-weight: 700; color: #fff; font-size: .9rem; }
     .chat-header-name { font-weight: 700; color: #fff; font-size: .9375rem; }
@@ -425,7 +425,7 @@
     .chat-input-area { padding: 1rem; background: #fff; border-top: 1px solid #f3f4f6; flex-shrink: 0; }
     .chat-input-row { display: flex; align-items: flex-end; gap: .75rem; background: #f9fafb; border-radius: 1rem; padding: .75rem 1rem; border: 1.5px solid #e5e7eb; transition: border-color .25s, box-shadow .25s; }
     .chat-input-row:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,86,210,.1); }
-    #chat-input { flex: 1; background: none; border: none; outline: none; font-family: 'Inter', sans-serif; font-size: .875rem; color: var(--secondary-dark); resize: none; min-height: 1.4rem; max-height: 6rem; }
+    #chat-input { flex: 1; background: none; border: none; outline: none; font-family: 'Inter', sans-serif; font-size: .875rem; color: var(--secondary-dark); resize: none; min-height: 1.4rem; max-height: 8rem; overflow-y: auto; line-height: 1.5; }
     #chat-input::placeholder { color: #9ca3af; }
     #chat-input:disabled { opacity: .5; }
     #chat-send { width: 2.5rem; height: 2.5rem; border-radius: .75rem; background: var(--primary); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .25s; flex-shrink: 0; }
@@ -771,8 +771,8 @@
       <div class="chat-header-left">
         <div class="chat-avatar font-logo">RS</div>
         <div>
-          <div class="chat-header-name">RebSam</div>
-          <div class="chat-header-status"><span class="dot"></span><span data-i18n="chat_status">En ligne · Expert Halacha</span></div>
+          <div class="chat-header-name font-logo" style="font-size:1.1rem;letter-spacing:-.01em;">RebSam</div>
+          <div class="chat-header-status"><span class="dot"></span><span data-i18n="chat_status">En ligne · Je vous réponds tout de suite…</span></div>
         </div>
       </div>
       <button class="chat-close" onclick="closeChat()">✕</button>
@@ -780,7 +780,7 @@
     <div id="chat-box"></div>
     <div class="chat-input-area">
       <div class="chat-input-row">
-        <input type="text" id="chat-input" placeholder="Pose ta question..." data-i18n-placeholder="chat_placeholder" />
+        <textarea id="chat-input" rows="1" placeholder="Pose ta question..." data-i18n-placeholder="chat_placeholder"></textarea>
         <button id="chat-send" onclick="sendMessage()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
         </button>
@@ -823,7 +823,7 @@
       footer_cta: 'Lancer la démo', footer_product: 'Produit', footer_how: 'Comment ça marche',
       footer_values: 'Nos Valeurs', footer_faq: 'FAQ', chat_placeholder: 'Pose ta question...',
       chat_hint: 'Les données restent privées. Circuit fermé garanti.',
-      chat_status: 'En ligne · Expert Halacha'
+      chat_status: 'En ligne · Je vous réponds tout de suite…'
     },
     en: {
       nav_home: 'Home', nav_how: 'How it works', nav_values: 'Our Values',
@@ -853,7 +853,7 @@
       footer_cta: 'Launch demo', footer_product: 'Product', footer_how: 'How it works',
       footer_values: 'Our Values', footer_faq: 'FAQ', chat_placeholder: 'Ask your question...',
       chat_hint: 'Data stays private. Closed circuit guaranteed.',
-      chat_status: 'Online · Halacha Expert'
+      chat_status: 'Online · Answering right away…'
     },
     he: {
       nav_home: 'ראשי', nav_how: 'איך זה עובד', nav_values: 'הערכים שלנו',
@@ -883,7 +883,7 @@
       footer_cta: 'הפעל הדגמה', footer_product: 'מוצר', footer_how: 'איך זה עובד',
       footer_values: 'הערכים שלנו', footer_faq: 'שאלות נפוצות', chat_placeholder: 'שאל את שאלתך...',
       chat_hint: '.הנתונים נשארים פרטיים. מעגל סגור מובטח',
-      chat_status: 'מקוון · מומחה הלכה'
+      chat_status: 'מקוון · עונה מיד…'
     }
   };
 
@@ -919,7 +919,17 @@
     currentLang = lang;
   }
 
-  function setLang(lang) { applyTranslations(lang); }
+  function setLang(lang) {
+    applyTranslations(lang);
+    // Reset chat si ouvert → nouveau message d'accueil dans la nouvelle langue
+    const chatBox = document.getElementById('chat-box');
+    if (chatBox) {
+      chatBox.innerHTML = '';
+      if (document.getElementById('chat-overlay').classList.contains('open')) {
+        appendMsg('sam', buildWelcome());
+      }
+    }
+  }
 
   /* ═══════════════════════════════════════════════
      DARK MODE
@@ -976,8 +986,80 @@
   }
 
   // ── Chat Functions
+  /* ═══════════════════════════════════════════════
+     CHAT — STATE & HELPERS
+  ═══════════════════════════════════════════════ */
+  const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/r1woeelogkk0bv2i6s5cxu3mli231nbg';
+  let chatSending = false;
+
+  const ALL_SOURCES = [
+    'Choulhan Aroukh (Maran Rabbi Yossef Karo)',
+    'Mishna Beroura (Hafets Haïm)',
+    'Hazon Ovadia (Rav Ovadia Yossef)',
+    'Halikhot Olam (Rav Its\'hak Yossef)',
+    'Minhat Shlomo (Rav Shlomo Zalman Auerbach)',
+    'Be\'er Yaakov — Iyounim Halacha',
+    'Igrot Moshe (Rav Moshe Feinstein)',
+    'Aroukh HaChoulhan (Rav Yehiel Mikhel Epstein)',
+    'Kaf HaHaïm (Rav Yaakov Haïm Sofer)',
+    'Orchot Chabot (Rav Shlomo Zalman Auerbach)',
+    'Taz — Tourei Zahav',
+    'Magen Avraham'
+  ];
+
+  const LANG_INSTRUCTIONS = {
+    fr: 'Tu es RebSam, expert en Halacha (loi juive). Réponds TOUJOURS en français, avec les sources exactes (Choulhan Aroukh, Poskim). Sois précis, structuré et respectueux. Question : ',
+    en: 'You are RebSam, a Halacha (Jewish law) expert. ALWAYS answer in English, citing exact sources (Shulchan Aruch, Poskim). Be precise, structured and respectful. Question: ',
+    he: 'אתה רבסם, מומחה הלכה. ענה תמיד בעברית, עם מקורות מדויקים (שולחן ערוך, פוסקים). היה מדויק, מובנה ומכבד. שאלה: '
+  };
+
+  function buildWelcome() {
+    const shuffled = ALL_SOURCES.slice().sort(() => Math.random() - .5);
+    const picked = shuffled.slice(0, 5 + Math.floor(Math.random() * 2)); // 5 ou 6
+    const sourceList = picked.map(s => `• ${s}`).join('<br>');
+    const msgs = {
+      fr: `Chalom ! 🌿 Je suis RebSam, ton compagnon d'étude halakhique.<br><br>Pose-moi n'importe quelle question : Kacherout, Chabbat, Niddah, Tefila, relations, business… Je réponds avec les sources exactes, sans jugement, 24h/24.<br><br>📚 <b>Sources consultées aujourd'hui :</b><br>${sourceList}<br><br>Par où veux-tu commencer ?`,
+      en: `Shalom! 🌿 I am RebSam, your halachic study companion.<br><br>Ask me any question: Kashrut, Shabbat, Niddah, Tefila, relationships, business… I answer with exact sources, without judgment, 24/7.<br><br>📚 <b>Sources consulted today:</b><br>${sourceList}<br><br>Where would you like to start?`,
+      he: `!שלום 🌿 אני רבסם, חבר הלימוד ההלכתי שלך.<br><br>שאל אותי כל שאלה: כשרות, שבת, נידה, תפילה, יחסים, עסקים… אני עונה עם המקורות המדויקים, ללא שיפוטיות, 24/7.<br><br>📚 <b>:מקורות שנבדקו היום</b><br>${sourceList}<br><br>?מאיפה רוצה להתחיל`
+    };
+    return msgs[currentLang] || msgs.fr;
+  }
+
+  function hasHebrew(text) {
+    return /[\u0590-\u05FF]/.test(text);
+  }
+
+  function cleanMarkdown(raw) {
+    return raw
+      .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+      .replace(/\*(.+?)\*/g, '<b>$1</b>')
+      .replace(/\n\n/g, '<br><br>')
+      .replace(/\n/g, '<br>');
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function appendMsg(role, html, isHebrew) {
+    const chatBox = document.getElementById('chat-box');
+    const row = document.createElement('div');
+    row.className = 'msg-row ' + role;
+    const labelMap = { user: { fr:'TOI', en:'YOU', he:'אתה' }, sam: { fr:'RS', en:'RS', he:'רס' } };
+    const label = (labelMap[role] && labelMap[role][currentLang]) || (role === 'user' ? 'TOI' : 'RS');
+    const dir = (isHebrew || (role === 'user' && hasHebrew(html))) ? ' dir="rtl"' : '';
+    row.innerHTML = `<div class="msg-avatar ${role}">${label}</div><div class="msg-bubble ${role}"${dir}>${html}</div>`;
+    chatBox.appendChild(row);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    return row;
+  }
+
   function openChat() {
     document.getElementById('chat-overlay').classList.add('open');
+    const chatBox = document.getElementById('chat-box');
+    if (chatBox.children.length === 0) {
+      appendMsg('sam', buildWelcome());
+    }
     document.getElementById('chat-input').focus();
   }
 
@@ -985,55 +1067,49 @@
     document.getElementById('chat-overlay').classList.remove('open');
   }
 
-  // ⚙️ Remplace cette URL par ton vrai webhook Make.com
-  const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/r1woeelogkk0bv2i6s5cxu3mli231nbg';
-
-  function appendMsg(role, html) {
-    const chatBox = document.getElementById('chat-box');
-    const row = document.createElement('div');
-    row.className = 'msg-row ' + role;
-    const labelMap = { user: { fr:'TOI', en:'YOU', he:'אתה' }, sam: { fr:'RS', en:'RS', he:'רס' } };
-    const label = (labelMap[role] && labelMap[role][currentLang]) || (role === 'user' ? 'TOI' : 'RS');
-    row.innerHTML = `<div class="msg-avatar ${role}">${label}</div><div class="msg-bubble ${role}">${html}</div>`;
-    chatBox.appendChild(row);
-    chatBox.scrollTop = chatBox.scrollHeight;
-    return row;
-  }
-
-  function escapeHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
   async function sendMessage() {
+    if (chatSending) return;
     const input = document.getElementById('chat-input');
     const sendBtn = document.getElementById('chat-send');
     const message = input.value.trim();
     if (!message) return;
 
-    appendMsg('user', escapeHtml(message));
+    const userIsHebrew = hasHebrew(message);
+    appendMsg('user', escapeHtml(message), userIsHebrew);
     input.value = '';
     input.style.height = 'auto';
+    chatSending = true;
     input.disabled = true;
     sendBtn.disabled = true;
 
-    // Bulle de chargement
     const loadingRow = appendMsg('sam', '<div class="loading-dots"><span></span><span></span><span></span></div>');
 
     try {
-      const res = await fetch(MAKE_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message, lang: currentLang })
-      });
-      const data = await res.json();
-      const reply = data.reply || data.text || data.response || data.message || JSON.stringify(data);
-      loadingRow.querySelector('.msg-bubble').innerHTML = reply;
+      const langInstruction = LANG_INSTRUCTIONS[currentLang] || LANG_INSTRUCTIONS.fr;
+      const prompt = langInstruction + message;
+      const url = MAKE_WEBHOOK_URL + '?prompt=' + encodeURIComponent(prompt);
+      const res = await fetch(url);
+      const rawText = await res.text();
+      let reply;
+      try {
+        const data = JSON.parse(rawText);
+        reply = data.reply || data.text || data.response || data.message || rawText;
+      } catch {
+        reply = rawText;
+      }
+      const cleaned = cleanMarkdown(reply);
+      const replyIsHebrew = hasHebrew(cleaned);
+      const bubble = loadingRow.querySelector('.msg-bubble');
+      bubble.innerHTML = cleaned;
+      if (replyIsHebrew) bubble.setAttribute('dir', 'rtl');
     } catch (err) {
+      console.error('[RebSam chat error]', err);
       loadingRow.querySelector('.msg-bubble').textContent =
         currentLang === 'he' ? 'שגיאה. נסה שוב.' :
         currentLang === 'en' ? 'Error. Please try again.' :
         'Erreur. Veuillez réessayer.';
     } finally {
+      chatSending = false;
       input.disabled = false;
       sendBtn.disabled = false;
       input.focus();
@@ -1061,25 +1137,22 @@
     }
   });
 
-  // Chat Input Auto-resize
-  document.getElementById('chat-input').addEventListener('input', function() {
-    this.style.height = 'auto';
-    this.style.height = Math.min(this.scrollHeight, 96) + 'px';
-  });
-
   // Close chat on overlay click
   document.getElementById('chat-overlay').addEventListener('click', function(e) {
-    if (e.target === this) {
-      closeChat();
-    }
+    if (e.target === this) closeChat();
   });
 
-  // Enter key to send message
-  document.getElementById('chat-input').addEventListener('keypress', function(e) {
+  // Chat input: Enter → send, Shift+Enter → newline, auto-resize
+  const chatInputEl = document.getElementById('chat-input');
+  chatInputEl.addEventListener('keydown', function(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
+  });
+  chatInputEl.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 128) + 'px';
   });
 
   /* ═══════════════════════════════════════════════
@@ -1129,5 +1202,6 @@
 </script>
 <!-- AOS JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </body>
 </html>

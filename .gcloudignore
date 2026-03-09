@@ -1,0 +1,8 @@
+# Fichiers du site web — ignorés par Cloud Build
+index.html
+manifest.json
+sw.js
+netlify.toml
+README.md
+CLAUDE.md
+.git
