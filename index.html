@@ -1025,8 +1025,14 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message, lang: currentLang })
       });
-      const data = await res.json();
-      const reply = data.reply || data.text || data.response || data.message || JSON.stringify(data);
+      const rawText = await res.text();
+      let reply;
+      try {
+        const data = JSON.parse(rawText);
+        reply = data.reply || data.text || data.response || data.message || rawText;
+      } catch {
+        reply = rawText;
+      }
       loadingRow.querySelector('.msg-bubble').innerHTML = reply;
     } catch (err) {
       loadingRow.querySelector('.msg-bubble').textContent =
