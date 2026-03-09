@@ -919,7 +919,17 @@
     currentLang = lang;
   }
 
-  function setLang(lang) { applyTranslations(lang); }
+  function setLang(lang) {
+    applyTranslations(lang);
+    // Reset chat si ouvert → nouveau message d'accueil dans la nouvelle langue
+    const chatBox = document.getElementById('chat-box');
+    if (chatBox) {
+      chatBox.innerHTML = '';
+      if (document.getElementById('chat-overlay').classList.contains('open')) {
+        appendMsg('sam', buildWelcome());
+      }
+    }
+  }
 
   /* ═══════════════════════════════════════════════
      DARK MODE
@@ -976,16 +986,79 @@
   }
 
   // ── Chat Functions
+  /* ═══════════════════════════════════════════════
+     CHAT — STATE & HELPERS
+  ═══════════════════════════════════════════════ */
+  const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/r1woeelogkk0bv2i6s5cxu3mli231nbg';
+  let chatSending = false;
+
+  const ALL_SOURCES = [
+    'Choulhan Aroukh (Maran Rabbi Yossef Karo)',
+    'Mishna Beroura (Hafets Haïm)',
+    'Hazon Ovadia (Rav Ovadia Yossef)',
+    'Halikhot Olam (Rav Its\'hak Yossef)',
+    'Minhat Shlomo (Rav Shlomo Zalman Auerbach)',
+    'Be\'er Yaakov — Iyounim Halacha',
+    'Igrot Moshe (Rav Moshe Feinstein)',
+    'Aroukh HaChoulhan (Rav Yehiel Mikhel Epstein)',
+    'Kaf HaHaïm (Rav Yaakov Haïm Sofer)',
+    'Orchot Chabot (Rav Shlomo Zalman Auerbach)',
+    'Taz — Tourei Zahav',
+    'Magen Avraham'
+  ];
+
+  const LANG_INSTRUCTIONS = {
+    fr: 'Tu es RebSam, expert en Halacha (loi juive). Réponds TOUJOURS en français, avec les sources exactes (Choulhan Aroukh, Poskim). Sois précis, structuré et respectueux. Question : ',
+    en: 'You are RebSam, a Halacha (Jewish law) expert. ALWAYS answer in English, citing exact sources (Shulchan Aruch, Poskim). Be precise, structured and respectful. Question: ',
+    he: 'אתה רבסם, מומחה הלכה. ענה תמיד בעברית, עם מקורות מדויקים (שולחן ערוך, פוסקים). היה מדויק, מובנה ומכבד. שאלה: '
+  };
+
+  function buildWelcome() {
+    const shuffled = ALL_SOURCES.slice().sort(() => Math.random() - .5);
+    const picked = shuffled.slice(0, 5 + Math.floor(Math.random() * 2)); // 5 ou 6
+    const sourceList = picked.map(s => `• ${s}`).join('<br>');
+    const msgs = {
+      fr: `Chalom ! 🌿 Je suis RebSam, ton compagnon d'étude halakhique.<br><br>Pose-moi n'importe quelle question : Kacherout, Chabbat, Niddah, Tefila, relations, business… Je réponds avec les sources exactes, sans jugement, 24h/24.<br><br>📚 <b>Sources consultées aujourd'hui :</b><br>${sourceList}<br><br>Par où veux-tu commencer ?`,
+      en: `Shalom! 🌿 I am RebSam, your halachic study companion.<br><br>Ask me any question: Kashrut, Shabbat, Niddah, Tefila, relationships, business… I answer with exact sources, without judgment, 24/7.<br><br>📚 <b>Sources consulted today:</b><br>${sourceList}<br><br>Where would you like to start?`,
+      he: `!שלום 🌿 אני רבסם, חבר הלימוד ההלכתי שלך.<br><br>שאל אותי כל שאלה: כשרות, שבת, נידה, תפילה, יחסים, עסקים… אני עונה עם המקורות המדויקים, ללא שיפוטיות, 24/7.<br><br>📚 <b>:מקורות שנבדקו היום</b><br>${sourceList}<br><br>?מאיפה רוצה להתחיל`
+    };
+    return msgs[currentLang] || msgs.fr;
+  }
+
+  function hasHebrew(text) {
+    return /[\u0590-\u05FF]/.test(text);
+  }
+
+  function cleanMarkdown(raw) {
+    return raw
+      .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+      .replace(/\*(.+?)\*/g, '<b>$1</b>')
+      .replace(/\n\n/g, '<br><br>')
+      .replace(/\n/g, '<br>');
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function appendMsg(role, html, isHebrew) {
+    const chatBox = document.getElementById('chat-box');
+    const row = document.createElement('div');
+    row.className = 'msg-row ' + role;
+    const labelMap = { user: { fr:'TOI', en:'YOU', he:'אתה' }, sam: { fr:'RS', en:'RS', he:'רס' } };
+    const label = (labelMap[role] && labelMap[role][currentLang]) || (role === 'user' ? 'TOI' : 'RS');
+    const dir = (isHebrew || (role === 'user' && hasHebrew(html))) ? ' dir="rtl"' : '';
+    row.innerHTML = `<div class="msg-avatar ${role}">${label}</div><div class="msg-bubble ${role}"${dir}>${html}</div>`;
+    chatBox.appendChild(row);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    return row;
+  }
+
   function openChat() {
     document.getElementById('chat-overlay').classList.add('open');
     const chatBox = document.getElementById('chat-box');
     if (chatBox.children.length === 0) {
-      const introText = {
-        fr: 'Chalom ! 🌿 Je suis RebSam, ton compagnon d\'étude halakhique.<br><br>Pose-moi n\'importe quelle question : Kacherout, Chabbat, Niddah, Tefila, relations, business… Je réponds avec les sources exactes, sans jugement, 24h/24.',
-        en: 'Shalom! 🌿 I am RebSam, your halachic study companion.<br><br>Ask me any question: Kashrut, Shabbat, Niddah, Tefila, relationships, business… I answer with exact sources, without judgment, 24/7.',
-        he: '!שלום 🌿 אני רבסם, חבר הלימוד ההלכתי שלך.<br><br>שאל אותי כל שאלה: כשרות, שבת, נידה, תפילה, יחסים, עסקים… אני עונה עם המקורות המדויקים, ללא שיפוטיות, 24/7.'
-      };
-      appendMsg('sam', introText[currentLang] || introText.fr);
+      appendMsg('sam', buildWelcome());
     }
     document.getElementById('chat-input').focus();
   }
@@ -994,46 +1067,28 @@
     document.getElementById('chat-overlay').classList.remove('open');
   }
 
-  // ⚙️ Remplace cette URL par ton vrai webhook Make.com
-  const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/r1woeelogkk0bv2i6s5cxu3mli231nbg';
-
-  function appendMsg(role, html) {
-    const chatBox = document.getElementById('chat-box');
-    const row = document.createElement('div');
-    row.className = 'msg-row ' + role;
-    const labelMap = { user: { fr:'TOI', en:'YOU', he:'אתה' }, sam: { fr:'RS', en:'RS', he:'רס' } };
-    const label = (labelMap[role] && labelMap[role][currentLang]) || (role === 'user' ? 'TOI' : 'RS');
-    row.innerHTML = `<div class="msg-avatar ${role}">${label}</div><div class="msg-bubble ${role}">${html}</div>`;
-    chatBox.appendChild(row);
-    chatBox.scrollTop = chatBox.scrollHeight;
-    return row;
-  }
-
-  function escapeHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
   async function sendMessage() {
+    if (chatSending) return;
     const input = document.getElementById('chat-input');
     const sendBtn = document.getElementById('chat-send');
     const message = input.value.trim();
     if (!message) return;
 
-    appendMsg('user', escapeHtml(message));
+    const userIsHebrew = hasHebrew(message);
+    appendMsg('user', escapeHtml(message), userIsHebrew);
     input.value = '';
     input.style.height = 'auto';
+    chatSending = true;
     input.disabled = true;
     sendBtn.disabled = true;
 
-    // Bulle de chargement
     const loadingRow = appendMsg('sam', '<div class="loading-dots"><span></span><span></span><span></span></div>');
 
     try {
-      const res = await fetch(MAKE_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message, lang: currentLang })
-      });
+      const langInstruction = LANG_INSTRUCTIONS[currentLang] || LANG_INSTRUCTIONS.fr;
+      const prompt = langInstruction + message;
+      const url = MAKE_WEBHOOK_URL + '?prompt=' + encodeURIComponent(prompt);
+      const res = await fetch(url);
       const rawText = await res.text();
       let reply;
       try {
@@ -1042,7 +1097,11 @@
       } catch {
         reply = rawText;
       }
-      loadingRow.querySelector('.msg-bubble').innerHTML = (typeof marked !== 'undefined') ? marked.parse(reply) : reply;
+      const cleaned = cleanMarkdown(reply);
+      const replyIsHebrew = hasHebrew(cleaned);
+      const bubble = loadingRow.querySelector('.msg-bubble');
+      bubble.innerHTML = cleaned;
+      if (replyIsHebrew) bubble.setAttribute('dir', 'rtl');
     } catch (err) {
       console.error('[RebSam chat error]', err);
       loadingRow.querySelector('.msg-bubble').textContent =
@@ -1050,6 +1109,7 @@
         currentLang === 'en' ? 'Error. Please try again.' :
         'Erreur. Veuillez réessayer.';
     } finally {
+      chatSending = false;
       input.disabled = false;
       sendBtn.disabled = false;
       input.focus();
@@ -1077,22 +1137,14 @@
     }
   });
 
-  // Chat Input Auto-resize
-  document.getElementById('chat-input').addEventListener('input', function() {
-    this.style.height = 'auto';
-    this.style.height = Math.min(this.scrollHeight, 96) + 'px';
-  });
-
   // Close chat on overlay click
   document.getElementById('chat-overlay').addEventListener('click', function(e) {
-    if (e.target === this) {
-      closeChat();
-    }
+    if (e.target === this) closeChat();
   });
 
-  // Enter key to send message
+  // Chat input: Enter → send, Shift+Enter → newline, auto-resize
   const chatInputEl = document.getElementById('chat-input');
-  chatInputEl.addEventListener('keypress', function(e) {
+  chatInputEl.addEventListener('keydown', function(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
