@@ -7,6 +7,16 @@
   command = ""          # Site statique — pas de build
   ignore  = "exit 1"   # ← TOUJOURS déployer même si Netlify pense que rien n'a changé
 
+# ── Contextes de déploiement ────────────────────────────────
+[context.production]
+  publish = "."
+
+[context.deploy-preview]
+  publish = "."
+
+[context.branch-deploy]
+  publish = "."
+
 # ── Redirects ──────────────────────────────────────────────
 [[redirects]]
   from = "/halakha"
