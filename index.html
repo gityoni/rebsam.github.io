@@ -292,6 +292,9 @@
     .section-heading h2 { font-family: 'Outfit', sans-serif; font-size: clamp(1.75rem,4vw,2.5rem); font-weight: 900; color: var(--secondary-dark); margin-bottom: .75rem; letter-spacing: -.02em; }
     .section-heading p { font-size: 1.0625rem; color: rgba(45,55,72,.65); max-width: 560px; margin: 0 auto; line-height: 1.65; }
     .section-eyebrow { display: inline-block; padding: .28rem .95rem; border-radius: var(--radius-full); background: linear-gradient(135deg, #5B8EF0 0%, #7C6FCD 50%, #E07B5A 100%); color: #fff; font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; box-shadow: 0 4px 15px rgba(91,142,240,.3); }
+    #how-it-works .section-eyebrow { font-size: .85rem; padding: .45rem 1.4rem; letter-spacing: .12em; box-shadow: 0 6px 24px rgba(91,142,240,.4); margin-bottom: 1.5rem; }
+    #how-it-works .section-heading { margin-bottom: 4rem; }
+    #how-it-works .section-heading h2 { margin-top: .75rem; margin-bottom: 1rem; }
     #faq .section-eyebrow { background: none; color: var(--primary); box-shadow: none; font-size: .8rem; letter-spacing: .1em; font-weight: 700; padding: 0; }
 
     /* HOW IT WORKS */
@@ -302,19 +305,20 @@
     /* New card layout */
     .steps-grid-new { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; position: relative; align-items: start; }
     @media (max-width: 900px) { .steps-grid-new { grid-template-columns: 1fr; gap: 1.5rem; } }
-    .step-card { position: relative; background: var(--card-bg); border: 1px solid var(--border); border-radius: 1.5rem; padding: 2rem 1.75rem 2.25rem; box-shadow: var(--shadow-sm); transition: all .35s cubic-bezier(.4,0,.2,1); display: flex; flex-direction: column; gap: 1.25rem; }
-    .step-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(46,107,230,.14), 0 6px 16px rgba(0,0,0,.07); border-color: rgba(46,107,230,.2); }
-    .step-card-top { display: flex; align-items: center; justify-content: space-between; }
-    .step-badge { font-family: 'Outfit', sans-serif; font-size: .75rem; font-weight: 800; letter-spacing: .08em; color: var(--primary); background: rgba(46,107,230,.08); padding: .25rem .65rem; border-radius: var(--radius-full); }
-    .step-card-icon { width: 3.5rem; height: 3.5rem; border-radius: 1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform .3s; }
-    .step-card:hover .step-card-icon { transform: scale(1.1) rotate(-4deg); }
-    .step-icon-blue { background: linear-gradient(135deg,#dbeafe,#eff6ff); color: #2563eb; }
-    .step-icon-indigo { background: linear-gradient(135deg,#e0e7ff,#eef2ff); color: #4f46e5; }
-    .step-icon-cyan { background: linear-gradient(135deg,#cffafe,#ecfeff); color: #0891b2; }
-    .step-card-body { display: flex; flex-direction: column; gap: .5rem; }
+    .step-card { position: relative; background: var(--card-bg); border: 1px solid var(--border); border-radius: 1.75rem; padding: 2.25rem 2rem 2.5rem; box-shadow: var(--shadow-sm); transition: all .35s cubic-bezier(.4,0,.2,1); display: flex; flex-direction: column; gap: 1.5rem; }
+    .step-card:hover { transform: translateY(-8px); box-shadow: 0 24px 56px rgba(46,107,230,.16), 0 8px 20px rgba(0,0,0,.07); border-color: rgba(46,107,230,.22); }
+    .step-card-top { display: flex; align-items: center; justify-content: flex-start; }
+    .step-badge { display: none; }
+    .step-card-icon { width: 4.5rem; height: 4.5rem; border-radius: 1.25rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform .35s cubic-bezier(.4,0,.2,1), box-shadow .35s; }
+    .step-card:hover .step-card-icon { transform: scale(1.12) rotate(-6deg); box-shadow: 0 8px 28px rgba(46,107,230,.25); }
+    .step-icon-blue { background: linear-gradient(135deg,#2563eb 0%,#5B8EF0 100%); color: #fff; box-shadow: 0 4px 18px rgba(37,99,235,.35); }
+    .step-icon-indigo { background: linear-gradient(135deg,#4f46e5 0%,#7C6FCD 100%); color: #fff; box-shadow: 0 4px 18px rgba(79,70,229,.35); }
+    .step-icon-cyan { background: linear-gradient(135deg,#0891b2 0%,#06b6d4 100%); color: #fff; box-shadow: 0 4px 18px rgba(8,145,178,.35); }
+    .step-card-body { display: flex; flex-direction: column; gap: .6rem; }
     .step-connector { display: none; }
-    .step-title { font-size: 1.15rem; font-weight: 700; color: var(--primary); margin: 0; transition: color .25s; }
-    .step-desc { font-size: .9375rem; color: rgba(45,55,72,.72); line-height: 1.65; margin: 0; }
+    .step-title { font-size: 1.2rem; font-weight: 800; color: var(--secondary-dark); margin: 0; transition: color .25s; }
+    .step-card:hover .step-title { color: var(--primary); }
+    .step-desc { font-size: .9375rem; color: rgba(45,55,72,.68); line-height: 1.75; margin: 0; }
     [dir="rtl"] .step-card { text-align: right; }
     [dir="rtl"] .step-card-top { flex-direction: row-reverse; }
     /* Sources grid new */
@@ -613,42 +617,58 @@
       <p data-i18n="hiw_sub">Simple, rapide et transparent.</p>
     </div>
     <div class="steps-grid-new">
+
+      <!-- Step 1 — Chat bubble icon -->
       <div class="step-card" data-aos="fade-up" data-aos-delay="0">
         <div class="step-card-top">
-          <div class="step-badge">01</div>
           <div class="step-card-icon step-icon-blue">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              <line x1="9" y1="10" x2="9" y2="10" stroke-width="2.5"/>
+              <line x1="12" y1="10" x2="12" y2="10" stroke-width="2.5"/>
+              <line x1="15" y1="10" x2="15" y2="10" stroke-width="2.5"/>
+            </svg>
           </div>
         </div>
         <div class="step-card-body">
-          <h3 class="step-title" data-i18n="step1_title">Posez votre question</h3>
-          <p class="step-desc" data-i18n="step1_desc">En français, hébreu ou anglais. Aucune limite.</p>
+          <h3 class="step-title" data-i18n="step1_title">Tu poses ta question</h3>
+          <p class="step-desc" data-i18n="step1_desc">Écris simplement, comme tu parlerais à un ami. Pas besoin de connaître les termes techniques. RebSam te comprend.</p>
         </div>
       </div>
+
+      <!-- Step 2 — Sparkle/AI search icon -->
       <div class="step-card" data-aos="fade-up" data-aos-delay="150">
         <div class="step-card-top">
-          <div class="step-badge">02</div>
           <div class="step-card-icon step-icon-indigo">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M11 8v3l2 2"/><circle cx="18.5" cy="5.5" r="2.5" fill="currentColor" stroke="none"/></svg>
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-5.74L4 10l5.91-1.74z"/>
+              <path d="M5 3l.9 2.7L8 6.5l-2.1.8L5 10l-.9-2.7L2 6.5l2.1-.8z" stroke-width="1.5"/>
+              <path d="M19 14l.7 2.1 2.1.7-2.1.7-.7 2.1-.7-2.1-2.1-.7 2.1-.7z" stroke-width="1.5"/>
+            </svg>
           </div>
         </div>
         <div class="step-card-body">
-          <h3 class="step-title" data-i18n="step2_title">RebSam analyse</h3>
-          <p class="step-desc" data-i18n="step2_desc">Scanne ses milliers de sifrey kodesh vérifiés en moins d'une seconde.</p>
+          <h3 class="step-title" data-i18n="step2_title">RebSam cherche pour toi</h3>
+          <p class="step-desc" data-i18n="step2_desc">En quelques secondes, il explore des milliers de pages de textes sacrés validés — à travers nos sources, pas sur le net&nbsp;!</p>
         </div>
       </div>
+
+      <!-- Step 3 — Open scroll/star icon -->
       <div class="step-card" data-aos="fade-up" data-aos-delay="300">
         <div class="step-card-top">
-          <div class="step-badge">03</div>
           <div class="step-card-icon step-icon-cyan">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
           </div>
         </div>
         <div class="step-card-body">
-          <h3 class="step-title" data-i18n="step3_title">Recevez une réponse</h3>
-          <p class="step-desc" data-i18n="step3_desc">Avec les sources exactes et les explications précises.</p>
+          <h3 class="step-title" data-i18n="step3_title">Ta réponse arrive</h3>
+          <p class="step-desc" data-i18n="step3_desc">Tu reçois une réponse claire et chaleureuse, avec le Siman et le Seif exacts — pour vérifier toi-même et continuer ton étude.</p>
         </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -904,10 +924,10 @@
       p1_title: 'Sources Validées', p1_desc: 'Pas d\'invention. Pas d\'hallucination. Chaque réponse est ancrée dans nos textes sacrés — Shulchan Aruch, Mishna Berura, Poskim contemporains et bien d\'autres.',
       p2_title: 'Privé & Sécurisé', p2_desc: 'Circuit fermé. Vos questions les plus intimes restent strictement privées : zéro collecte, zéro revente, zéro entraînement externe.',
       p3_title: 'Rapide & Fiable', p3_desc: 'Réponses en moins d\'une seconde. Technologie RAG qui scanne des milliers de sifrey kodesh vérifiés pour chaque question.',
-      hiw_eyebrow: 'Processus', hiw_title: 'Comment ça marche ?', hiw_sub: 'Simple, rapide et transparent.',
-      step1_title: 'Posez votre question', step1_desc: 'En français, hébreu ou anglais. Aucune limite.',
-      step2_title: 'RebSam analyse', step2_desc: 'Scanne ses milliers de sifrey kodesh vérifiés en moins d\'une seconde.',
-      step3_title: 'Recevez une réponse', step3_desc: 'Avec les sources exactes et les explications précises.',
+      hiw_eyebrow: 'Processus', hiw_title: 'Comment ça marche ?', hiw_sub: 'Simple, humain et transparent.',
+      step1_title: 'Tu poses ta question', step1_desc: 'Écris simplement, comme tu parlerais à un ami. Pas besoin de connaître les termes techniques. RebSam te comprend.',
+      step2_title: 'RebSam cherche pour toi', step2_desc: 'En quelques secondes, il explore des milliers de pages de textes sacrés validés — à travers nos sources, pas sur le net !',
+      step3_title: 'Ta réponse arrive', step3_desc: 'Tu reçois une réponse claire et chaleureuse, avec le Siman et le Seif exacts — pour vérifier toi-même et continuer ton étude.',
       faq_eyebrow: 'Questions Fréquentes', faq_title: 'Tout ce que tu dois savoir', faq_sub: 'Pour utiliser RebSam en toute sérénité.',
       faq_q1: 'Puis-je vraiment faire confiance aux réponses de RebSam ?', faq_a1: 'RebSam est un compagnon d\'étude extrêmement fiable — il cite toujours ses sources avec précision (Livre, Siman, Seif). Mais pour un Psak formel, consulte toujours ton Rav. Lui seul connaît tous les détails de ta situation.',
       faq_q2: 'Sur quels textes sacrés RebSam s\'appuie-t-il ?', faq_a2: 'RebSam puise dans des milliers de sifrey kodesh vérifiés : Choulhan Aroukh, Michna Beroura, Yalkout Yossef, Igrot Moshé, Peninei Halakha, Iyounim Halacha, Chass et bien d\'autres.',
@@ -947,9 +967,9 @@
       p2_title: 'Private & Secure', p2_desc: 'Closed circuit. Your most sensitive questions remain strictly private: zero collection, zero resale, zero external training.',
       p3_title: 'Fast & Reliable', p3_desc: 'Answers in under a second. RAG technology scanning thousands of verified Sifrey Kodesh for every question.',
       hiw_eyebrow: 'Process', hiw_title: 'How does it work?', hiw_sub: 'Simple, fast and transparent.',
-      step1_title: 'Ask your question', step1_desc: 'In French, Hebrew or English. No limits.',
-      step2_title: 'RebSam analyzes', step2_desc: 'Scans thousands of verified Sifrey Kodesh in under a second.',
-      step3_title: 'Receive an answer', step3_desc: 'With exact sources and precise explanations.',
+      step1_title: 'You ask your question', step1_desc: 'Write simply, as you\'d talk to a friend. No need to know technical terms. RebSam understands you.',
+      step2_title: 'RebSam searches for you', step2_desc: 'In seconds, it explores thousands of pages of validated sacred texts — from our sources, not the internet!',
+      step3_title: 'Your answer arrives', step3_desc: 'You receive a clear and warm response, with the exact Siman and Seif — so you can verify yourself and continue your study.',
       faq_eyebrow: 'Frequently Asked Questions', faq_title: 'Everything you need to know', faq_sub: 'To use RebSam with complete peace of mind.',
       faq_q1: 'Can I really trust RebSam\'s answers?', faq_a1: 'RebSam is an extremely reliable study companion — it always cites its sources precisely (Book, Siman, Seif). But for a formal Psak, always consult your Rav.',
       faq_q2: 'Which sacred texts does RebSam draw from?', faq_a2: 'RebSam draws from thousands of verified Sifrey Kodesh: Choulhan Aruch, Mishna Berura, Yalkout Yossef, Igrot Moshe, Peninei Halakha and many more.',
@@ -989,9 +1009,9 @@
       p2_title: 'פרטי ומאובטח', p2_desc: '.מעגל סגור. שאלותיך האינטימיות ביותר נשארות פרטיות לחלוטין — אפס איסוף, אפס מכירה, אפס אימון חיצוני',
       p3_title: 'מהיר ואמין', p3_desc: '.תשובות בפחות משנייה. טכנולוגיית RAG הסורקת אלפי ספרי קודש מאומתים לכל שאלה',
       hiw_eyebrow: 'תהליך', hiw_title: 'איך זה עובד?', hiw_sub: '.פשוט, מהיר ושקוף',
-      step1_title: 'שאל את שאלתך', step1_desc: '.בעברית, צרפתית או אנגלית. ללא הגבלה',
-      step2_title: 'רב-סם מנתח', step2_desc: '.סורק אלפי ספרי קודש מאומתים בפחות משנייה',
-      step3_title: 'קבל תשובה', step3_desc: '.עם המקורות המדויקים וההסברים המפורטים',
+      step1_title: 'אתה שואל את שאלתך', step1_desc: '.כתוב פשוט, כמו שהיית מדבר עם חבר. אין צורך לדעת מונחים טכניים. רב-סם מבין אותך',
+      step2_title: 'רב-סם מחפש בשבילך', step2_desc: '!בתוך שניות, הוא עובר על אלפי עמודים של ספרי קודש מאומתים — דרך המקורות שלנו, לא האינטרנט',
+      step3_title: 'התשובה שלך מגיעה', step3_desc: '.אתה מקבל תשובה ברורה וחמה, עם הסימן והסעיף המדויקים — כדי שתוכל לאמת בעצמך ולהמשיך את הלימוד',
       faq_eyebrow: 'שאלות נפוצות', faq_title: 'כל מה שצריך לדעת', faq_sub: '.לשימוש ברב-סם בשקט נפשי מלא',
       faq_q1: 'האם אפשר לסמוך על תשובות רב-סם?', faq_a1: 'רב-סם הוא חברותא לימוד אמינה ביותר — הוא תמיד מצטט את מקורותיו במדויק (ספר, סימן, סעיף). אך לפסק הלכה רשמי, תמיד התייעץ עם הרב שלך.',
       faq_q2: 'על אילו טקסטים קדושים רב-סם מסתמך?', faq_a2: '.רב-סם שואב מאלפי ספרי קודש מאומתים: שולחן ערוך, משנה ברורה, ילקוט יוסף, אגרות משה ועוד רבים',
