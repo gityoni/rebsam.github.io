@@ -1464,8 +1464,11 @@
     try {
       const langInstruction = LANG_INSTRUCTIONS[currentLang] || LANG_INSTRUCTIONS.fr;
       const prompt = langInstruction + message;
-      const url = MAKE_WEBHOOK_URL + '?prompt=' + encodeURIComponent(prompt) + '&lang=' + encodeURIComponent(currentLang);
-      const res = await fetch(url);
+      const res = await fetch(MAKE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, lang: currentLang, message })
+      });
       const rawText = await res.text();
       let reply;
       try {
