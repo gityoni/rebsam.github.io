@@ -2,7 +2,7 @@
 <html lang="fr" dir="ltr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>RebSam — Un Rebbe dans votre dose d'IA quotidienne</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60'%3E%3Ctext y='52' font-family='Arial Black,sans-serif' font-weight='900' font-size='56' fill='%232E6BE6'%3ER%3C/text%3E%3Ctext y='52' x='65' font-family='Arial Black,sans-serif' font-weight='900' font-size='56' fill='%231E293B'%3ES%3C/text%3E%3C/svg%3E">
   <!-- ══ SEO PRIMAIRE ══ -->
@@ -461,6 +461,164 @@
     #chat-send:disabled{opacity:.4;cursor:not-allowed;}
     .chat-hint { text-align: center; font-size: .7375rem; color: #9ca3af; margin-top: .5rem; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+    /* ══════════════════════════════════════════════════════════════
+       MOBILE OPTIMIZATION
+    ══════════════════════════════════════════════════════════════ */
+
+    /* ── Conteneur ── */
+    @media (max-width: 480px) {
+      .container { padding: 0 1rem; }
+    }
+
+    /* ── Header ── */
+    @media (max-width: 900px) {
+      #header { padding: .7rem 0; }
+      .logo { font-size: 1.6rem; }
+    }
+
+    /* ── Hero ── */
+    @media (max-width: 767px) {
+      #hero { padding: 4.5rem 0 2rem; }
+      .hero-badge { font-size: .72rem; padding: .4rem 1rem; margin-bottom: 1rem; }
+      .hero-h1 .rebsam-logo { font-size: clamp(2.4rem,10vw,3.2rem); }
+      .hero-h1 [data-i18n="hero_tagline"] { font-size: clamp(.9rem,3.5vw,1.1rem); }
+      .hero-divider { margin-bottom: 1rem; }
+      .hero-p { font-size: .875rem; margin-bottom: .65rem; }
+      .hero-points { gap: .5rem; margin-bottom: 1.1rem; }
+      .hero-point { padding: .6rem .85rem; gap: .65rem; border-radius: .75rem; }
+      .hero-point span { font-size: .82rem; }
+      .hero-btns { gap: .55rem; margin-bottom: 1rem; }
+      .hero-sources { font-size: .63rem; }
+      .hero-avatar-img { max-width: 200px; }
+    }
+    @media (max-width: 400px) {
+      .hero-points { padding: 0 .25rem; }
+      .hero-point { padding: .55rem .75rem; }
+    }
+
+    /* ── Stats ── */
+    @media (max-width: 767px) {
+      #stats { padding: 2.5rem 0; }
+      .stat-card { padding: 1.1rem .5rem; }
+      .stat-icon { font-size: 1.6rem; margin-bottom: .5rem; }
+      .stat-number { font-size: 1.75rem; }
+      .stat-label { font-size: .7rem; }
+    }
+
+    /* ── Sections générales ── */
+    @media (max-width: 767px) {
+      .section-heading { margin-bottom: 1.75rem; }
+      .section-heading h2 { font-size: clamp(1.5rem,6vw,2rem); margin-bottom: .5rem; }
+      .section-heading p { font-size: .9375rem; }
+    }
+
+    /* ── Comment ça marche ── */
+    @media (max-width: 767px) {
+      #how-it-works { padding: 3.5rem 0 4rem; }
+      #how-it-works .section-heading { margin-bottom: 2rem; }
+      #how-it-works .section-eyebrow { font-size: .75rem; padding: .35rem 1.1rem; margin-bottom: 1rem; }
+    }
+    /* Tablette : 2 colonnes (600-900px) */
+    @media (min-width: 600px) and (max-width: 900px) {
+      .steps-grid-new { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+    }
+    /* Mobile : plein format, padding réduit */
+    @media (max-width: 600px) {
+      .steps-grid-new { gap: 1rem; }
+      .step-card { padding: 1.5rem 1.25rem 1.75rem; gap: 1rem; border-radius: 1.25rem; }
+      .step-card-icon { width: 3.5rem; height: 3.5rem; border-radius: 1rem; }
+      .step-card-icon svg { width: 24px; height: 24px; }
+      .step-title { font-size: 1.05rem; }
+      .step-desc { font-size: .875rem; line-height: 1.65; }
+    }
+
+    /* ── Piliers ── */
+    @media (max-width: 767px) {
+      #pillars { padding: 3.5rem 0; }
+      .feature-card { padding: 1.5rem 1.25rem; border-radius: 1.1rem; }
+      .feature-card h3 { font-size: 1.1rem; }
+      .feature-card p { font-size: .875rem; }
+    }
+
+    /* ── Bibliothèque ── */
+    @media (max-width: 767px) {
+      #sources { padding: 3.5rem 0; }
+      .sources-grid-new { gap: .875rem; margin-top: 1.75rem; }
+    }
+    @media (max-width: 480px) {
+      .sources-grid-new { grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+      .source-book { padding: 1.1rem .75rem; border-radius: 1rem; }
+      .source-book-icon { font-size: 1.6rem; }
+      .source-book-title { font-size: .8rem; }
+      .source-book-sub { font-size: .68rem; }
+    }
+
+    /* ── FAQ ── */
+    @media (max-width: 767px) {
+      #faq { padding: 3.5rem 0 3rem; }
+      #faq .section-heading h2 { font-size: clamp(1.6rem,6vw,2rem); }
+      .faq-question { padding: 1rem 1.1rem; font-size: .9375rem; }
+      .faq-answer { padding: 0 1.1rem 1rem; padding-top: .875rem; font-size: .875rem; }
+      .faq-list { gap: .65rem; }
+    }
+
+    /* ── Footer ── */
+    @media (max-width: 767px) {
+      footer { padding: 3rem 0 0; }
+      .footer-grid { gap: 1.5rem; margin-bottom: 2rem; }
+      .footer-brand p { font-size: .875rem; }
+      .footer-col h4 { margin-bottom: 1rem; }
+      .footer-col ul { gap: .75rem; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: .65rem; }
+      .footer-bottom-links { gap: 1rem; }
+    }
+
+    /* ── Chat modal — bottom sheet sur mobile ── */
+    @media (max-width: 640px) {
+      #chat-overlay { padding: 0; align-items: flex-end; background: rgba(0,0,0,.6); }
+      #chat-modal {
+        max-width: 100%;
+        width: 100%;
+        height: 92svh;
+        border-radius: 1.5rem 1.5rem 0 0;
+        margin: 0;
+      }
+      .chat-header { border-radius: 1.5rem 1.5rem 0 0; }
+    }
+
+    /* ── Boutons flottants — iOS safe area + tap targets ── */
+    @media (max-width: 767px) {
+      .float-btn { bottom: max(1.25rem, env(safe-area-inset-bottom, 1.25rem)); }
+      .float-inner {
+        padding: .85rem 1rem;
+        min-width: 52px;
+        min-height: 52px;
+        justify-content: center;
+      }
+      .float-icon svg { width: 22px; height: 22px; }
+    }
+
+    /* ── Mobile menu ── */
+    @media (max-width: 640px) {
+      #mobile-menu { padding: 4.5rem 1.25rem 2rem; }
+    }
+
+    /* ── Désactiver les animations lourdes sur mobile ── */
+    @media (max-width: 767px) {
+      .halo-1, .halo-2, .halo-3,
+      .blob-1, .blob-2,
+      .pillars-glow { display: none; }
+      .hero-cloud-1, .hero-cloud-2 { filter: blur(40px); }
+    }
+
+    /* ── Supprimer les hover transform sur touch ── */
+    @media (hover: none) {
+      .step-card:hover { transform: none; box-shadow: var(--shadow-sm); }
+      .source-book:hover { transform: none; box-shadow: none; }
+      .feature-card:hover { transform: none; box-shadow: var(--shadow-sm); }
+      .hero-point:hover { transform: none; box-shadow: none; }
+    }
   </style>
 </head>
 <body>
