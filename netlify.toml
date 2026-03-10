@@ -6,6 +6,16 @@
   publish = "."
   command = ""          # Site statique — pas de build
 
+# ── Contextes de déploiement ────────────────────────────────
+[context.production]
+  publish = "."
+
+[context.deploy-preview]
+  publish = "."
+
+[context.branch-deploy]
+  publish = "."
+
 # ── Redirects ──────────────────────────────────────────────
 [[redirects]]
   from = "/halakha"
