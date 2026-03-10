@@ -60,8 +60,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Heebo:wght@300;400;500;600;700;800;900&family=Frank+Ruhl+Libre:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', sans-serif; color: var(--text-primary); background: var(--body-bg); -webkit-font-smoothing: antialiased; transition: background .4s, color .3s; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body { font-family: 'Inter', sans-serif; color: var(--text-primary); background: var(--body-bg); -webkit-font-smoothing: antialiased; transition: background .4s, color .3s; overflow-x: hidden; }
     a { text-decoration: none; color: inherit; }
     [lang="he"], [dir="rtl"] { font-family: 'Heebo', sans-serif; }
     [dir="rtl"] body { font-family: 'Frank Ruhl Libre', serif; }
@@ -202,8 +202,8 @@
     .footer-cta:hover { background: var(--primary-dark) !important; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(46,107,230,.45) !important; }
 
     /* HERO */
-    #hero { position: relative; min-height: 100svh; display: flex; align-items: center; padding: 5.5rem 0 2rem; overflow: hidden; }
-    @media (max-width: 767px) { #hero { padding: 5rem 0 1.5rem; min-height: 100svh; } }
+    #hero { position: relative; min-height: 100vh; min-height: 100svh; display: flex; align-items: center; padding: 5.5rem 0 2rem; overflow: hidden; }
+    @media (max-width: 767px) { #hero { padding: 5rem 0 1.5rem; min-height: 100vh; min-height: 100svh; } }
     .hero-bg { position: absolute; inset: 0; background: transparent; z-index: -2; overflow: hidden; }
     .hero-cloud-1 { position: absolute; top: -80px; left: -120px; width: 700px; height: 500px; background: radial-gradient(ellipse, rgba(199,210,254,.55) 0%, rgba(224,231,255,.3) 40%, transparent 70%); filter: blur(60px); }
     .hero-cloud-2 { position: absolute; bottom: -100px; right: -80px; width: 800px; height: 600px; background: radial-gradient(ellipse, rgba(248,246,252,.55) 0%, rgba(255,252,254,.25) 40%, transparent 70%); filter: blur(80px); }
