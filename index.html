@@ -15,8 +15,8 @@
   <!-- ══ OPEN GRAPH (Facebook, WhatsApp, LinkedIn) ══ -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://rebsam.com/">
-  <meta property="og:title" content="RebSam — Le Maître de la Halakha dans votre poche">
-  <meta property="og:description" content="Expert rabbinique augmenté par l'IA : des milliers de sifrey kodesh, disponible 24h/24 en FR/EN/HE. Zéro hallucination — uniquement les sources de nos sages.">
+  <meta property="og:title" content="RebSam — Ton expert Halakha, 24h/24">
+  <meta property="og:description" content="Nos sources, pas le net. Choulhan Aroukh, Michna Beroura, Responsa... Pose tes questions en FR / עברית / EN">
   <meta property="og:image" content="https://rebsam.com/og-image.png">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:locale:alternate" content="en_US">
@@ -188,7 +188,7 @@
     .btn { display: inline-flex; align-items: center; gap: .5rem; padding: .75rem 1.5rem; border-radius: var(--radius-full); font-weight: 600; font-size: .9375rem; cursor: pointer; transition: all .25s; border: none; }
     .btn-primary { background: linear-gradient(135deg, var(--primary-pastel) 0%, var(--primary-pastel-dark) 100%); color: #fff; box-shadow: 0 4px 20px rgba(46,107,230,.3); }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,86,210,.45); }
-    .btn-ghost { background: transparent; color: var(--secondary); border: 1.5px solid rgba(45,55,72,.2); }
+    .btn-ghost { background: transparent; color: var(--secondary); border: 1.5px solid var(--border); }
     .btn-ghost:hover { border-color: var(--primary); color: var(--primary); background: rgba(0,86,210,.04); }
     /* ✡ GOLD BUTTON — boutons d'action premium */
     .btn-gold { background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%); color: var(--navy-dark); box-shadow: var(--shadow-gold); font-weight: 700; letter-spacing: .01em; }
@@ -291,7 +291,7 @@
     .section-heading { text-align: center; margin-bottom: 3rem; }
     [dir="rtl"] .section-heading { text-align: right; }
     .section-heading h2 { font-family: 'Outfit', sans-serif; font-size: clamp(1.75rem,4vw,2.5rem); font-weight: 900; color: var(--secondary-dark); margin-bottom: .75rem; letter-spacing: -.02em; }
-    .section-heading p { font-size: 1.0625rem; color: rgba(45,55,72,.65); max-width: 560px; margin: 0 auto; line-height: 1.65; }
+    .section-heading p { font-size: 1.0625rem; color: var(--text-secondary); max-width: 560px; margin: 0 auto; line-height: 1.65; }
     .section-eyebrow { display: inline-block; padding: .28rem .95rem; border-radius: var(--radius-full); background: linear-gradient(135deg, #5B8EF0 0%, #7C6FCD 50%, #E07B5A 100%); color: #fff; font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; box-shadow: 0 4px 15px rgba(91,142,240,.3); }
     #how-it-works .section-eyebrow { font-size: .85rem; padding: .45rem 1.4rem; letter-spacing: .12em; box-shadow: 0 6px 24px rgba(91,142,240,.4); margin-bottom: 1.5rem; }
     #how-it-works .section-heading { margin-bottom: 4rem; }
@@ -325,7 +325,7 @@
     .step-connector { display: none; }
     .step-title { font-size: 1.2rem; font-weight: 800; color: var(--secondary-dark); margin: 0; transition: color .25s; }
     .step-card:hover .step-title { color: var(--primary); }
-    .step-desc { font-size: .9375rem; color: rgba(45,55,72,.68); line-height: 1.75; margin: 0; }
+    .step-desc { font-size: .9375rem; color: var(--text-secondary); line-height: 1.75; margin: 0; }
     [dir="rtl"] .step-card { text-align: right; }
     [dir="rtl"] .step-card-top { justify-content: flex-end; }
     /* Sources grid new */
@@ -372,7 +372,7 @@
     .feature-card-icon-img { width:100%; margin-bottom:1.25rem; overflow:hidden; border-radius:.75rem; }
     .feature-card-icon { width: 3.5rem; height: 3.5rem; border-radius: .875rem; background: rgba(0,86,210,.08); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; color: var(--primary); font-size: 1.5rem; }
     .feature-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--secondary-dark); margin-bottom: .75rem; }
-    .feature-card p { font-size: .9375rem; color: rgba(45,55,72,.72); line-height: 1.65; }
+    .feature-card p { font-size: .9375rem; color: var(--text-secondary); line-height: 1.65; }
 
     /* FAQ - ENHANCED */
     #faq { padding: 7rem 0 6rem; background: var(--faq-bg); position: relative; overflow: hidden; }
@@ -380,7 +380,7 @@
     #faq::after { content:''; position:absolute; bottom:-150px; left:-100px; width:500px; height:500px; border-radius:50%; background: radial-gradient(circle, rgba(210,225,255,.25) 0%, transparent 65%); opacity: .6; }
     #faq .section-eyebrow { background: none; color: var(--primary); box-shadow: none; font-size: .75rem; letter-spacing: .12em; font-weight: 700; padding: 0; display: block; text-align: center; margin-bottom: 1rem; }
     #faq .section-heading h2 { font-family: 'Outfit', sans-serif; font-size: clamp(2rem,5vw,3rem); font-weight: 900; color: var(--secondary-dark); margin-bottom: .75rem; letter-spacing: -.02em; }
-    #faq .section-heading p { color: rgba(45,55,72,.6); font-size: 1.05rem; }
+    #faq .section-heading p { color: var(--text-secondary); font-size: 1.05rem; }
     .faq-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: .85rem; position: relative; z-index: 1; }
     .faq-item { background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 1.1rem; overflow: hidden; transition: box-shadow .25s, border-color .25s, background .25s; }
     .faq-item:hover { box-shadow: 0 6px 28px rgba(46,107,230,.12); border-color: rgba(46,107,230,.25); background: rgba(255,255,255,.96); }
@@ -393,7 +393,7 @@
     .faq-chevron { flex-shrink: 0; width: 1.15rem; height: 1.15rem; color: rgba(46,107,230,.5); transition: transform .3s cubic-bezier(.4,0,.2,1), color .3s; }
     .faq-question.open .faq-chevron { transform: rotate(180deg); color: var(--primary); }
     .faq-content { display: none; max-height: 0; overflow: hidden; transition: max-height .3s ease-out, padding .3s ease-out; }
-    .faq-answer { padding: 0 1.75rem 1.35rem; font-size: .9375rem; color: rgba(45,55,72,.72); line-height: 1.8; border-top: 1px solid rgba(46,107,230,.07); padding-top: 1rem; }
+    .faq-answer { padding: 0 1.75rem 1.35rem; font-size: .9375rem; color: var(--text-secondary); line-height: 1.8; border-top: 1px solid rgba(46,107,230,.07); padding-top: 1rem; }
     [dir="rtl"] .faq-answer { text-align: right; }
     .faq-item.open .faq-content { display: block; max-height: 500px; }
 
@@ -1464,8 +1464,11 @@
     try {
       const langInstruction = LANG_INSTRUCTIONS[currentLang] || LANG_INSTRUCTIONS.fr;
       const prompt = langInstruction + message;
-      const url = MAKE_WEBHOOK_URL + '?prompt=' + encodeURIComponent(prompt) + '&lang=' + encodeURIComponent(currentLang);
-      const res = await fetch(url);
+      const res = await fetch(MAKE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, lang: currentLang, message })
+      });
       const rawText = await res.text();
       let reply;
       try {
