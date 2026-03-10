@@ -176,6 +176,7 @@
       text-decoration: none;
     }
     #mobile-menu .mob-link:hover { background: rgba(46,107,230,.07); color: var(--primary); transform: translateX(4px); }
+    [dir="rtl"] #mobile-menu .mob-link:hover { transform: translateX(-4px); }
     #mobile-menu .mob-link .mob-icon { width: 1.75rem; height: 1.75rem; border-radius: .5rem; background: rgba(46,107,230,.08); display: flex; align-items: center; justify-content: center; color: var(--primary); }
     .mobile-divider { height: 1px; background: rgba(0,0,0,.06); margin: .75rem 0; }
     .btn-primary-mobile { display: flex; align-items: center; justify-content: center; gap: .5rem; background: linear-gradient(135deg, var(--primary-pastel) 0%, var(--primary-pastel-dark) 100%); color: #fff; padding: .7rem 1.5rem; border-radius: var(--radius-full); font-weight: 600; font-size: .9375rem; box-shadow: 0 4px 20px rgba(46,107,230,.3); transition: all .25s; }
@@ -241,7 +242,7 @@
     .hero-point:hover { box-shadow: 0 6px 20px rgba(46,107,230,.1); transform: translateY(-2px); }
     .hero-point .arr { font-size: 1.4rem; flex-shrink: 0; font-style: normal; line-height: 1; }
     .hero-point span { font-size: clamp(.82rem,1.3vw,.92rem); font-weight: 600; color: var(--secondary-dark); line-height: 1.4; }
-    [dir="rtl"] .hero-point { flex-direction: row-reverse; text-align: right; }
+    [dir="rtl"] .hero-point { text-align: right; }
 
     .hero-btns { display: flex; flex-wrap: wrap; gap: .75rem; justify-content: center; margin-bottom: 1.25rem; animation: fadeUp .6s .2s ease both; }
     [dir="rtl"] .hero-btns { justify-content: center; }
@@ -326,7 +327,7 @@
     .step-card:hover .step-title { color: var(--primary); }
     .step-desc { font-size: .9375rem; color: rgba(45,55,72,.68); line-height: 1.75; margin: 0; }
     [dir="rtl"] .step-card { text-align: right; }
-    [dir="rtl"] .step-card-top { flex-direction: row-reverse; }
+    [dir="rtl"] .step-card-top { justify-content: flex-end; }
     /* Sources grid new */
     .sources-grid-new { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 1.25rem; margin-top: 2.5rem; }
     @media (max-width: 640px) { .sources-grid-new { grid-template-columns: repeat(2,1fr); gap: 1rem; } }
@@ -386,7 +387,7 @@
     .faq-item.open { border-color: var(--border-strong); background: var(--surface); box-shadow: 0 4px 20px rgba(46,107,230,.1); }
     .faq-question { width: 100%; display: flex; align-items: center; justify-content: space-between; text-align: left; padding: 1.35rem 1.75rem; cursor: pointer; background: none; border: none; font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700; color: var(--secondary-dark); transition: all .25s; }
     html.dark .faq-question { color: var(--secondary-dark); }
-    [dir="rtl"] .faq-question { text-align: right; flex-direction: row-reverse; }
+    [dir="rtl"] .faq-question { text-align: right; }
     .faq-question:hover { color: var(--primary); }
     .faq-question.open { color: var(--primary); }
     .faq-chevron { flex-shrink: 0; width: 1.15rem; height: 1.15rem; color: rgba(46,107,230,.5); transition: transform .3s cubic-bezier(.4,0,.2,1), color .3s; }
@@ -418,9 +419,9 @@
     .footer-logo .sam { color: #fff; }
     [dir="rtl"] .footer-col h4 { text-align: right; }
     [dir="rtl"] .footer-col ul { align-items: flex-end; }
-    [dir="rtl"] .footer-contact-item { flex-direction: row-reverse; text-align: right; }
+    [dir="rtl"] .footer-contact-item { text-align: right; }
     [dir="rtl"] .footer-brand p { text-align: right; }
-    [dir="rtl"] .footer-bottom { flex-direction: row-reverse; }
+    [dir="rtl"] .footer-bottom { direction: rtl; }
 
     /* FLOATING BUTTONS */
     .float-btn { position: fixed; bottom: 1.5rem; z-index: 300; border: none; cursor: pointer; background: none; padding: 0; }
@@ -1172,7 +1173,8 @@
       sources_more_count: 'des milliers d\'autres sifrey kodesh',
       chat_placeholder: 'Pose ta question...',
       chat_hint: 'Les données restent privées. Circuit fermé garanti.',
-      chat_status: 'En ligne · Je vous réponds tout de suite…'
+      chat_status: 'En ligne · Je vous réponds tout de suite…',
+      float_chat: 'Poser une question'
     },
     en: {
       nav_home: 'Home', nav_how: 'How it works', nav_values: 'Our Values',
@@ -1214,7 +1216,8 @@
       sources_more_count: 'thousands of other Sifrey Kodesh',
       chat_placeholder: 'Ask your question...',
       chat_hint: 'Data stays private. Closed circuit guaranteed.',
-      chat_status: 'Online · Answering right away…'
+      chat_status: 'Online · Answering right away…',
+      float_chat: 'Ask a question'
     },
     he: {
       nav_home: 'ראשי', nav_how: 'איך זה עובד', nav_values: 'הערכים שלנו',
@@ -1256,7 +1259,8 @@
       sources_more_count: 'אלפי ספרי קודש נוספים',
       chat_placeholder: 'שאל את שאלתך...',
       chat_hint: '.הנתונים נשארים פרטיים. מעגל סגור מובטח',
-      chat_status: 'מקוון · עונה מיד…'
+      chat_status: 'מקוון · עונה מיד…',
+      float_chat: 'שאל שאלה'
     }
   };
 
