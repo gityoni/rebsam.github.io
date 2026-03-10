@@ -333,6 +333,23 @@
     .source-book { display: flex; flex-direction: column; align-items: center; text-align: center; gap: .5rem; background: var(--card-bg); border: 1px solid var(--border); border-radius: 1.25rem; padding: 1.5rem 1rem; transition: all .3s cubic-bezier(.4,0,.2,1); cursor: default; }
     .source-book:hover { transform: translateY(-4px) scale(1.03); border-color: var(--gold); box-shadow: 0 8px 28px var(--gold-glow); }
     .source-book:hover .source-book-icon { transform: scale(1.2) rotate(-5deg); }
+    /* Library categories */
+    .library-category { margin-bottom: 2.75rem; }
+    .library-cat-header { display: flex; align-items: center; gap: .75rem; margin-bottom: 1.25rem; padding-bottom: .75rem; border-bottom: 1.5px solid var(--border); }
+    .library-cat-badge { display: inline-flex; align-items: center; padding: .28rem .9rem; border-radius: var(--radius-full); font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .library-cat-badge.blue { background: rgba(37,99,235,.1); color: #2563eb; border: 1px solid rgba(37,99,235,.2); }
+    .library-cat-badge.purple { background: rgba(79,70,229,.1); color: #4f46e5; border: 1px solid rgba(79,70,229,.2); }
+    .library-cat-badge.gold { background: rgba(212,163,0,.1); color: #9a6f00; border: 1px solid rgba(212,163,0,.25); }
+    .dark .library-cat-badge.gold { color: #e0b44a; border-color: rgba(212,163,0,.35); }
+    .library-cat-title { font-size: 1rem; font-weight: 700; color: var(--secondary-dark); margin: 0; }
+    .library-books-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    @media (max-width: 900px) { .library-books-row { grid-template-columns: repeat(2, 1fr); gap: .875rem; } }
+    @media (max-width: 480px) { .library-books-row { grid-template-columns: repeat(2, 1fr); gap: .75rem; } }
+    .source-book.cat-blue { border-top: 3px solid #2563eb; }
+    .source-book.cat-purple { border-top: 3px solid #4f46e5; }
+    .source-book.cat-gold { border-top: 3px solid var(--gold); }
+    .source-book { padding: 1.4rem 1rem 1.25rem; }
+    .source-book-desc { font-size: .68rem; color: var(--text-muted); line-height: 1.45; margin-top: .2rem; }
     .source-book-icon { font-size: 2rem; line-height: 1; transition: transform .3s; }
     .source-book-title { font-size: .9375rem; font-weight: 700; color: var(--secondary-dark); line-height: 1.3; direction: rtl; }
     .source-book-sub { font-size: .75rem; font-weight: 400; color: var(--text-muted); }
@@ -551,13 +568,17 @@
     @media (max-width: 767px) {
       #sources { padding: 3.5rem 0; }
       .sources-grid-new { gap: .875rem; margin-top: 1.75rem; }
+      .library-category { margin-bottom: 2rem; }
+      .library-books-row { grid-template-columns: repeat(2, 1fr); gap: .75rem; }
     }
     @media (max-width: 480px) {
       .sources-grid-new { grid-template-columns: repeat(2, 1fr); gap: .75rem; }
-      .source-book { padding: 1.1rem .75rem; border-radius: 1rem; }
+      .source-book { padding: 1rem .75rem; border-radius: 1rem; }
       .source-book-icon { font-size: 1.6rem; }
       .source-book-title { font-size: .8rem; }
       .source-book-sub { font-size: .68rem; }
+      .source-book-desc { display: none; }
+      .library-cat-badge { font-size: .6rem; }
     }
 
     /* ── FAQ ── */
@@ -780,10 +801,10 @@
       <h2 data-i18n="hiw_title">Comment ça marche ?</h2>
       <p data-i18n="hiw_sub">Simple, rapide et transparent.</p>
     </div>
-    <div class="steps-grid-new">
+    <div class="steps-grid-new" data-aos="fade-up" data-aos-delay="100">
 
       <!-- Step 1 — Chat bubble icon -->
-      <div class="step-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="step-card">
         <div class="step-card-top">
           <div class="step-card-icon step-icon-blue">
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -801,7 +822,7 @@
       </div>
 
       <!-- Step 2 — Sparkle/AI search icon -->
-      <div class="step-card" data-aos="fade-up" data-aos-delay="150">
+      <div class="step-card">
         <div class="step-card-top">
           <div class="step-card-icon step-icon-indigo">
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -818,7 +839,7 @@
       </div>
 
       <!-- Step 3 — Open scroll/star icon -->
-      <div class="step-card" data-aos="fade-up" data-aos-delay="300">
+      <div class="step-card">
         <div class="step-card-top">
           <div class="step-card-icon step-icon-cyan">
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -847,69 +868,106 @@
       <h2 class="font-logo" data-i18n="sources_title">Des milliers de Sifrey Kodesh. Zéro Invention.</h2>
       <p data-i18n="sources_sub">Chaque réponse de RebSam est ancrée dans l'un de ces textes fondamentaux — avec le Livre, le Siman et le Seif exacts.</p>
     </div>
-    <div class="sources-grid-new">
-      <div class="source-book" data-aos="fade-up" data-aos-delay="0">
-        <div class="source-book-icon">📖</div>
-        <div class="source-book-title">שולחן ערוך</div>
-        <div class="source-book-sub">Choulhan Aroukh</div>
+    <!-- Catégorie 1 : Codes Fondamentaux -->
+    <div class="library-category" data-aos="fade-up" data-aos-delay="100">
+      <div class="library-cat-header">
+        <span class="library-cat-badge blue">Codes Fondamentaux</span>
       </div>
-      <div class="source-book" data-aos="fade-up" data-aos-delay="50">
-        <div class="source-book-icon">📚</div>
-        <div class="source-book-title">משנה ברורה</div>
-        <div class="source-book-sub">Michna Beroura</div>
-      </div>
-      <div class="source-book" data-aos="fade-up" data-aos-delay="100">
-        <div class="source-book-icon">✡️</div>
-        <div class="source-book-title">ילקוט יוסף</div>
-        <div class="source-book-sub">Yalkout Yossef</div>
-      </div>
-      <div class="source-book" data-aos="fade-up" data-aos-delay="150">
-        <div class="source-book-icon">📜</div>
-        <div class="source-book-title">אגרות משה</div>
-        <div class="source-book-sub">Igrot Moshé</div>
-      </div>
-      <div class="source-book" data-aos="fade-up" data-aos-delay="200">
-        <div class="source-book-icon">🕍</div>
-        <div class="source-book-title">פניני הלכה</div>
-        <div class="source-book-sub">Peninei Halakha</div>
-      </div>
-      <div class="source-book" data-aos="fade-up" data-aos-delay="250">
-        <div class="source-book-icon">🔍</div>
-        <div class="source-book-title">עיונים בהלכה</div>
-        <div class="source-book-sub">Iyounim Halacha</div>
-      </div>
-      <div class="source-book" data-aos="fade-up" data-aos-delay="300">
-        <div class="source-book-icon">⚖️</div>
-        <div class="source-book-title">ש"ע הרב</div>
-        <div class="source-book-sub">Choulhan Aroukh HaRav</div>
-      </div>
-      <div class="source-book" data-aos="fade-up" data-aos-delay="350">
-        <div class="source-book-icon">🌿</div>
-        <div class="source-book-title">חזון איש</div>
-        <div class="source-book-sub">Hazon Ich</div>
-      </div>
-      <div class="source-book" data-aos="fade-up" data-aos-delay="400">
-        <div class="source-book-icon">💬</div>
-        <div class="source-book-title">שו"ת</div>
-        <div class="source-book-sub">Responsa – Tshouva</div>
-      </div>
-      <div class="source-book" data-aos="fade-up" data-aos-delay="450">
-        <div class="source-book-icon">🔬</div>
-        <div class="source-book-title">ביאור הלכה</div>
-        <div class="source-book-sub">Biur Halakha</div>
-      </div>
-      <div class="source-book" data-aos="fade-up" data-aos-delay="500">
-        <div class="source-book-icon">🌟</div>
-        <div class="source-book-title">כף החיים</div>
-        <div class="source-book-sub">Kaf HaHaïm</div>
-      </div>
-      <div class="source-book" data-aos="fade-up" data-aos-delay="550">
-        <div class="source-book-icon">🏛️</div>
-        <div class="source-book-title">רמב"ם</div>
-        <div class="source-book-sub">Rambam – Michné Torah</div>
+      <div class="library-books-row">
+        <div class="source-book cat-blue">
+          <div class="source-book-icon">📖</div>
+          <div class="source-book-title">שולחן ערוך</div>
+          <div class="source-book-sub">Choulhan Aroukh</div>
+          <div class="source-book-desc">Code halakhique de référence — Rav Yossef Karo (XVIe s.)</div>
+        </div>
+        <div class="source-book cat-blue">
+          <div class="source-book-icon">🏛️</div>
+          <div class="source-book-title">רמב"ם</div>
+          <div class="source-book-sub">Rambam – Michné Torah</div>
+          <div class="source-book-desc">Code complet de toutes les lois — Maïmonide (XIIe s.)</div>
+        </div>
+        <div class="source-book cat-blue">
+          <div class="source-book-icon">📚</div>
+          <div class="source-book-title">משנה ברורה</div>
+          <div class="source-book-sub">Michna Beroura</div>
+          <div class="source-book-desc">Commentaire du Choulhan Aroukh — Hafets Haïm</div>
+        </div>
+        <div class="source-book cat-blue">
+          <div class="source-book-icon">🔬</div>
+          <div class="source-book-title">ביאור הלכה</div>
+          <div class="source-book-sub">Biur Halakha</div>
+          <div class="source-book-desc">Approfondissement des cas complexes — Hafets Haïm</div>
+        </div>
       </div>
     </div>
-    <div class="sources-more" data-aos="fade-up" data-aos-delay="600">
+
+    <!-- Catégorie 2 : Décisionnaires Classiques -->
+    <div class="library-category" data-aos="fade-up" data-aos-delay="200">
+      <div class="library-cat-header">
+        <span class="library-cat-badge purple">Décisionnaires Classiques</span>
+      </div>
+      <div class="library-books-row">
+        <div class="source-book cat-purple">
+          <div class="source-book-icon">⚖️</div>
+          <div class="source-book-title">ש"ע הרב</div>
+          <div class="source-book-sub">Choulhan Aroukh HaRav</div>
+          <div class="source-book-desc">Code halakhique hassidique — le Baal HaTanya</div>
+        </div>
+        <div class="source-book cat-purple">
+          <div class="source-book-icon">🌿</div>
+          <div class="source-book-title">חזון איש</div>
+          <div class="source-book-sub">Hazon Ich</div>
+          <div class="source-book-desc">Décisions rabbiniques modernes — Rav Avraham Karelitz</div>
+        </div>
+        <div class="source-book cat-purple">
+          <div class="source-book-icon">🌟</div>
+          <div class="source-book-title">כף החיים</div>
+          <div class="source-book-sub">Kaf HaHaïm</div>
+          <div class="source-book-desc">Halakha séfarade exhaustive — Rav Yaakov Haïm Sofer</div>
+        </div>
+        <div class="source-book cat-purple">
+          <div class="source-book-icon">💬</div>
+          <div class="source-book-title">שו"ת</div>
+          <div class="source-book-sub">Responsa – Tshouva</div>
+          <div class="source-book-desc">Questions-réponses des grands décisionnaires à travers les âges</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Catégorie 3 : Poskim Contemporains -->
+    <div class="library-category" data-aos="fade-up" data-aos-delay="300">
+      <div class="library-cat-header">
+        <span class="library-cat-badge gold">Poskim Contemporains</span>
+      </div>
+      <div class="library-books-row">
+        <div class="source-book cat-gold">
+          <div class="source-book-icon">✡️</div>
+          <div class="source-book-title">ילקוט יוסף</div>
+          <div class="source-book-sub">Yalkout Yossef</div>
+          <div class="source-book-desc">Halakha séfarade contemporaine — Rav Ovadia Yossef</div>
+        </div>
+        <div class="source-book cat-gold">
+          <div class="source-book-icon">📜</div>
+          <div class="source-book-title">אגרות משה</div>
+          <div class="source-book-sub">Igrot Moshé</div>
+          <div class="source-book-desc">Responsa modernes et autorité — Rav Moshe Feinstein</div>
+        </div>
+        <div class="source-book cat-gold">
+          <div class="source-book-icon">🕍</div>
+          <div class="source-book-title">פניני הלכה</div>
+          <div class="source-book-sub">Peninei Halakha</div>
+          <div class="source-book-desc">Halakha pratique et accessible — Rav Eliezer Melamed</div>
+        </div>
+        <div class="source-book cat-gold">
+          <div class="source-book-icon">🔍</div>
+          <div class="source-book-title">עיונים בהלכה</div>
+          <div class="source-book-sub">Iyounim Halacha</div>
+          <div class="source-book-desc">Études halakhiques approfondies et Chass commenté</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sources-more" data-aos="fade-up" data-aos-delay="400">
       <p>… et <span data-i18n="sources_more_count">des milliers d'autres sifrey kodesh</span> numérisés, vérifiés, indexés.</p>
     </div>
   </div>
