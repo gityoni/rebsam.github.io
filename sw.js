@@ -13,13 +13,14 @@ self.addEventListener('activate', e => {
 });
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  // Network-first : toujours essayer le réseau, cache uniquement en fallback offline
   e.respondWith(
-    caches.match(e.request).then(cached => {
-      return cached || fetch(e.request).then(resp => {
-        const clone = resp.clone();
-        caches.open(CACHE).then(c => c.put(e.request, clone));
-        return resp;
-      });
-    }).catch(() => caches.match('/'))
+    fetch(e.request).then(resp => {
+      const clone = resp.clone();
+      caches.open(CACHE).then(c => c.put(e.request, clone));
+      return resp;
+    }).catch(() =>
+      caches.match(e.request).then(cached => cached || caches.match('/'))
+    )
   );
 });
