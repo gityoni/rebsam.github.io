@@ -283,8 +283,8 @@
     .source-name { font-size:.875rem; font-weight:600; color:var(--secondary-dark); line-height:1.3; }
     .source-name small { display:block; font-weight:400; font-size:.75rem; color:var(--text-muted); margin-top:.1rem; }
     .sources-more { text-align:center; margin-top:2rem; }
-    .sources-more p { color:var(--text-muted); font-size:.9375rem; }
-    .sources-more span { color:var(--gold); font-weight:700; }
+    .sources-more p { color:var(--text-muted); font-size:1.2rem; }
+    .sources-more span { background: linear-gradient(135deg, #5B8EF0 0%, #7C6FCD 50%, #E07B5A 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight:700; }
 
     /* SECTIONS */
     .section-heading { text-align: center; margin-bottom: 3rem; }
@@ -295,6 +295,12 @@
     #how-it-works .section-eyebrow { font-size: .85rem; padding: .45rem 1.4rem; letter-spacing: .12em; box-shadow: 0 6px 24px rgba(91,142,240,.4); margin-bottom: 1.5rem; }
     #how-it-works .section-heading { margin-bottom: 4rem; }
     #how-it-works .section-heading h2 { margin-top: .75rem; margin-bottom: 1rem; }
+    #pillars .section-eyebrow { font-size: .85rem; padding: .45rem 1.4rem; letter-spacing: .12em; box-shadow: 0 6px 24px rgba(91,142,240,.4); margin-bottom: 1.5rem; }
+    #pillars .section-heading { margin-bottom: 4rem; }
+    #pillars .section-heading h2 { margin-top: .75rem; margin-bottom: 1rem; }
+    #sources .section-eyebrow { font-size: .85rem; padding: .45rem 1.4rem; letter-spacing: .12em; box-shadow: 0 6px 24px rgba(91,142,240,.4); margin-bottom: 1.5rem; }
+    #sources .section-heading { margin-bottom: 4rem; }
+    #sources .section-heading h2 { margin-top: .75rem; margin-bottom: 1rem; }
     #faq .section-eyebrow { background: none; color: var(--primary); box-shadow: none; font-size: .8rem; letter-spacing: .1em; font-weight: 700; padding: 0; }
 
     /* HOW IT WORKS */
@@ -374,7 +380,7 @@
     .faq-item.open .faq-content { display: block; max-height: 500px; }
 
     /* FOOTER */
-    footer { background: #080f1e; border-top: none; padding: 4.5rem 0 0; }
+    footer { background: #080f1e; border-top: none; padding: 4.5rem 0 5.5rem; }
     .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
     @media (max-width: 767px) { .footer-grid { grid-template-columns: 1fr; gap: 2rem; } }
     .footer-brand p { font-size: .9375rem; color: rgba(203,213,225,.65); line-height: 1.65; max-width: 24rem; margin-bottom: 1.5rem; margin-top: 1rem; }
@@ -565,7 +571,7 @@
 
     /* ── Footer ── */
     @media (max-width: 767px) {
-      footer { padding: 3rem 0 0; }
+      footer { padding: 3rem 0 5rem; }
       .footer-grid { gap: 1.5rem; margin-bottom: 2rem; }
       .footer-brand p { font-size: .875rem; }
       .footer-col h4 { margin-bottom: 1rem; }
