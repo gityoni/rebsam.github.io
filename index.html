@@ -1488,10 +1488,9 @@
         reply = rawText;
       }
       const cleaned = cleanMarkdown(reply);
-      const replyIsHebrew = hasHebrew(cleaned);
       const bubble = loadingRow.querySelector('.msg-bubble');
       bubble.innerHTML = cleaned;
-      if (replyIsHebrew) bubble.setAttribute('dir', 'rtl');
+      bubble.setAttribute('dir', currentLang === 'he' ? 'rtl' : 'ltr');
     } catch (err) {
       console.error('[RebSam chat error]', err);
       loadingRow.querySelector('.msg-bubble').textContent =
