@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO)
 
 # ── Config ───────────────────────────────────────────────
 SECRET_TOKEN   = os.environ.get("SECRET_TOKEN", "rebsam-make-2026")
-PROJECT_ID     = os.environ.get("GCP_PROJECT", "rebsam")
+PROJECT_ID     = os.environ.get("GCP_PROJECT", "rebbe-sam-agent")
 LOCATION       = os.environ.get("GCP_LOCATION", "europe-west1")
 MODEL          = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash-preview-05-20")
 
