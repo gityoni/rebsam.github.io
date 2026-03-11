@@ -1,11 +1,13 @@
 """
-RebSam Cloud Run Proxy — v2 avec mémoire conversationnelle
-Gère les appels Gemini multi-tour via l'historique de conversation.
+RebSam Cloud Run Proxy — v3 architecture pro
+- Chat sync : Site → Proxy → Gemini → réponse rapide
+- Log async : Proxy → Make.com (fire & forget, non-bloquant)
 """
 
 import os
 import json
 import logging
+import threading
 from flask import Flask, request, jsonify
 import google.auth
 import google.auth.transport.requests
@@ -15,10 +17,11 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 
 # ── Config ───────────────────────────────────────────────
-SECRET_TOKEN   = os.environ.get("SECRET_TOKEN", "rebsam-make-2026")
-PROJECT_ID     = os.environ.get("GCP_PROJECT", "rebbe-sam-agent")
-LOCATION       = os.environ.get("GCP_LOCATION", "europe-west1")
-MODEL          = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash-preview-05-20")
+SECRET_TOKEN      = os.environ.get("SECRET_TOKEN", "rebsam-make-2026")
+PROJECT_ID        = os.environ.get("GCP_PROJECT", "rebbe-sam-agent")
+LOCATION          = os.environ.get("GCP_LOCATION", "europe-west1")
+MODEL             = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash-preview-05-20")
+MAKE_LOG_WEBHOOK  = os.environ.get("MAKE_LOG_WEBHOOK", "https://hook.eu1.make.com/r1woeelogkk0bv2i6s5cxu3mli231nbg")
 
 VERTEX_URL = (
     f"https://{LOCATION}-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}"
@@ -40,17 +43,43 @@ def get_access_token():
     return creds.token
 
 
+# ── Log async vers Make.com (fire & forget) ───────────────
+def _send_log(payload: dict):
+    """Envoie un log à Make.com en arrière-plan. N'impacte pas la réponse utilisateur."""
+    if not MAKE_LOG_WEBHOOK:
+        return
+    try:
+        http_requests.post(
+            MAKE_LOG_WEBHOOK,
+            json=payload,
+            timeout=10
+        )
+        logging.info("[RebSam] Log Make.com envoyé")
+    except Exception as e:
+        logging.warning(f"[RebSam] Log Make.com échoué (non-bloquant) : {e}")
+
+
+def log_to_make(data: dict, reply: str):
+    """Lance le log Make.com dans un thread séparé pour ne pas bloquer la réponse."""
+    log_payload = {
+        "sessionId":  data.get("sessionId", ""),
+        "name":       data.get("name", "Anonyme"),
+        "lang":       data.get("lang", "fr"),
+        "message":    data.get("message", ""),
+        "reply":      reply,
+        "timestamp":  data.get("timestamp", ""),
+        "turns":      len(data.get("history", [])),
+    }
+    t = threading.Thread(target=_send_log, args=(log_payload,), daemon=True)
+    t.start()
+
+
 # ── Construction du payload Gemini multi-tour ─────────────
 def build_gemini_payload(system_prompt: str, history: list, message: str) -> dict:
-    """
-    Convertit l'historique [{role, content}, ...] en format Gemini contents.
-    Le dernier message de l'historique EST le message courant (déjà ajouté côté front).
-    """
     contents = []
 
     for turn in history:
         role = turn.get("role", "user")
-        # Gemini n'accepte que "user" et "model"
         if role not in ("user", "model"):
             role = "user"
         contents.append({
@@ -58,7 +87,6 @@ def build_gemini_payload(system_prompt: str, history: list, message: str) -> dic
             "parts": [{"text": turn.get("content", "")}]
         })
 
-    # Si l'historique est vide ou ne se termine pas par le message courant, l'ajouter
     if not contents or contents[-1].get("parts", [{}])[0].get("text") != message:
         contents.append({
             "role": "user",
@@ -92,31 +120,30 @@ def chat():
     if token != SECRET_TOKEN:
         return jsonify({"error": "Unauthorized"}), 401
 
-    # ── Lecture des paramètres (POST JSON ou GET query) ──
+    # ── Lecture des paramètres ──
     if request.method == "POST" and request.is_json:
         data = request.get_json(force=True, silent=True) or {}
         system_prompt = data.get("systemPrompt", "")
         message       = data.get("message", "")
-        history       = data.get("history", [])   # [{role, content}, ...]
+        history       = data.get("history", [])
         lang          = data.get("lang", "fr")
-        # Rétrocompatibilité : si history vide mais prompt présent
         if not history and data.get("prompt"):
             message = data["prompt"]
             history = [{"role": "user", "content": message}]
     else:
-        # Ancien format GET (rétrocompatibilité)
         prompt  = request.args.get("prompt", "")
         lang    = request.args.get("lang", "fr")
         message = prompt
         system_prompt = ""
         history = [{"role": "user", "content": prompt}]
+        data = {"message": message, "lang": lang, "history": history}
 
     if not message and not history:
         return jsonify({"error": "No message provided"}), 400
 
-    logging.info(f"[RebSam] lang={lang} history_turns={len(history)} msg={message[:80]}")
+    logging.info(f"[RebSam] lang={lang} turns={len(history)} msg={message[:80]}")
 
-    # ── Appel Vertex AI Gemini ──
+    # ── Appel Vertex AI Gemini (synchrone) ──
     payload = build_gemini_payload(system_prompt, history, message)
 
     try:
@@ -133,7 +160,6 @@ def chat():
         resp.raise_for_status()
         gemini_data = resp.json()
 
-        # Extraction de la réponse
         reply = (
             gemini_data
             .get("candidates", [{}])[0]
@@ -145,6 +171,9 @@ def chat():
         if not reply:
             logging.warning(f"[RebSam] Réponse vide de Gemini : {gemini_data}")
             reply = "Je n'ai pas pu générer de réponse. Veuillez réessayer."
+
+        # ── Log async vers Make.com (non-bloquant) ──
+        log_to_make(data, reply)
 
         return jsonify({"reply": reply})
 
