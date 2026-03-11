@@ -442,7 +442,7 @@
     /* CHAT MODAL */
     #chat-overlay { display: none; position: fixed; inset: 0; z-index: 9999; align-items: center; justify-content: center; padding: 1rem; background: rgba(0,0,0,.5); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
     #chat-overlay.open { display: flex; }
-    #chat-modal { position: relative; width: 100%; max-width: 680px; height: min(80vh,680px); background: #fff; border-radius: 1.5rem; box-shadow: var(--shadow-2xl); display: flex; flex-direction: column; animation: modalIn .35s cubic-bezier(.4,0,.2,1) both; }
+    #chat-modal { position: relative; width: 100%; max-width: 680px; height: min(80vh,680px); background: #fff; border-radius: 1.5rem; box-shadow: var(--shadow-2xl); display: flex; flex-direction: column; animation: modalIn .35s cubic-bezier(.4,0,.2,1) both; overflow: hidden; }
     @keyframes modalIn { from{opacity:0;transform:scale(.95) translateY(20px);} to{opacity:1;transform:scale(1) translateY(0);} }
     .chat-header { background: linear-gradient(90deg, var(--primary-pastel) 0%, var(--primary-pastel-dark) 100%); padding: 1.125rem 1.25rem; display: flex; align-items: center; justify-content: space-between; border-radius: 1.5rem 1.5rem 0 0; }
     .chat-header-left { display: flex; align-items: center; gap: .75rem; }
@@ -475,7 +475,7 @@
     .loading-dots span { width: .5rem; height: .5rem; border-radius: 50%; background: var(--primary); opacity: .6; animation: dotBounce 1.2s ease-in-out infinite; }
     .loading-dots span:nth-child(2){animation-delay:.2s;} .loading-dots span:nth-child(3){animation-delay:.4s;}
     @keyframes dotBounce { 0%,80%,100%{transform:translateY(0);opacity:.5;} 40%{transform:translateY(-7px);opacity:1;} }
-    .chat-input-area { padding: 1rem; background: #fff; border-top: 1px solid #f3f4f6; flex-shrink: 0; }
+    .chat-input-area { padding: 1rem; background: #fff; border-top: 1px solid #f3f4f6; flex-shrink: 0; border-radius: 0 0 1.5rem 1.5rem; }
     .chat-input-row { display: flex; align-items: flex-end; gap: .75rem; background: #f9fafb; border-radius: 1rem; padding: .75rem 1rem; border: 1.5px solid #e5e7eb; transition: border-color .25s, box-shadow .25s; }
     .chat-input-row:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,86,210,.1); }
     #chat-input { flex: 1; background: none; border: none; outline: none; font-family: 'Inter', sans-serif; font-size: .875rem; color: var(--secondary-dark); resize: none; min-height: 1.4rem; max-height: 8rem; overflow-y: auto; line-height: 1.5; }
@@ -486,12 +486,17 @@
     #chat-send:disabled{opacity:.4;cursor:not-allowed;}
     .chat-hint { text-align: center; font-size: .7375rem; color: #9ca3af; margin-top: .5rem; }
     .chat-name-row { padding: .6rem 1rem .2rem; }
-    #chat-name { width: 100%; border: 1.5px solid #e5e7eb; border-radius: .6rem; padding: .4rem .75rem; font-size: .8rem; font-family: 'Inter', sans-serif; color: var(--secondary-dark); background: #f4f6fa; outline: none; transition: border-color .25s; }
+    #chat-name { width: auto; max-width: 180px; border: 1.5px solid #e5e7eb; border-radius: .6rem; padding: .4rem .75rem; font-size: .8rem; font-family: 'Inter', sans-serif; color: var(--secondary-dark); background: #f4f6fa; outline: none; transition: border-color .25s; }
     #chat-name:focus { border-color: var(--primary); background: #fff; }
     #chat-name::placeholder { color: #b0b8c9; }
     html.dark #chat-name { background: #1a2540; border-color: rgba(94,130,198,.3); color: #e2e8f0; }
     html.dark #chat-name::placeholder { color: #64748b; }
     html.dark .msg-bubble.sam { background: linear-gradient(135deg, #1a2540, #1e2d52); border-color: rgba(94,130,198,.4); border-left-color: var(--primary); color: #e2e8f0; }
+    /* Dark mode — corrections visibilité hero & blobs */
+    html.dark .blob-2 { display: none; }
+    html.dark .hero-h1 [data-i18n="hero_tagline"] { color: rgba(203,213,225,.8); }
+    html.dark a[href="#how-it-works"].btn { background: rgba(255,255,255,.1) !important; border: 1.5px solid rgba(255,255,255,.25) !important; box-shadow: 0 4px 16px rgba(0,0,0,.35) !important; }
+    html.dark #how-it-works .section-heading p { color: #CBD5E1; }
     /* HISTORY PANEL */
     #chat-history-panel { display: none; position: absolute; inset: 0; z-index: 20; background: #fff; border-radius: 1.5rem; flex-direction: column; overflow: hidden; animation: modalIn .25s cubic-bezier(.4,0,.2,1) both; }
     #chat-history-panel.open { display: flex; }
@@ -1407,6 +1412,16 @@
   let chatSending = false;
   const _sid = () => { if (!sessionStorage._rsid) sessionStorage._rsid = Date.now().toString(36) + Math.random().toString(36).slice(2); return sessionStorage._rsid; };
 
+  /* ── PALETTE DÉGRADÉS USER ── */
+  const USER_GRADIENTS = [
+    'linear-gradient(135deg, #5B8EF0, #7C6FCD)',
+    'linear-gradient(135deg, #7C6FCD, #E07B5A)',
+    'linear-gradient(135deg, #5B8EF0, #E07B5A)',
+    'linear-gradient(135deg, #4C7FE8, #9B6FD4)',
+    'linear-gradient(135deg, #7C6FCD, #F97059)',
+    'linear-gradient(135deg, #5B8EF0, #7C6FCD, #E07B5A)',
+  ];
+
   /* ── HISTORIQUE ── */
   const HIST_KEY = 'rebsam-chat-history';
   let histNavIdx = -1; // navigation ↑/↓ dans l'input
@@ -1520,10 +1535,21 @@
     const chatBox = document.getElementById('chat-box');
     const row = document.createElement('div');
     row.className = 'msg-row ' + role;
-    const labelMap = { user: { fr:'TOI', en:'YOU', he:'אתה' }, sam: { fr:'RS', en:'RS', he:'רס' } };
-    const label = (labelMap[role] && labelMap[role][currentLang]) || (role === 'user' ? 'TOI' : 'RS');
+    let label, avatarExtra = '';
+    if (role === 'user') {
+      const userName = document.getElementById('chat-name').value.trim();
+      if (userName) {
+        label = userName.split(' ')[0].slice(0, 6).toUpperCase();
+      } else {
+        label = { fr:'TOI', en:'YOU', he:'אתה' }[currentLang] || 'TOI';
+      }
+      const grad = USER_GRADIENTS[Math.floor(Math.random() * USER_GRADIENTS.length)];
+      avatarExtra = ` style="background:${grad}"`;
+    } else {
+      label = currentLang === 'he' ? 'רס' : 'RS';
+    }
     const dir = (isHebrew || (role === 'user' && hasHebrew(html))) ? ' dir="rtl"' : '';
-    row.innerHTML = `<div class="msg-avatar ${role}">${label}</div><div class="msg-bubble ${role}"${dir}>${html}</div>`;
+    row.innerHTML = `<div class="msg-avatar ${role}"${avatarExtra}>${label}</div><div class="msg-bubble ${role}"${dir}>${html}</div>`;
     chatBox.appendChild(row);
     chatBox.scrollTop = chatBox.scrollHeight;
     return row;
@@ -1561,11 +1587,13 @@
 
     try {
       const langInstruction = LANG_INSTRUCTIONS[currentLang] || LANG_INSTRUCTIONS.fr;
-      const prompt = langInstruction + message;
+      const name = document.getElementById('chat-name').value.trim();
+      const namePrefix = name ? ({ fr:`L'utilisateur s'appelle ${name}. `, en:`The user's name is ${name}. `, he:`שם המשתמש הוא ${name}. `}[currentLang] || `The user's name is ${name}. `) : '';
+      const prompt = namePrefix + langInstruction + message;
       const res = await fetch(MAKE_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt, lang: currentLang, message, name: (document.getElementById('chat-name').value.trim() || 'Anonyme'), timestamp: new Date().toISOString(), sessionId: _sid() })
+        body: JSON.stringify({ prompt, lang: currentLang, message, name: name || 'Anonyme', timestamp: new Date().toISOString(), sessionId: _sid() })
       });
       const rawText = await res.text();
       let reply;
