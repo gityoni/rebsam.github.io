@@ -18,7 +18,7 @@ logging.basicConfig(level=logging.INFO)
 SECRET_TOKEN   = os.environ.get("SECRET_TOKEN", "rebsam-make-2026")
 PROJECT_ID     = os.environ.get("GCP_PROJECT", "rebsam")
 LOCATION       = os.environ.get("GCP_LOCATION", "europe-west1")
-MODEL          = os.environ.get("GEMINI_MODEL", "gemini-1.5-pro")
+MODEL          = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash-preview-05-20")
 
 VERTEX_URL = (
     f"https://{LOCATION}-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}"
