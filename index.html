@@ -1419,6 +1419,7 @@
   ═══════════════════════════════════════════════ */
   const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/7p7pv9nkm8tqeyhc8sspve9u3nnarxt8';
   let chatSending = false;
+  let conversationHistory = []; // Mémoire de la conversation en cours
   const _sid = () => { if (!sessionStorage._rsid) sessionStorage._rsid = Date.now().toString(36) + Math.random().toString(36).slice(2); return sessionStorage._rsid; };
 
   /* ── PALETTE DÉGRADÉS USER ── */
@@ -1598,11 +1599,26 @@
       const langInstruction = LANG_INSTRUCTIONS[currentLang] || LANG_INSTRUCTIONS.fr;
       const name = document.getElementById('chat-name').value.trim();
       const namePrefix = name ? ({ fr:`L'utilisateur s'appelle ${name}. `, en:`The user's name is ${name}. `, he:`שם המשתמש הוא ${name}. `}[currentLang] || `The user's name is ${name}. `) : '';
-      const prompt = namePrefix + langInstruction + message;
+      const systemPrompt = namePrefix + langInstruction;
+
+      // Ajout du message courant à l'historique AVANT l'envoi
+      conversationHistory.push({ role: 'user', content: message });
+
       const res = await fetch(MAKE_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt, lang: currentLang, message, name: name || 'Anonyme', timestamp: new Date().toISOString(), sessionId: _sid() })
+        body: JSON.stringify({
+          // Champ rétrocompatible (Make.com peut encore lire "prompt")
+          prompt: systemPrompt + message,
+          // Nouveaux champs pour la mémoire conversationnelle
+          systemPrompt,
+          message,
+          history: conversationHistory.slice(-20), // 10 derniers échanges max
+          lang: currentLang,
+          name: name || 'Anonyme',
+          timestamp: new Date().toISOString(),
+          sessionId: _sid()
+        })
       });
       const rawText = await res.text();
       let reply;
@@ -1616,6 +1632,9 @@
       const bubble = loadingRow.querySelector('.msg-bubble');
       bubble.innerHTML = cleaned;
       bubble.setAttribute('dir', currentLang === 'he' ? 'rtl' : 'ltr');
+
+      // Mémoriser la réponse de l'IA pour le prochain tour
+      conversationHistory.push({ role: 'model', content: reply });
       saveToHistory(message, reply);
     } catch (err) {
       console.error('[RebSam chat error]', err);
