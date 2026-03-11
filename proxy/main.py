@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.INFO)
 SECRET_TOKEN      = os.environ.get("SECRET_TOKEN", "rebsam-make-2026")
 PROJECT_ID        = os.environ.get("GCP_PROJECT", "rebbe-sam-agent")
 LOCATION          = os.environ.get("GCP_LOCATION", "europe-west1")
-MODEL             = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash-preview-05-20")
+MODEL             = os.environ.get("GEMINI_MODEL", "gemini-1.5-flash")
 MAKE_LOG_WEBHOOK  = os.environ.get("MAKE_LOG_WEBHOOK", "https://hook.eu1.make.com/r1woeelogkk0bv2i6s5cxu3mli231nbg")
 
 VERTEX_URL = (
