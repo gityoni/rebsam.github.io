@@ -1417,7 +1417,7 @@
   /* ═══════════════════════════════════════════════
      CHAT — STATE & HELPERS
   ═══════════════════════════════════════════════ */
-  const MAKE_WEBHOOK_URL = 'https://rebbe-sam-agent-217121855341.europe-west1.run.app';
+  const MAKE_WEBHOOK_URL = 'https://rebsam-proxy-217121855341.europe-west1.run.app';
   let chatSending = false;
   let conversationHistory = []; // Mémoire de la conversation en cours
   const _sid = () => { if (!sessionStorage._rsid) sessionStorage._rsid = Date.now().toString(36) + Math.random().toString(36).slice(2); return sessionStorage._rsid; };
@@ -1606,7 +1606,7 @@
 
       const res = await fetch(MAKE_WEBHOOK_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-secret-token': 'rebsam-make-2026' },
         body: JSON.stringify({
           // Champ rétrocompatible (Make.com peut encore lire "prompt")
           prompt: systemPrompt + message,
