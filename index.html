@@ -458,9 +458,10 @@
     .msg-row.user { flex-direction: row-reverse; }
     .msg-avatar { width: 2.25rem; height: 2.25rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .7rem; color: #fff; flex-shrink: 0; }
     .msg-avatar.sam { background: var(--primary); }
-    .msg-avatar.user { background: linear-gradient(135deg, #9ca3af, #6b7280); font-size: .65rem; }
-    .msg-bubble { max-width: 78%; padding: .875rem 1.125rem; border-radius: 1.125rem; font-size: .875rem; line-height: 1.6; box-shadow: var(--shadow-sm); word-break: break-word; }
-    .msg-bubble.sam { background: #fff; border: 1px solid #f3f4f6; color: var(--secondary-dark); border-top-left-radius: .2rem; }
+    .msg-avatar.user { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); font-size: .65rem; }
+    .msg-bubble { max-width: 78%; padding: .875rem 1.125rem; border-radius: 1.125rem; font-size: .875rem; line-height: 1.6; box-shadow: var(--shadow-sm); word-break: break-word; animation: bubbleIn .32s ease-out; }
+    @keyframes bubbleIn { from { opacity: 0; transform: translateY(10px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .msg-bubble.sam { background: linear-gradient(135deg, #eef3fd, #e8f0fe); border: 1px solid #c7d7f8; border-left: 3px solid var(--primary); color: var(--secondary-dark); border-top-left-radius: .2rem; }
     .msg-bubble.user { background: linear-gradient(135deg, var(--primary-pastel), var(--primary-pastel-dark)); color: #fff; border-top-right-radius: .2rem; white-space: pre-line; position: relative; cursor: pointer; }
     .msg-bubble.user:hover::after { content: '✏️'; position: absolute; top: .3rem; right: .3rem; font-size: .75rem; opacity: .8; }
     .msg-bubble.user[contenteditable="true"] { outline: 2px solid rgba(255,255,255,.6); cursor: text; white-space: pre-wrap; }
@@ -490,6 +491,23 @@
     #chat-name::placeholder { color: #b0b8c9; }
     html.dark #chat-name { background: #1a2540; border-color: rgba(94,130,198,.3); color: #e2e8f0; }
     html.dark #chat-name::placeholder { color: #64748b; }
+    html.dark .msg-bubble.sam { background: linear-gradient(135deg, #1a2540, #1e2d52); border-color: rgba(94,130,198,.4); border-left-color: var(--primary); color: #e2e8f0; }
+    /* HISTORY PANEL */
+    #chat-history-panel { display: none; position: absolute; inset: 0; z-index: 20; background: #fff; border-radius: 1.5rem; flex-direction: column; overflow: hidden; animation: modalIn .25s cubic-bezier(.4,0,.2,1) both; }
+    #chat-history-panel.open { display: flex; }
+    .chat-hist-header { background: linear-gradient(90deg, var(--primary-pastel), var(--primary-pastel-dark)); padding: 1.125rem 1.25rem; display: flex; align-items: center; justify-content: space-between; border-radius: 1.5rem 1.5rem 0 0; color: #fff; font-weight: 700; font-size: .9375rem; flex-shrink: 0; }
+    #chat-hist-list { flex: 1; overflow-y: auto; padding: .875rem; display: flex; flex-direction: column; gap: .5rem; background: var(--surface-2); }
+    #chat-hist-list::-webkit-scrollbar{width:4px;} #chat-hist-list::-webkit-scrollbar-track{background:transparent;} #chat-hist-list::-webkit-scrollbar-thumb{background:#e5e7eb;border-radius:4px;}
+    .hist-item { padding: .75rem 1rem; border-radius: .75rem; background: #fff; border: 1px solid #e5e7eb; cursor: pointer; transition: all .2s; }
+    .hist-item:hover { background: #eef3fd; border-color: #c7d7f8; transform: translateX(3px); }
+    .hist-item-q { font-size: .8125rem; font-weight: 600; color: var(--secondary-dark); margin-bottom: .25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hist-item-meta { font-size: .7rem; color: var(--secondary-light); }
+    .hist-empty { text-align: center; color: var(--secondary-light); font-size: .875rem; padding: 3rem 1rem; line-height: 1.7; }
+    html.dark #chat-history-panel { background: #0f172a; }
+    html.dark #chat-hist-list { background: #0f172a; }
+    html.dark .hist-item { background: #1e293b; border-color: rgba(94,130,198,.25); }
+    html.dark .hist-item:hover { background: #1a2540; border-color: var(--primary); }
+    html.dark .hist-item-q { color: #e2e8f0; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
     /* ══════════════════════════════════════════════════════════════
@@ -1119,7 +1137,17 @@
           <div class="chat-header-status"><span class="dot"></span><span data-i18n="chat_status">En ligne · Je vous réponds tout de suite…</span></div>
         </div>
       </div>
-      <button class="chat-close" onclick="closeChat()">✕</button>
+      <div style="display:flex;align-items:center;gap:.5rem;">
+        <button class="chat-close" id="btn-hist" onclick="toggleHistory()" title="Historique" aria-label="Historique" style="font-size:.9rem;">🕐</button>
+        <button class="chat-close" onclick="closeChat()" aria-label="Fermer">✕</button>
+      </div>
+    </div>
+    <div id="chat-history-panel">
+      <div class="chat-hist-header">
+        <span id="chat-hist-title">Historique</span>
+        <button class="chat-close" onclick="toggleHistory()" aria-label="Fermer l'historique">✕</button>
+      </div>
+      <div id="chat-hist-list"></div>
     </div>
     <div id="chat-box"></div>
     <div class="chat-input-area">
@@ -1379,6 +1407,66 @@
   let chatSending = false;
   const _sid = () => { if (!sessionStorage._rsid) sessionStorage._rsid = Date.now().toString(36) + Math.random().toString(36).slice(2); return sessionStorage._rsid; };
 
+  /* ── HISTORIQUE ── */
+  const HIST_KEY = 'rebsam-chat-history';
+  let histNavIdx = -1; // navigation ↑/↓ dans l'input
+
+  function loadHistory() {
+    try { return JSON.parse(localStorage.getItem(HIST_KEY) || '[]'); } catch { return []; }
+  }
+
+  function saveToHistory(q, a) {
+    const hist = loadHistory();
+    hist.push({ q, a, ts: Date.now(), lang: currentLang });
+    if (hist.length > 100) hist.splice(0, hist.length - 100);
+    localStorage.setItem(HIST_KEY, JSON.stringify(hist));
+  }
+
+  function toggleHistory() {
+    const panel = document.getElementById('chat-history-panel');
+    if (panel.classList.contains('open')) {
+      panel.classList.remove('open');
+    } else {
+      renderHistoryPanel();
+      panel.classList.add('open');
+    }
+  }
+
+  function renderHistoryPanel() {
+    const histRaw = loadHistory();
+    const hist = histRaw.slice().reverse();
+    const list = document.getElementById('chat-hist-list');
+    const labels = {
+      fr: { title:'Historique', empty:'Aucune question posée pour l\'instant.<br>Pose ta première question !' },
+      en: { title:'History', empty:'No questions yet.<br>Ask your first question!' },
+      he: { title:'היסטוריה', empty:'אין שאלות עדיין.<br>שאל את השאלה הראשונה שלך!' }
+    };
+    const lbl = labels[currentLang] || labels.fr;
+    document.getElementById('chat-hist-title').textContent = lbl.title;
+    if (!hist.length) {
+      list.innerHTML = `<div class="hist-empty">${lbl.empty}</div>`;
+      return;
+    }
+    const locale = currentLang === 'he' ? 'he-IL' : currentLang === 'en' ? 'en-US' : 'fr-FR';
+    list.innerHTML = hist.map((item, i) => {
+      const d = new Date(item.ts).toLocaleString(locale, { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+      const origIdx = histRaw.length - 1 - i;
+      return `<div class="hist-item" onclick="reaskFromHistory(${origIdx})"><div class="hist-item-q">${escapeHtml(item.q)}</div><div class="hist-item-meta">${d}</div></div>`;
+    }).join('');
+  }
+
+  function reaskFromHistory(origIdx) {
+    const item = loadHistory()[origIdx];
+    if (!item) return;
+    toggleHistory();
+    const input = document.getElementById('chat-input');
+    input.value = item.q;
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 128) + 'px';
+    histNavIdx = -1;
+    input.focus();
+  }
+
   const ALL_SOURCES = [
     'Choulhan Aroukh (Maran Rabbi Yossef Karo)',
     'Mishna Beroura (Hafets Haïm)',
@@ -1491,6 +1579,7 @@
       const bubble = loadingRow.querySelector('.msg-bubble');
       bubble.innerHTML = cleaned;
       bubble.setAttribute('dir', currentLang === 'he' ? 'rtl' : 'ltr');
+      saveToHistory(message, reply);
     } catch (err) {
       console.error('[RebSam chat error]', err);
       loadingRow.querySelector('.msg-bubble').textContent =
@@ -1531,15 +1620,41 @@
     if (e.target === this) closeChat();
   });
 
-  // Chat input: Enter → send, Shift+Enter → newline, auto-resize
+  // Chat input: Enter → send, Shift+Enter → newline, ↑/↓ → navigation historique, auto-resize
   const chatInputEl = document.getElementById('chat-input');
   chatInputEl.addEventListener('keydown', function(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
+      return;
+    }
+    // Navigation historique au clavier (comme un terminal)
+    if (e.key === 'ArrowUp' && this.value.trim() === '') {
+      e.preventDefault();
+      const hist = loadHistory();
+      if (!hist.length) return;
+      if (histNavIdx < hist.length - 1) histNavIdx++;
+      this.value = hist[hist.length - 1 - histNavIdx].q;
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 128) + 'px';
+      return;
+    }
+    if (e.key === 'ArrowDown' && histNavIdx >= 0) {
+      e.preventDefault();
+      histNavIdx--;
+      if (histNavIdx < 0) {
+        this.value = '';
+        this.style.height = 'auto';
+      } else {
+        const hist = loadHistory();
+        this.value = hist[hist.length - 1 - histNavIdx].q;
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 128) + 'px';
+      }
     }
   });
   chatInputEl.addEventListener('input', function() {
+    histNavIdx = -1;
     this.style.height = 'auto';
     this.style.height = Math.min(this.scrollHeight, 128) + 'px';
   });
