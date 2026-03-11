@@ -9,11 +9,13 @@ import json
 import logging
 import threading
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import google.auth
 import google.auth.transport.requests
 import requests as http_requests
 
 app = Flask(__name__)
+CORS(app)
 logging.basicConfig(level=logging.INFO)
 
 # ── Config ───────────────────────────────────────────────
