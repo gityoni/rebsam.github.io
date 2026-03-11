@@ -492,6 +492,11 @@
     html.dark #chat-name { background: #1a2540; border-color: rgba(94,130,198,.3); color: #e2e8f0; }
     html.dark #chat-name::placeholder { color: #64748b; }
     html.dark .msg-bubble.sam { background: linear-gradient(135deg, #1a2540, #1e2d52); border-color: rgba(94,130,198,.4); border-left-color: var(--primary); color: #e2e8f0; }
+    /* Dark mode — corrections visibilité hero & blobs */
+    html.dark .blob-2 { display: none; }
+    html.dark .hero-h1 [data-i18n="hero_tagline"] { color: rgba(203,213,225,.8); }
+    html.dark a[href="#how-it-works"].btn { background: rgba(255,255,255,.1) !important; border: 1.5px solid rgba(255,255,255,.25) !important; box-shadow: 0 4px 16px rgba(0,0,0,.35) !important; }
+    html.dark #how-it-works .section-heading p { color: #CBD5E1; }
     /* HISTORY PANEL */
     #chat-history-panel { display: none; position: absolute; inset: 0; z-index: 20; background: #fff; border-radius: 1.5rem; flex-direction: column; overflow: hidden; animation: modalIn .25s cubic-bezier(.4,0,.2,1) both; }
     #chat-history-panel.open { display: flex; }
