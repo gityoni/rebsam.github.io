@@ -8,6 +8,7 @@ import os
 import json
 import logging
 import threading
+from datetime import datetime, timezone
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import google.auth
@@ -158,8 +159,13 @@ def chat():
 
     logging.info(f"[RebSam] lang={lang} turns={len(history)} msg={message[:80]}")
 
+    # Injecte la date réelle dans le prompt système
+    today_str = datetime.now(timezone.utc).strftime("%A %d %B %Y")
+    date_injection = f"\n\nDate d'aujourd'hui (UTC) : {today_str}. Utilise cette date pour tout calcul de calendrier juif ou horaires de prière."
+    effective_system = (system_prompt or SYSTEM_FALLBACK) + date_injection
+
     # ── Appel Vertex AI Gemini (synchrone) ──
-    payload = build_gemini_payload(system_prompt, history, message)
+    payload = build_gemini_payload(effective_system, history, message)
 
     try:
         access_token = get_access_token()
