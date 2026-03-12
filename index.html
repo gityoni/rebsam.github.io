@@ -1512,6 +1512,39 @@
     'Magen Avraham'
   ];
 
+  // ── Calendrier juif (calj-jdates) ─────────────────────────
+  function getJewishDateInfo() {
+    try {
+      const { HDate, GDate, Parasha, ParashaScheme } = window.CalJ || {};
+      if (!HDate || !GDate) return '';
+
+      const hToday = HDate.today();
+      const day    = hToday.getDay();
+      const month  = hToday.getMonthName();
+      const year   = hToday.getYear();
+
+      // Parasha de la semaine (schéma Israël)
+      let parashaStr = '';
+      try {
+        const p = Parasha.make(GDate.today(), ParashaScheme.ISRAEL);
+        const sidra = p.getSidra();
+        if (sidra && sidra.length) parashaStr = sidra.join(' - ');
+        else {
+          const fest = p.getFestivalName();
+          if (fest) parashaStr = fest;
+        }
+      } catch (_) { /* pas de parasha cette semaine */ }
+
+      let info = `\n\n📅 Date hébraïque d'aujourd'hui : ${day} ${month} ${year}.`;
+      if (parashaStr) info += ` Paracha de la semaine : ${parashaStr}.`;
+      info += '\nUtilise ces données exactes pour tout calcul de zmanim, calendrier juif ou fêtes.';
+      return info;
+    } catch (e) {
+      console.warn('[CalJ] erreur:', e);
+      return '';
+    }
+  }
+
   const LANG_INSTRUCTIONS = {
     fr: 'Tu es RebSam, expert en Halacha (loi juive). Réponds TOUJOURS en français, avec les sources exactes (Choulhan Aroukh, Poskim). Sois précis, structuré et respectueux. Question : ',
     en: 'You are RebSam, a Halacha (Jewish law) expert. ALWAYS answer in English, citing exact sources (Shulchan Aruch, Poskim). Be precise, structured and respectful. Question: ',
@@ -1604,7 +1637,7 @@
       const langInstruction = LANG_INSTRUCTIONS[currentLang] || LANG_INSTRUCTIONS.fr;
       const name = document.getElementById('chat-name').value.trim();
       const namePrefix = name ? ({ fr:`L'utilisateur s'appelle ${name}. `, en:`The user's name is ${name}. `, he:`שם המשתמש הוא ${name}. `}[currentLang] || `The user's name is ${name}. `) : '';
-      const systemPrompt = namePrefix + langInstruction;
+      const systemPrompt = namePrefix + langInstruction + getJewishDateInfo();
 
       // Ajout du message courant à l'historique AVANT l'envoi
       conversationHistory.push({ role: 'user', content: message });
@@ -1768,5 +1801,6 @@
 <!-- AOS JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@calj.net/jdates/dist/cdn/calj.min.js"></script>
 </body>
 </html>
