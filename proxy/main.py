@@ -185,4 +185,69 @@ def chat():
         lang          = data.get("lang", "fr")
         if not history and data.get("prompt"):
             message = data["prompt"]
-            history
+            history = [{"role": "user", "content": message}]
+    else:
+        prompt  = request.args.get("prompt", "")
+        lang    = request.args.get("lang", "fr")
+        message = prompt
+        system_prompt = ""
+        history = [{"role": "user", "content": prompt}]
+        data = {"message": message, "lang": lang, "history": history}
+
+    if not message and not history:
+        return jsonify({"error": "No message provided"}), 400
+
+    logging.info(f"[RebSam] lang={lang} turns={len(history)} msg={message[:80]}")
+
+    # Injecte la date réelle dans le prompt système
+    today_str = datetime.now(timezone.utc).strftime("%A %d %B %Y")
+    date_injection = f"\n\nDate d'aujourd'hui (UTC) : {today_str}. Utilise cette date pour tout calcul de calendrier juif ou horaires de prière."
+    
+    # ON FORCE LE PROMPT ICI
+    effective_system = SYSTEM_FALLBACK + date_injection
+
+    # ── Appel Vertex AI Gemini (synchrone) ──
+    payload = build_gemini_payload(effective_system, history, message)
+
+    try:
+        access_token = get_access_token()
+        resp = http_requests.post(
+            VERTEX_URL,
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            },
+            json=payload,
+            timeout=60
+        )
+        resp.raise_for_status()
+        gemini_data = resp.json()
+
+        reply = (
+            gemini_data
+            .get("candidates", [{}])[0]
+            .get("content", {})
+            .get("parts", [{}])[0]
+            .get("text", "")
+        )
+
+        if not reply:
+            logging.warning(f"[RebSam] Réponse vide de Gemini : {gemini_data}")
+            reply = "Je n'ai pas pu générer de réponse. Veuillez réessayer."
+
+        # ── Log async vers Make.com (non-bloquant) ──
+        log_to_make(data, reply)
+
+        return jsonify({"reply": reply})
+
+    except http_requests.HTTPError as e:
+        logging.error(f"[RebSam] Vertex AI HTTP error: {e} — {resp.text[:500]}")
+        return jsonify({"error": "Vertex AI error", "detail": str(e)}), 502
+    except Exception as e:
+        logging.error(f"[RebSam] Unexpected error: {e}")
+        return jsonify({"error": "Internal error", "detail": str(e)}), 500
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=port)
