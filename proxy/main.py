@@ -201,7 +201,7 @@ def chat():
     # Injecte la date réelle dans le prompt système
     today_str = datetime.now(timezone.utc).strftime("%A %d %B %Y")
     date_injection = f"\n\nDate d'aujourd'hui (UTC) : {today_str}. Utilise cette date pour tout calcul de calendrier juif ou horaires de prière."
-    effective_system = (system_prompt or SYSTEM_FALLBACK) + date_injection
+    effective_system = SYSTEM_FALLBACK + date_injection
 
     # ── Appel Vertex AI Gemini (synchrone) ──
     payload = build_gemini_payload(effective_system, history, message)
