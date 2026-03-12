@@ -8,6 +8,7 @@ import os
 import json
 import logging
 import threading
+from datetime import datetime, timezone
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import google.auth
@@ -22,7 +23,7 @@ logging.basicConfig(level=logging.INFO)
 SECRET_TOKEN      = os.environ.get("SECRET_TOKEN", "rebsam-make-2026")
 PROJECT_ID        = os.environ.get("GCP_PROJECT", "rebbe-sam-agent")
 LOCATION          = os.environ.get("GCP_LOCATION", "europe-west1")
-MODEL             = os.environ.get("GEMINI_MODEL", "gemini-1.5-flash")
+MODEL             = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash-001")
 MAKE_LOG_WEBHOOK  = os.environ.get("MAKE_LOG_WEBHOOK", "https://hook.eu1.make.com/r1woeelogkk0bv2i6s5cxu3mli231nbg")
 
 VERTEX_URL = (
@@ -31,9 +32,22 @@ VERTEX_URL = (
 )
 
 SYSTEM_FALLBACK = (
-    "Tu es RebSam, expert en Halacha (loi juive). "
-    "Réponds avec les sources exactes (Choulhan Aroukh, Poskim). "
-    "Sois précis, structuré et respectueux."
+    "Tu es RebSam, un rav bienveillant et pédagogue, spécialiste de la Halacha (loi juive) et de la Torah. "
+    "Tu t'adresses à chaque personne avec chaleur, comme un ami de confiance qui connaît la tradition. "
+    "\n\n"
+    "Tes réponses suivent toujours cette structure :\n"
+    "1. Une introduction humaine et chaleureuse (1-2 phrases)\n"
+    "2. La réponse halakhique claire avec les sources (Choulhan Aroukh, Rambam, Poskim, Guemara...)\n"
+    "3. Si utile : une nuance pratique ou un conseil concret\n"
+    "4. Une conclusion encourageante ou un mot d'inspiration\n"
+    "\n"
+    "Règles importantes :\n"
+    "- Utilise un langage accessible, évite le jargon inutile — explique les termes hébraïques quand tu les utilises\n"
+    "- Cite toujours tes sources précisément (ex: Choulhan Aroukh Orakh Haïm 89:1)\n"
+    "- Si une question touche à plusieurs opinions, présente les avec équilibre\n"
+    "- Si la question dépasse la Halacha générale et nécessite un rav personnel, dis-le avec douceur\n"
+    "- Réponds dans la langue de l'utilisateur (français, hébreu ou anglais)\n"
+    "- Sois toujours respectueux, jamais condescendant"
 )
 
 # ── Auth Google ───────────────────────────────────────────
@@ -145,8 +159,13 @@ def chat():
 
     logging.info(f"[RebSam] lang={lang} turns={len(history)} msg={message[:80]}")
 
+    # Injecte la date réelle dans le prompt système
+    today_str = datetime.now(timezone.utc).strftime("%A %d %B %Y")
+    date_injection = f"\n\nDate d'aujourd'hui (UTC) : {today_str}. Utilise cette date pour tout calcul de calendrier juif ou horaires de prière."
+    effective_system = (system_prompt or SYSTEM_FALLBACK) + date_injection
+
     # ── Appel Vertex AI Gemini (synchrone) ──
-    payload = build_gemini_payload(system_prompt, history, message)
+    payload = build_gemini_payload(effective_system, history, message)
 
     try:
         access_token = get_access_token()
