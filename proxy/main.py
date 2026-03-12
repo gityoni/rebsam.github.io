@@ -159,9 +159,12 @@ def chat():
 
     logging.info(f"[RebSam] lang={lang} turns={len(history)} msg={message[:80]}")
 
-    # Injecte la date réelle dans le prompt système
+    # Injecte la date réelle dans le prompt système (dans la langue de l'utilisateur)
     today_str = datetime.now(timezone.utc).strftime("%A %d %B %Y")
-    date_injection = f"\n\nDate d'aujourd'hui (UTC) : {today_str}. Utilise cette date pour tout calcul de calendrier juif ou horaires de prière."
+    date_injection = {
+        "he": f"\n\nהתאריך של היום (UTC): {today_str}. השתמש בתאריך זה לכל חישוב לוח שנה יהודי או זמני תפילה.",
+        "en": f"\n\nToday's date (UTC): {today_str}. Use this date for any Jewish calendar or prayer time calculations.",
+    }.get(lang, f"\n\nDate d'aujourd'hui (UTC) : {today_str}. Utilise cette date pour tout calcul de calendrier juif ou horaires de prière.")
     effective_system = (system_prompt or SYSTEM_FALLBACK) + date_injection
 
     # ── Appel Vertex AI Gemini (synchrone) ──
