@@ -478,6 +478,9 @@
     .msg-bubble.sam ul,.msg-bubble.sam ol { padding-left: 1.25rem; margin: .3rem 0; }
     .msg-bubble.sam li { margin-bottom: .2rem; }
     .msg-bubble.sam hr { border: none; border-top: 1px solid #e5e7eb; margin: .6rem 0; }
+    .msg-bubble.sam p { margin: 0 0 .5rem; }
+    .msg-bubble.sam p:last-child { margin-bottom: 0; }
+    .msg-bubble.sam h1,.msg-bubble.sam h2,.msg-bubble.sam h3 { font-size: 1em; font-weight: 700; color: #0056D2; margin: .6rem 0 .2rem; }
     .loading-dots { display: flex; align-items: center; gap: .35rem; padding: .25rem 0; }
     .loading-dots span { width: .5rem; height: .5rem; border-radius: 50%; background: var(--primary); opacity: .6; animation: dotBounce 1.2s ease-in-out infinite; }
     .loading-dots span:nth-child(2){animation-delay:.2s;} .loading-dots span:nth-child(3){animation-delay:.4s;}
@@ -1184,6 +1187,7 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
   /* ═══════════════════════════════════════════════
      i18n — Traductions FR / EN / HE
@@ -1568,6 +1572,11 @@
   }
 
   function cleanMarkdown(raw) {
+    if (window.marked) {
+      marked.setOptions({ breaks: true, gfm: true });
+      return marked.parse(raw);
+    }
+    // Fallback si marked pas encore chargé
     return raw
       .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
       .replace(/\*(.+?)\*/g, '<b>$1</b>')
@@ -1800,7 +1809,6 @@
 </script>
 <!-- AOS JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@calj.net/jdates/dist/cdn/calj.min.js"></script>
 </body>
 </html>
