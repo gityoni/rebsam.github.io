@@ -1422,7 +1422,7 @@
   /* ═══════════════════════════════════════════════
      CHAT — STATE & HELPERS
   ═══════════════════════════════════════════════ */
-  const MAKE_WEBHOOK_URL = 'https://rebsam-proxy-217121855341.europe-west1.run.app';
+  const MAKE_WEBHOOK_URL = '/api';
   let chatSending = false;
   let conversationHistory = []; // Mémoire de la conversation en cours
   const _sid = () => { if (!sessionStorage._rsid) sessionStorage._rsid = Date.now().toString(36) + Math.random().toString(36).slice(2); return sessionStorage._rsid; };

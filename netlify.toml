@@ -18,6 +18,13 @@
   publish = "."
 
 # ── Redirects ──────────────────────────────────────────────
+# Proxy vers Cloud Run (évite les problèmes CORS)
+[[redirects]]
+  from   = "/api"
+  to     = "https://rebsam-proxy-217121855341.europe-west1.run.app"
+  status = 200
+  force  = true
+
 [[redirects]]
   from = "/halakha"
   to   = "/#faq"
@@ -63,7 +70,7 @@
     Referrer-Policy           = "strict-origin-when-cross-origin"
     Permissions-Policy        = "camera=(), microphone=(), geolocation=()"
     Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
-    Content-Security-Policy   = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://rebsam-proxy-217121855341.europe-west1.run.app https://fonts.googleapis.com https://fonts.gstatic.com; frame-ancestors 'none';"
+    Content-Security-Policy   = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; frame-ancestors 'none';"
 
 # ── Cache HTML — toujours revalider (jamais servir un vieux index.html) ──
 [[headers]]

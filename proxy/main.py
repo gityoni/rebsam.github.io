@@ -9,15 +9,25 @@ import json
 import logging
 import threading
 from datetime import datetime, timezone
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask import Flask, request, jsonify, make_response
 import google.auth
 import google.auth.transport.requests
 import requests as http_requests
 
 app = Flask(__name__)
-CORS(app)
 logging.basicConfig(level=logging.INFO)
+
+CORS_HEADERS = {
+    "Access-Control-Allow-Origin":  "*",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, x-secret-token",
+}
+
+@app.after_request
+def add_cors(resp):
+    for k, v in CORS_HEADERS.items():
+        resp.headers[k] = v
+    return resp
 
 # ── Config ───────────────────────────────────────────────
 SECRET_TOKEN      = os.environ.get("SECRET_TOKEN", "rebsam-make-2026")
@@ -169,8 +179,12 @@ def build_gemini_payload(system_prompt: str, history: list, message: str) -> dic
 
 
 # ── Route principale ──────────────────────────────────────
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["GET", "POST", "OPTIONS"])
 def chat():
+    # Preflight CORS
+    if request.method == "OPTIONS":
+        return make_response("", 204, CORS_HEADERS)
+
     # Auth
     token = request.headers.get("x-secret-token", "")
     if token != SECRET_TOKEN:
