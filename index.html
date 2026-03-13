@@ -135,8 +135,8 @@
     .logo { font-family: 'Outfit', sans-serif; font-size: 1.875rem; font-weight: 900; letter-spacing: -0.02em; line-height: 1; white-space: nowrap; }
     .logo .reb { color: var(--primary); }
     .logo .sam { color: var(--secondary-dark); }
-    .nav-links { display: flex; gap: 1.75rem; list-style: none; align-items: center; }
-    .nav-links a { font-size: .875rem; font-weight: 500; color: var(--text-secondary); position: relative; padding-bottom: 4px; transition: color .25s; }
+    .nav-links { display: flex; gap: 1.75rem; list-style: none; align-items: center; flex-shrink: 0; }
+    .nav-links a { font-size: .875rem; font-weight: 500; color: var(--text-secondary); position: relative; padding-bottom: 4px; transition: color .25s; white-space: nowrap; }
     .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--primary); transition: width .3s; }
     .nav-links a:hover { color: var(--primary); }
     .nav-links a:hover::after { width: 100%; }
