@@ -100,6 +100,24 @@ Cette ligne doit être courte, sobre, jamais répétée deux fois dans la même 
 - EN : _🤖 RebSam is an AI — its answers do not replace a Rav's Psak. For any binding Halachic decision, please consult your Rav._
 - HE : _🤖 רבסם הוא בינה מלאכותית — תשובותיו אינן מחליפות פסק רב. לכל החלטה הלכתית מחייבת, יש להתייעץ עם הרב שלכם._"""
 
+# ── Chargement du prompt (prompt.txt > env var > fallback hardcodé) ──────
+def _load_prompt() -> str:
+    try:
+        with open("prompt.txt", encoding="utf-8") as f:
+            content = f.read().strip()
+            if content:
+                logging.info("[RebSam] Prompt chargé depuis prompt.txt")
+                return content
+    except FileNotFoundError:
+        pass
+    if SYSTEM_PROMPT_ENV:
+        logging.info("[RebSam] Prompt chargé depuis variable d'environnement")
+        return SYSTEM_PROMPT_ENV
+    logging.info("[RebSam] Prompt hardcodé utilisé")
+    return SYSTEM_FALLBACK
+
+ACTIVE_PROMPT = _load_prompt()
+
 # ── Auth Google ───────────────────────────────────────────
 def get_access_token():
     creds, _ = google.auth.default(
@@ -219,7 +237,7 @@ def chat():
         "he": f"\n\nהתאריך של היום (UTC): {today_str}. השתמש בתאריך זה לכל חישוב לוח שנה יהודי או זמני תפילה.",
         "en": f"\n\nToday's date (UTC): {today_str}. Use this date for any Jewish calendar or prayer time calculations.",
     }.get(lang, f"\n\nDate d'aujourd'hui (UTC) : {today_str}. Utilise cette date pour tout calcul de calendrier juif ou horaires de prière.")
-    base_prompt = SYSTEM_PROMPT_ENV if SYSTEM_PROMPT_ENV else SYSTEM_FALLBACK
+    base_prompt = ACTIVE_PROMPT
     effective_system = base_prompt + date_injection
 
     # ── Appel Vertex AI Gemini (synchrone) ──
