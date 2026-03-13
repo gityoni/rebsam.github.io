@@ -5,6 +5,7 @@
 [build]
   publish = "."
   command = ""          # Site statique — pas de build
+  ignore  = "exit 1"   # ← TOUJOURS déployer même si Netlify pense que rien n'a changé
 
 # ── Contextes de déploiement ────────────────────────────────
 [context.production]
@@ -37,6 +38,20 @@
   from   = "/*"
   to     = "/index.html"
   status = 200
+
+# ── Headers HTML — no-cache pour voir les changements ─────
+# ⚠️ DOIT être AVANT le bloc /* pour avoir priorité
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma        = "no-cache"
+
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma        = "no-cache"
 
 # ── Headers de sécurité ────────────────────────────────────
 [[headers]]
