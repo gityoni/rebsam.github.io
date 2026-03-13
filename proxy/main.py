@@ -35,6 +35,8 @@ PROJECT_ID        = os.environ.get("GCP_PROJECT", "rebbe-sam-agent")
 LOCATION          = os.environ.get("GCP_LOCATION", "europe-west1")
 MODEL             = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash-001")
 MAKE_LOG_WEBHOOK  = os.environ.get("MAKE_LOG_WEBHOOK", "https://hook.eu1.make.com/r1woeelogkk0bv2i6s5cxu3mli231nbg")
+# ← Pour modifier le prompt sans rebuild : Cloud Console → Cloud Run → Modifier révision → SYSTEM_PROMPT
+SYSTEM_PROMPT_ENV = os.environ.get("SYSTEM_PROMPT", "")
 
 VERTEX_URL = (
     f"https://{LOCATION}-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}"
@@ -217,7 +219,8 @@ def chat():
         "he": f"\n\nהתאריך של היום (UTC): {today_str}. השתמש בתאריך זה לכל חישוב לוח שנה יהודי או זמני תפילה.",
         "en": f"\n\nToday's date (UTC): {today_str}. Use this date for any Jewish calendar or prayer time calculations.",
     }.get(lang, f"\n\nDate d'aujourd'hui (UTC) : {today_str}. Utilise cette date pour tout calcul de calendrier juif ou horaires de prière.")
-    effective_system = SYSTEM_FALLBACK + date_injection
+    base_prompt = SYSTEM_PROMPT_ENV if SYSTEM_PROMPT_ENV else SYSTEM_FALLBACK
+    effective_system = base_prompt + date_injection
 
     # ── Appel Vertex AI Gemini (synchrone) ──
     payload = build_gemini_payload(effective_system, history, message)
@@ -247,6 +250,10 @@ def chat():
         if not reply:
             logging.warning(f"[RebSam] Réponse vide de Gemini : {gemini_data}")
             reply = "Je n'ai pas pu générer de réponse. Veuillez réessayer."
+
+        # ── Nettoyage markdown interdit (#, ##, ###) ──
+        import re
+        reply = re.sub(r'^#{1,6}\s+', '', reply, flags=re.MULTILINE)
 
         # ── Log async vers Make.com (non-bloquant) ──
         log_to_make(data, reply)
