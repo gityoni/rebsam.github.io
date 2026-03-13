@@ -17,17 +17,17 @@ import requests as http_requests
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 
-# ── CORS manuel ───────────────────────────────────────────
-@app.after_request
-def add_cors(response):
-    response.headers["Access-Control-Allow-Origin"]  = "*"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type, x-secret-token"
-    return response
+CORS_HEADERS = {
+    "Access-Control-Allow-Origin":  "*",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, x-secret-token",
+}
 
-@app.route("/", methods=["OPTIONS"])
-def preflight():
-    return make_response("", 204)
+@app.after_request
+def add_cors(resp):
+    for k, v in CORS_HEADERS.items():
+        resp.headers[k] = v
+    return resp
 
 # ── Config ───────────────────────────────────────────────
 SECRET_TOKEN      = os.environ.get("SECRET_TOKEN", "rebsam-make-2026")
@@ -179,8 +179,12 @@ def build_gemini_payload(system_prompt: str, history: list, message: str) -> dic
 
 
 # ── Route principale ──────────────────────────────────────
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["GET", "POST", "OPTIONS"])
 def chat():
+    # Preflight CORS
+    if request.method == "OPTIONS":
+        return make_response("", 204, CORS_HEADERS)
+
     # Auth
     token = request.headers.get("x-secret-token", "")
     if token != SECRET_TOKEN:
