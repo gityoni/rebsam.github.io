@@ -9,15 +9,25 @@ import json
 import logging
 import threading
 from datetime import datetime, timezone
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask import Flask, request, jsonify, make_response
 import google.auth
 import google.auth.transport.requests
 import requests as http_requests
 
 app = Flask(__name__)
-CORS(app)
 logging.basicConfig(level=logging.INFO)
+
+# ── CORS manuel ───────────────────────────────────────────
+@app.after_request
+def add_cors(response):
+    response.headers["Access-Control-Allow-Origin"]  = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, x-secret-token"
+    return response
+
+@app.route("/", methods=["OPTIONS"])
+def preflight():
+    return make_response("", 204)
 
 # ── Config ───────────────────────────────────────────────
 SECRET_TOKEN      = os.environ.get("SECRET_TOKEN", "rebsam-make-2026")
