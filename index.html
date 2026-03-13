@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>RebSam — Un Rebbe dans votre dose d'IA quotidienne</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60'%3E%3Ctext y='52' font-family='Arial Black,sans-serif' font-weight='900' font-size='56' fill='%232E6BE6'%3ER%3C/text%3E%3Ctext y='52' x='65' font-family='Arial Black,sans-serif' font-weight='900' font-size='56' fill='%231E293B'%3ES%3C/text%3E%3C/svg%3E">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <!-- ══ SEO PRIMAIRE ══ -->
   <meta name="description" content="RebSam : votre expert en Halacha alimenté par l'IA. Posez vos questions en hébreu, français ou anglais. Réponses sourcées (Choulhan Aroukh, Mishna Beroura…) en quelques secondes, 24h/24.">
   <meta name="keywords" content="Halakha, Halacha, IA, intelligence artificielle, Responsa, Choulhan Aroukh, Michna Beroura, Torah, Judaism, questions juives, droit juif, chatbot rabbinique, RebSam">
@@ -53,11 +54,18 @@
   }
   </script>
 
-  <!-- AOS – Animate On Scroll -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+  <!-- Preconnect pour Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Heebo:wght@300;400;500;600;700;800;900&family=Frank+Ruhl+Libre:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Fonts critiques (Inter + Outfit) en preload non-bloquant -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600&display=swap"></noscript>
+  <!-- Fonts RTL (Heebo + Frank Ruhl) chargées en différé -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&family=Frank+Ruhl+Libre:wght@400;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&family=Frank+Ruhl+Libre:wght@400;700&display=swap"></noscript>
+  <!-- AOS – chargé en différé (non bloquant) -->
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"></noscript>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; overflow-x: hidden; }
