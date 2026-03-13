@@ -1,10 +1,12 @@
 """
-RebSam Cloud Run Proxy — v3 architecture pro
+RebSam Cloud Run Proxy — v4 architecture pro
 - Chat sync : Site → Proxy → Gemini → réponse rapide
+- WhatsApp  : Make.com → /whatsapp → Gemini (même prompt) → reply_wa formaté
 - Log async : Proxy → Make.com (fire & forget, non-bloquant)
 """
 
 import os
+import re
 import json
 import logging
 import threading
@@ -158,6 +160,23 @@ def log_to_make(data: dict, reply: str):
     t.start()
 
 
+# Nombre max de tours d'historique WhatsApp conservés (5 échanges = 10 turns)
+MAX_WA_HISTORY_TURNS = 10
+
+
+def format_for_whatsapp(text: str) -> str:
+    """Convertit markdown Gemini → format WhatsApp natif."""
+    # Supprime les titres markdown (#, ##, ###)
+    text = re.sub(r'^#{1,6}\s+', '', text, flags=re.MULTILINE)
+    # **gras** → *gras* (WhatsApp bold = 1 astérisque)
+    text = re.sub(r'\*\*(.+?)\*\*', r'*\1*', text)
+    # __texte__ → *texte*
+    text = re.sub(r'__(.+?)__', r'*\1*', text)
+    # Séparateur --- → ligne vide
+    text = re.sub(r'\n?---\n?', '\n\n', text)
+    return text.strip()
+
+
 # ── Construction du payload Gemini multi-tour ─────────────
 def build_gemini_payload(system_prompt: str, history: list, message: str) -> dict:
     contents = []
@@ -283,6 +302,133 @@ def chat():
         return jsonify({"error": "Vertex AI error", "detail": str(e)}), 502
     except Exception as e:
         logging.error(f"[RebSam] Unexpected error: {e}")
+        return jsonify({"error": "Internal error", "detail": str(e)}), 500
+
+
+# ── Route WhatsApp (appelée par Make.com) ─────────────────
+@app.route("/whatsapp", methods=["POST", "OPTIONS"])
+def whatsapp():
+    """
+    Endpoint Make.com → RebSam WhatsApp.
+    Payload attendu :
+      { phone, name, message, lang, history_json }
+    history_json : JSON stringifié stocké dans Make.com Data Store,
+                   clé = numéro de téléphone.
+    Réponse :
+      { reply, reply_wa, history_json }
+      reply_wa = formaté pour WhatsApp (gras = *mot*)
+      history_json = historique mis à jour à stocker dans Data Store
+    """
+    if request.method == "OPTIONS":
+        return make_response("", 204, CORS_HEADERS)
+
+    # Auth — même token que le chat web
+    token = request.headers.get("x-secret-token", "")
+    if token != SECRET_TOKEN:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    data         = request.get_json(force=True, silent=True) or {}
+    phone        = data.get("phone", "unknown")
+    name         = data.get("name", "Utilisateur")
+    message      = data.get("message", "").strip()
+    lang         = data.get("lang", "fr")
+    history_json = data.get("history_json", "[]")
+
+    if not message:
+        return jsonify({"error": "No message provided"}), 400
+
+    # Désérialise l'historique depuis Make.com Data Store
+    try:
+        history = json.loads(history_json) if history_json else []
+        if not isinstance(history, list):
+            history = []
+    except (json.JSONDecodeError, TypeError):
+        history = []
+
+    # Garde les N derniers tours pour éviter l'overflow contexte
+    if len(history) > MAX_WA_HISTORY_TURNS:
+        history = history[-MAX_WA_HISTORY_TURNS:]
+
+    logging.info(f"[RebSam/WA] phone=****{phone[-4:]} lang={lang} turns={len(history)} msg={message[:80]}")
+
+    # Même prompt que le web + injection date + note WhatsApp
+    today_str = datetime.now(timezone.utc).strftime("%A %d %B %Y")
+    date_injection = {
+        "he": f"\n\nהתאריך של היום (UTC): {today_str}.",
+        "en": f"\n\nToday's date (UTC): {today_str}.",
+    }.get(lang, f"\n\nDate d'aujourd'hui (UTC) : {today_str}.")
+
+    wa_note = {
+        "he": "\n\nאתה מגיב דרך WhatsApp. השתמש ב-*מודגש* (כוכבית אחת), _נטוי_, ואמוג'י. אל תשתמש בכותרות markdown (#).",
+        "en": "\n\nYou are responding via WhatsApp. Use *bold* (single asterisk), _italic_, and emojis. Avoid markdown headers (#).",
+    }.get(lang, "\n\nTu réponds via WhatsApp. Utilise *gras* (un seul astérisque), _italique_, et des emojis. Évite les titres markdown (#).")
+
+    effective_system = ACTIVE_PROMPT + date_injection + wa_note
+
+    payload = build_gemini_payload(effective_system, history, message)
+
+    try:
+        access_token = get_access_token()
+        resp = http_requests.post(
+            VERTEX_URL,
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            },
+            json=payload,
+            timeout=60
+        )
+        resp.raise_for_status()
+        gemini_data = resp.json()
+
+        reply = (
+            gemini_data
+            .get("candidates", [{}])[0]
+            .get("content", {})
+            .get("parts", [{}])[0]
+            .get("text", "")
+        )
+
+        if not reply:
+            logging.warning(f"[RebSam/WA] Réponse vide de Gemini : {gemini_data}")
+            reply = "Je n'ai pas pu générer de réponse. Veuillez réessayer."
+
+        # Nettoie les titres markdown interdits
+        reply = re.sub(r'^#{1,6}\s+', '', reply, flags=re.MULTILINE)
+
+        # Convertit pour WhatsApp
+        reply_wa = format_for_whatsapp(reply)
+
+        # Met à jour l'historique pour le prochain tour
+        updated_history = history + [
+            {"role": "user",  "content": message},
+            {"role": "model", "content": reply}
+        ]
+        if len(updated_history) > MAX_WA_HISTORY_TURNS:
+            updated_history = updated_history[-MAX_WA_HISTORY_TURNS:]
+
+        # Log async vers Make.com (non-bloquant)
+        log_to_make({
+            "sessionId": phone,
+            "name":      name,
+            "lang":      lang,
+            "message":   message,
+            "history":   history,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "channel":   "whatsapp"
+        }, reply)
+
+        return jsonify({
+            "reply":        reply,
+            "reply_wa":     reply_wa,
+            "history_json": json.dumps(updated_history, ensure_ascii=False)
+        })
+
+    except http_requests.HTTPError as e:
+        logging.error(f"[RebSam/WA] Vertex AI HTTP error: {e} — {resp.text[:500]}")
+        return jsonify({"error": "Vertex AI error", "detail": str(e)}), 502
+    except Exception as e:
+        logging.error(f"[RebSam/WA] Unexpected error: {e}")
         return jsonify({"error": "Internal error", "detail": str(e)}), 500
 
 
