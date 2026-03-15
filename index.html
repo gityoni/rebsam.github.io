@@ -1145,7 +1145,7 @@
   </div>
 </button>
 
-<a class="float-btn" id="btn-wa" href="https://wa.me/15551790835" target="_blank" rel="noopener noreferrer">
+<a class="float-btn" id="btn-wa" href="https://wa.me/15551790835" target="_blank" rel="noopener noreferrer" onclick="trackWAClick()">
   <div class="float-inner float-wa-bg">
     <div class="float-glow float-wa-glow"></div>
     <span class="float-label">WhatsApp</span>
@@ -1425,6 +1425,25 @@
     const isOpen = item.classList.contains('open');
     document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('open'));
     if (!isOpen) item.classList.add('open');
+  }
+
+  // ── Tracking
+  const TRACK_WEBHOOK_URL = 'https://hook.eu1.make.com/xg1x9qukbwqnhirojuzslxttls38d9az';
+
+  function trackWAClick() {
+    const payload = JSON.stringify({
+      event: 'wa_click',
+      lang: currentLang,
+      sessionId: _sid(),
+      timestamp: new Date().toISOString(),
+      source: 'float_button'
+    });
+    // sendBeacon = fire-and-forget, ne bloque pas la navigation
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(TRACK_WEBHOOK_URL, new Blob([payload], { type: 'application/json' }));
+    } else {
+      fetch(TRACK_WEBHOOK_URL, { method: 'POST', body: payload, headers: { 'Content-Type': 'application/json' }, keepalive: true }).catch(() => {});
+    }
   }
 
   // ── Chat Functions

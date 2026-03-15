@@ -1,0 +1,48 @@
+{
+  "packageId": "com.rebsam.app",
+  "host": "rebsam.netlify.app",
+  "name": "RebSam — Expert Halakha IA",
+  "launcherName": "RebSam",
+  "display": "standalone",
+  "orientation": "portrait",
+  "themeColor": "#2E6BE6",
+  "navigationColor": "#2E6BE6",
+  "navigationColorDark": "#1a3d8a",
+  "navigationDividerColor": "#2E6BE6",
+  "navigationDividerColorDark": "#1a3d8a",
+  "backgroundColor": "#ffffff",
+  "enableNotifications": false,
+  "startUrl": "/",
+  "iconUrl": "https://rebsam.netlify.app/icon-512.png",
+  "maskableIconUrl": "https://rebsam.netlify.app/icon-512.png",
+  "monochromeIconUrl": "https://rebsam.netlify.app/icon-192.png",
+  "appVersion": "1.0.0",
+  "appVersionCode": 1,
+  "signingKey": {
+    "path": "android.keystore",
+    "alias": "rebsam"
+  },
+  "splashScreenFadeOutDuration": 300,
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://rebsam.netlify.app/",
+  "minSdkVersion": 19,
+  "targetSdkVersion": 34,
+  "generatorApp": "bubblewrap",
+  "webManifestUrl": "https://rebsam.netlify.app/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSideNavigation": false,
+  "shortcuts": [
+    {
+      "name": "Poser une question",
+      "short_name": "Question",
+      "url": "/#chat",
+      "icons": [{ "src": "https://rebsam.netlify.app/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
