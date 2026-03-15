@@ -515,6 +515,139 @@ def chat():
         return jsonify({"error": "Internal error", "detail": str(e)}), 500
 
 
+# ── POST /whatsapp — orchestration Make.com ───────────────
+@app.route("/whatsapp", methods=["POST", "OPTIONS"])
+def whatsapp_makecom():
+    """
+    Endpoint pour l'orchestration Make.com.
+    Make.com reçoit le webhook Meta, récupère l'historique depuis son Data Store,
+    appelle cet endpoint, puis envoie la réponse via WhatsApp Cloud API.
+
+    Body JSON attendu :
+        phone        : numéro expéditeur (ex: "33612345678")
+        name         : nom contact WhatsApp
+        message      : texte du message
+        lang         : "fr" | "en" | "he" (optionnel, auto-détecté si absent)
+        history_json : JSON string de l'historique [{role, content}, ...]
+
+    Réponse JSON :
+        reply_wa     : réponse formatée pour WhatsApp
+        history_json : JSON string de l'historique mis à jour
+    """
+    if request.method == "OPTIONS":
+        return make_response("", 204, CORS_HEADERS)
+
+    token = request.headers.get("x-secret-token", "")
+    if token != SECRET_TOKEN:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    data    = request.get_json(force=True, silent=True) or {}
+    phone   = data.get("phone", "")
+    name    = data.get("name", "Utilisateur")
+    message = data.get("message", "").strip()
+    lang    = data.get("lang", "")
+
+    # Désérialiser l'historique (JSON string → list)
+    history_raw = data.get("history_json", "[]") or "[]"
+    try:
+        history = json.loads(history_raw) if isinstance(history_raw, str) else history_raw
+        if not isinstance(history, list):
+            history = []
+    except (json.JSONDecodeError, TypeError):
+        history = []
+
+    if not message:
+        return jsonify({"error": "No message provided"}), 400
+
+    # Auto-détection langue si non fournie
+    if not lang:
+        lang = detect_language(message)
+
+    logging.info(f"[RebSam/WA-Make] phone=****{phone[-4:]} lang={lang} turns={len(history)} msg={message[:80]}")
+
+    # Tronquer l'historique
+    if len(history) > MAX_WA_HISTORY_TURNS:
+        history = history[-MAX_WA_HISTORY_TURNS:]
+
+    # Construire le prompt système avec date + note WhatsApp
+    today_str = datetime.now(timezone.utc).strftime("%A %d %B %Y")
+    date_injection = {
+        "he": f"\n\nהתאריך של היום (UTC): {today_str}.",
+        "en": f"\n\nToday's date (UTC): {today_str}.",
+    }.get(lang, f"\n\nDate d'aujourd'hui (UTC) : {today_str}.")
+
+    wa_note = {
+        "he": "\n\nאתה מגיב דרך WhatsApp. השתמש ב-*מודגש* (כוכבית אחת), _נטוי_, ואמוג'י. אל תשתמש בכותרות markdown (#).",
+        "en": "\n\nYou are responding via WhatsApp. Use *bold* (single asterisk), _italic_, and emojis. Avoid markdown headers (#).",
+    }.get(lang, "\n\nTu réponds via WhatsApp. Utilise *gras* (un seul astérisque), _italique_, et des emojis. Évite les titres markdown (#).")
+
+    effective_system = ACTIVE_PROMPT + date_injection + wa_note
+    gemini_payload   = build_gemini_payload(effective_system, history, message)
+
+    try:
+        access_token = get_access_token()
+        resp = http_requests.post(
+            VERTEX_URL,
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type":  "application/json",
+            },
+            json=gemini_payload,
+            timeout=60,
+        )
+        resp.raise_for_status()
+        gemini_data = resp.json()
+
+        reply = (
+            gemini_data
+            .get("candidates", [{}])[0]
+            .get("content", {})
+            .get("parts", [{}])[0]
+            .get("text", "")
+        )
+
+        if not reply:
+            logging.warning(f"[RebSam/WA-Make] Réponse vide de Gemini : {gemini_data}")
+            reply = {
+                "fr": "Chalom ! Je n'ai pas pu générer de réponse. Veuillez réessayer. 🙏",
+                "en": "Shalom! I could not generate a response. Please try again. 🙏",
+                "he": "שלום! לא הצלחתי ליצור תשובה. אנא נסה שוב. 🙏",
+            }.get(lang, "Chalom ! Je n'ai pas pu générer de réponse. 🙏")
+
+        reply_wa = format_for_whatsapp(reply)
+
+        # Mettre à jour l'historique
+        updated_history = history + [
+            {"role": "user",  "content": message},
+            {"role": "model", "content": reply},
+        ]
+        if len(updated_history) > MAX_WA_HISTORY_TURNS:
+            updated_history = updated_history[-MAX_WA_HISTORY_TURNS:]
+
+        # Log optionnel Make.com (fire & forget)
+        log_to_make({
+            "sessionId": phone,
+            "name":      name,
+            "lang":      lang,
+            "message":   message,
+            "history":   history,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "channel":   "whatsapp-makecom",
+        }, reply)
+
+        return jsonify({
+            "reply_wa":     reply_wa,
+            "history_json": json.dumps(updated_history, ensure_ascii=False),
+        })
+
+    except http_requests.HTTPError as e:
+        logging.error(f"[RebSam/WA-Make] Vertex AI HTTP error: {e}")
+        return jsonify({"error": "Vertex AI error", "detail": str(e)}), 502
+    except Exception as e:
+        logging.error(f"[RebSam/WA-Make] Unexpected error: {e}")
+        return jsonify({"error": "Internal error", "detail": str(e)}), 500
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
