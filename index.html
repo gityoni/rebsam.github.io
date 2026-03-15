@@ -54,11 +54,11 @@
   }
   </script>
 
-  <!-- Preconnect pour Google Fonts + CDNs + Make.com -->
+  <!-- Preconnect — uniquement les origines critiques au chargement initial -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-  <link rel="preconnect" href="https://hook.eu1.make.com" crossorigin />
+  <!-- fonts.gstatic.com supprimé : display=optional ne charge pas les fonts si non cachées -->
+  <!-- hook.eu1.make.com supprimé : webhook appelé seulement sur interaction utilisateur -->
   <!-- Preload image LCP hero -->
   <link rel="preload" as="image" href="avatar.webp" fetchpriority="high" />
   <!-- Fonts critiques (Inter + Outfit) — chargement NON-BLOQUANT, display=optional → zéro CLS -->
@@ -240,10 +240,10 @@
 
     /* HERO */
     #hero { position: relative; min-height: 100vh; min-height: 100svh; display: flex; align-items: center; padding: 5.5rem 0 2rem; overflow: hidden; }
-    @media (max-width: 767px) { #hero { padding: 5rem 0 1.5rem; min-height: 100vh; min-height: 100svh; } }
+    @media (max-width: 767px) { #hero { padding: 5rem 0 1.5rem; min-height: auto; } }
     .hero-bg { position: absolute; inset: 0; background: transparent; z-index: -2; overflow: hidden; }
     .hero-cloud-1 { position: absolute; top: -80px; left: -120px; width: 700px; height: 500px; background: radial-gradient(ellipse, rgba(199,210,254,.55) 0%, rgba(224,231,255,.3) 40%, transparent 70%); filter: blur(60px); }
-    .hero-cloud-2 { position: absolute; bottom: -100px; right: -80px; width: 800px; height: 600px; background: radial-gradient(ellipse, rgba(248,246,252,.55) 0%, rgba(255,252,254,.25) 40%, transparent 70%); filter: blur(80px); }
+    .hero-cloud-2 { position: absolute; top: 30%; right: -80px; width: 800px; height: 600px; background: radial-gradient(ellipse, rgba(248,246,252,.55) 0%, rgba(255,252,254,.25) 40%, transparent 70%); filter: blur(80px); will-change: transform; }
     .hero-cloud-3 { display: none; }
     .halo { position: absolute; border-radius: 50%; filter: blur(80px); }
     .halo-1 { top: -15%; right: -10%; width: 700px; height: 700px; background: radial-gradient(circle, rgba(220,225,255,.08) 0%, rgba(240,238,252,.12) 40%, transparent 70%); opacity: .7; animation: floatA 20s ease-in-out infinite; }
