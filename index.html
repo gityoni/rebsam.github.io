@@ -735,6 +735,26 @@
       .feature-card:hover { transform: none; box-shadow: var(--shadow-sm); }
       .hero-point:hover { transform: none; box-shadow: none; }
     }
+
+    /* ── ZMANIM SECTION ── */
+    #zmanim-section { padding: 2.25rem 0; background: var(--navy); position: relative; overflow: hidden; }
+    html.dark #zmanim-section { background: var(--navy-dark); }
+    .zmanim-card { background: rgba(255,255,255,.05); border: 1px solid rgba(212,175,55,.22); border-radius: 1.5rem; padding: 1.5rem 1.75rem; }
+    .zmanim-header { display: flex; align-items: center; gap: .75rem; margin-bottom: 1.1rem; flex-wrap: wrap; }
+    .zmanim-title { font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--gold); white-space: nowrap; }
+    .zmanim-subtitle { font-size: .75rem; color: rgba(255,255,255,.48); letter-spacing: .04em; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .zmanim-loc-btn { display: inline-flex; align-items: center; gap: .35rem; background: rgba(212,175,55,.12); border: 1px solid rgba(212,175,55,.28); color: var(--gold); font-size: .72rem; font-weight: 600; padding: .3rem .7rem; border-radius: var(--radius-full); cursor: pointer; transition: all .2s; flex-shrink: 0; white-space: nowrap; }
+    .zmanim-loc-btn:hover { background: rgba(212,175,55,.22); }
+    .zmanim-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .45rem; }
+    .zmanim-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); border-radius: .5rem; padding: .42rem .75rem; gap: .5rem; transition: background .2s, border-color .2s; }
+    .zmanim-item:hover { background: rgba(212,175,55,.07); border-color: rgba(212,175,55,.18); }
+    .zmanim-label { font-size: .74rem; color: rgba(255,255,255,.6); line-height: 1.3; }
+    .zmanim-time { font-size: .86rem; font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; white-space: nowrap; flex-shrink: 0; }
+    .zmanim-loading { text-align: center; color: rgba(255,255,255,.4); padding: 1.5rem; font-size: .875rem; }
+    [dir="rtl"] .zmanim-item { flex-direction: row-reverse; }
+    [dir="rtl"] .zmanim-header { flex-direction: row-reverse; }
+    @media (max-width: 767px) { #zmanim-section { padding: 1.5rem 0; } .zmanim-card { padding: 1.1rem 1rem; border-radius: 1.1rem; } .zmanim-grid { grid-template-columns: 1fr 1fr; gap: .35rem; } .zmanim-title { font-size: 1.05rem; } }
+    @media (max-width: 380px) { .zmanim-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -850,6 +870,15 @@
       <div class="hero-avatar-wrap">
         <img src="avatar.webp" alt="RebSam - Assistant Torah &amp; Halakha" width="300" height="300" fetchpriority="high" loading="eager" class="hero-avatar-img" />
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZMANIM SECTION — Horaires Halakhiques -->
+<section id="zmanim-section">
+  <div class="container">
+    <div class="zmanim-card">
+      <div id="zmanim-widget"><div class="zmanim-loading">⏳</div></div>
     </div>
   </div>
 </section>
@@ -1408,6 +1437,8 @@
         appendMsg('sam', buildWelcome());
       }
     }
+    // Re-render zmanim widget with new language
+    if (_zmanimData) _renderZmanim();
   }
 
   /* ═══════════════════════════════════════════════
@@ -1603,6 +1634,24 @@
       let info = `\n\n📅 Date hébraïque d'aujourd'hui : ${day} ${month} ${year}.`;
       if (parashaStr) info += ` Paracha de la semaine : ${parashaStr}.`;
       info += '\nUtilise ces données exactes pour tout calcul de zmanim, calendrier juif ou fêtes.';
+
+      // Inject live zmanim if available
+      if (_zmanimData && _zmanimData.times) {
+        const z = _zmanimData.times;
+        const ft = t => { try { return t ? new Date(t).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '—'; } catch { return '—'; } };
+        info += `\n\n🕐 Zmanim halakhiques du jour :
+- Alot HaShachar : ${ft(z.alotHaShachar)}
+- Hanets (lever) : ${ft(z.sunrise)}
+- Sof Zman Shma (GRA) : ${ft(z.sofZmanShma)}
+- Sof Zman Tefila (GRA) : ${ft(z.sofZmanTfilla)}
+- Hatsot (midi halakhique) : ${ft(z.chatzot)}
+- Minha Gedola : ${ft(z.minchaGedola)}
+- Plag HaMinha : ${ft(z.plagHaMincha)}
+- Chkia (coucher) : ${ft(z.sunset)}
+- Tseit HaKokhavim : ${ft(z.tzeit7083deg)}
+Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
+      }
+
       return info;
     } catch (e) {
       console.warn('[CalJ] erreur:', e);
@@ -1873,6 +1922,136 @@
   }
   window.addEventListener('scroll', startCounters, {passive:true});
   window.addEventListener('load', startCounters);
+
+  /* ═══════════════════════════════════════════════
+     ZMANIM — Horaires Halakhiques (hebcal.com API)
+  ═══════════════════════════════════════════════ */
+  const ZMANIM_LABELS = {
+    fr: {
+      title: '⏰ Zmanim', subtitle: 'Horaires halakhiques d\'aujourd\'hui',
+      alotHaShachar: 'Alot HaShachar', sunrise: 'Hanets (Lever du soleil)',
+      sofZmanShmaMGA: 'Sof Zman Shma (MGA)', sofZmanShma: 'Sof Zman Shma (GRA)',
+      sofZmanTfilla: 'Sof Zman Téfila (GRA)', chatzot: 'Hatsot (Midi halakhique)',
+      minchaGedola: 'Minha Guedola', plagHaMincha: 'Plag HaMinha',
+      sunset: 'Chkia (Coucher)', tzeit: 'Tseit HaKokhavim',
+      locating: 'Chargement des zmanim…', error: 'Zmanim indisponibles',
+      jerusalem: 'Jérusalem (par défaut)', share_loc: '📍 Zmanim de ma ville'
+    },
+    en: {
+      title: '⏰ Zmanim', subtitle: 'Today\'s Halachic times',
+      alotHaShachar: 'Alot HaShachar', sunrise: 'Hanetz (Sunrise)',
+      sofZmanShmaMGA: 'Sof Zman Shma (MGA)', sofZmanShma: 'Sof Zman Shma (GRA)',
+      sofZmanTfilla: 'Sof Zman Tefila (GRA)', chatzot: 'Chatzot (Halachic noon)',
+      minchaGedola: 'Mincha Gedola', plagHaMincha: 'Plag HaMincha',
+      sunset: 'Shkia (Sunset)', tzeit: 'Tzait HaKochavim',
+      locating: 'Loading zmanim…', error: 'Zmanim unavailable',
+      jerusalem: 'Jerusalem (default)', share_loc: '📍 My city\'s zmanim'
+    },
+    he: {
+      title: '⏰ זמנים', subtitle: 'זמנים הלכתיים להיום',
+      alotHaShachar: 'עלות השחר', sunrise: 'הנץ החמה',
+      sofZmanShmaMGA: 'סוף זמן שמע (מג"א)', sofZmanShma: 'סוף זמן שמע (גר"א)',
+      sofZmanTfilla: 'סוף זמן תפילה (גר"א)', chatzot: 'חצות',
+      minchaGedola: 'מנחה גדולה', plagHaMincha: 'פלג המנחה',
+      sunset: 'שקיעת החמה', tzeit: 'צאת הכוכבים',
+      locating: '...טוען זמנים', error: 'זמנים לא זמינים',
+      jerusalem: 'ירושלים (ברירת מחדל)', share_loc: '📍 זמנים של עירי'
+    }
+  };
+
+  let _zmanimData = null;
+  let _zmanimCity = '';
+
+  const ZMANIM_ITEMS = [
+    'alotHaShachar', 'sunrise', 'sofZmanShmaMGA', 'sofZmanShma',
+    'sofZmanTfilla', 'chatzot', 'minchaGedola', 'plagHaMincha',
+    'sunset', 'tzeit7083deg'
+  ];
+  const ZMANIM_LABEL_KEYS = [
+    'alotHaShachar', 'sunrise', 'sofZmanShmaMGA', 'sofZmanShma',
+    'sofZmanTfilla', 'chatzot', 'minchaGedola', 'plagHaMincha',
+    'sunset', 'tzeit'
+  ];
+
+  function _fmtTime(isoStr) {
+    if (!isoStr) return '—';
+    try { return new Date(isoStr).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
+    catch { return '—'; }
+  }
+
+  function _renderZmanim() {
+    const widget = document.getElementById('zmanim-widget');
+    if (!widget || !_zmanimData) return;
+    const lbl = ZMANIM_LABELS[currentLang] || ZMANIM_LABELS.fr;
+    const z = _zmanimData.times || {};
+    const dir = currentLang === 'he' ? 'rtl' : 'ltr';
+    const cityStr = _zmanimCity ? ' · ' + _zmanimCity : '';
+
+    const gridRows = ZMANIM_ITEMS.map((key, i) =>
+      `<div class="zmanim-item"><span class="zmanim-label">${lbl[ZMANIM_LABEL_KEYS[i]]}</span><span class="zmanim-time">${_fmtTime(z[key])}</span></div>`
+    ).join('');
+
+    widget.innerHTML =
+      `<div class="zmanim-header" dir="${dir}">` +
+        `<span class="zmanim-title">${lbl.title}</span>` +
+        `<span class="zmanim-subtitle">${lbl.subtitle}${cityStr}</span>` +
+        `<button class="zmanim-loc-btn" onclick="_requestZmanimLocation()">${lbl.share_loc}</button>` +
+      `</div>` +
+      `<div class="zmanim-grid" dir="${dir}">${gridRows}</div>`;
+  }
+
+  async function _loadZmanim(lat, lon, city) {
+    const today = new Date().toISOString().split('T')[0];
+    const url = `https://www.hebcal.com/zmanim?cfg=json&latitude=${lat.toFixed(6)}&longitude=${lon.toFixed(6)}&date=${today}&sec=1`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    _zmanimData = await res.json();
+    _zmanimCity = city || '';
+    _renderZmanim();
+  }
+
+  function _requestZmanimLocation() {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      pos => _loadZmanim(pos.coords.latitude, pos.coords.longitude, '').catch(() => {}),
+      () => {},
+      {timeout: 8000, enableHighAccuracy: false}
+    );
+  }
+
+  function _initZmanim() {
+    const widget = document.getElementById('zmanim-widget');
+    if (!widget) return;
+    const lbl = ZMANIM_LABELS[currentLang] || ZMANIM_LABELS.fr;
+    widget.innerHTML = `<div class="zmanim-loading">${lbl.locating}</div>`;
+
+    const JLM_LAT = 31.7683, JLM_LON = 35.2137;
+    const fallbackToJerusalem = () =>
+      _loadZmanim(JLM_LAT, JLM_LON, lbl.jerusalem).catch(() => {
+        widget.innerHTML = `<div class="zmanim-loading">${lbl.error}</div>`;
+      });
+
+    if (!navigator.geolocation) { fallbackToJerusalem(); return; }
+
+    let resolved = false;
+    const timer = setTimeout(() => { if (!resolved) { resolved = true; fallbackToJerusalem(); } }, 4000);
+
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        if (resolved) return;
+        resolved = true; clearTimeout(timer);
+        _loadZmanim(pos.coords.latitude, pos.coords.longitude, '').catch(fallbackToJerusalem);
+      },
+      () => {
+        if (resolved) return;
+        resolved = true; clearTimeout(timer);
+        fallbackToJerusalem();
+      },
+      {timeout: 4000, enableHighAccuracy: false}
+    );
+  }
+
+  window.addEventListener('load', _initZmanim);
 
 </script>
 
