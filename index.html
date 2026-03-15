@@ -54,15 +54,20 @@
   }
   </script>
 
-  <!-- Preconnect pour Google Fonts -->
+  <!-- Preconnect pour Google Fonts + CDNs -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <!-- Fonts critiques (Inter + Outfit) — poids réduits -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600&display=swap">
-  <!-- Fonts RTL (Heebo + Frank Ruhl) -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&family=Frank+Ruhl+Libre:wght@400;700&display=swap">
-  <!-- AOS – Animate On Scroll -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <!-- Fonts critiques (Inter + Outfit) — chargement NON-BLOQUANT -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600&display=swap"></noscript>
+  <!-- Fonts RTL (Heebo + Frank Ruhl) — chargement NON-BLOQUANT -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&family=Frank+Ruhl+Libre:wght@400;700&display=swap" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&family=Frank+Ruhl+Libre:wght@400;700&display=swap"></noscript>
+  <!-- AOS – Animate On Scroll — chargement NON-BLOQUANT -->
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"></noscript>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; overflow-x: hidden; }
@@ -1192,7 +1197,7 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 <script>
   /* ═══════════════════════════════════════════════
      i18n — Traductions FR / EN / HE
@@ -1789,7 +1794,9 @@
   /* ═══════════════════════════════════════════════
      AOS — init
   ═══════════════════════════════════════════════ */
-  AOS.init({ duration: 700, easing: 'ease-out-cubic', once: true, offset: 60 });
+  window.addEventListener('load', function() {
+    if (typeof AOS !== 'undefined') AOS.init({ duration: 700, easing: 'ease-out-cubic', once: true, offset: 60 });
+  });
 
   /* ═══════════════════════════════════════════════
      ANIMATED COUNTERS — Bucket Stats
@@ -1832,7 +1839,7 @@
 
 </script>
 <!-- AOS JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@calj.net/jdates/dist/cdn/calj.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@calj.net/jdates/dist/cdn/calj.min.js" defer></script>
 </body>
 </html>
