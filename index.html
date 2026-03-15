@@ -60,16 +60,14 @@
   <!-- fonts.gstatic.com supprimé : display=optional ne charge pas les fonts si non cachées -->
   <!-- hook.eu1.make.com supprimé : webhook appelé seulement sur interaction utilisateur -->
   <!-- Preload image LCP hero -->
-  <link rel="preload" as="image" href="avatar.webp" fetchpriority="high" />
+  <link rel="preload" as="image" href="avatar.webp" fetchpriority="high" imagesizes="(max-width:400px) 200px, (max-width:640px) 220px, 300px" />
   <!-- Fonts critiques (Inter + Outfit) — chargement NON-BLOQUANT, display=optional → zéro CLS -->
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600&display=optional" onload="this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600&display=optional"></noscript>
   <!-- Fonts RTL (Heebo + Frank Ruhl) — chargement NON-BLOQUANT, display=optional → zéro CLS -->
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&family=Frank+Ruhl+Libre:wght@400;700&display=optional" onload="this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&family=Frank+Ruhl+Libre:wght@400;700&display=optional"></noscript>
-  <!-- AOS – Animate On Scroll — chargement NON-BLOQUANT -->
-  <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" onload="this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"></noscript>
+  <!-- AOS remplacé par IntersectionObserver natif — zéro CDN, zéro CLS -->
   <style>
     /* ── FONT FALLBACKS avec size-adjust (anti-CLS) ── */
     @font-face {
@@ -294,7 +292,14 @@
 
     .hero-sources { font-size: .68rem; color: rgba(100,116,139,.5); letter-spacing: .03em; animation: fadeUp .6s .25s ease both; line-height: 1.6; max-width: 540px; margin: 0 auto .5rem; }
 
-    .hero-avatar-wrap { position: relative; margin: 1rem auto 0; max-width: 340px; animation: fadeUp .6s .28s ease both; }
+    .hero-avatar-wrap { position: relative; margin: 1rem auto 0; max-width: 340px; animation: fadeUp .6s 0s ease both; }
+    /* ── REVEAL — IntersectionObserver natif (remplace AOS) ── */
+    [data-reveal] { opacity: 0; transform: translateY(20px); transition: opacity .7s ease, transform .7s cubic-bezier(.25,.46,.45,.94); }
+    [data-reveal][data-reveal-delay="100"] { transition-delay: 100ms; }
+    [data-reveal][data-reveal-delay="200"] { transition-delay: 200ms; }
+    [data-reveal][data-reveal-delay="300"] { transition-delay: 300ms; }
+    [data-reveal][data-reveal-delay="400"] { transition-delay: 400ms; }
+    [data-reveal].revealed { opacity: 1; transform: translateY(0); }
     .hero-avatar-img { width: 100%; max-width: 300px; height: auto; aspect-ratio: 1/1; display: block; margin: 0 auto; filter: drop-shadow(0 12px 32px rgba(91,142,240,.28)) drop-shadow(0 4px 12px rgba(0,0,0,.12)); border-radius: 1.5rem; contain: layout; }
     .hero-avatar-btn { background: linear-gradient(135deg, #5B8EF0 0%, #7C6FCD 50%, #E07B5A 100%); box-shadow: 0 6px 24px rgba(124,111,205,.35); font-size: .825rem; padding: .6rem 1.25rem; }
     .hero-avatar-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 36px rgba(124,111,205,.5); }
@@ -858,17 +863,17 @@
       <p data-i18n="pillars_sub">RebSam répond toujours selon ces 3 engagements — sans exception.</p>
     </div>
     <div class="pillars-grid">
-      <div class="feature-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="feature-card" data-reveal>
         <div class="feature-card-icon">✓</div>
         <h3 data-i18n="p1_title">Sources Validées</h3>
         <p data-i18n="p1_desc">Pas d'invention. Pas d'hallucination. Chaque réponse est ancrée dans nos textes sacrés — Shulchan Aruch, Mishna Berura, Poskim contemporains et bien d'autres.</p>
       </div>
-      <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+      <div class="feature-card" data-reveal data-reveal-delay="100">
         <div class="feature-card-icon">🔒</div>
         <h3 data-i18n="p2_title">Privé & Sécurisé</h3>
         <p data-i18n="p2_desc">Circuit fermé. Vos questions les plus intimes restent strictement privées : zéro collecte, zéro revente, zéro entraînement externe.</p>
       </div>
-      <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+      <div class="feature-card" data-reveal data-reveal-delay="200">
         <div class="feature-card-icon">⚡</div>
         <h3 data-i18n="p3_title">Rapide & Fiable</h3>
         <p data-i18n="p3_desc">Réponses en moins d'une seconde. Technologie RAG qui scanne des milliers de sifrey kodesh vérifiés pour chaque question.</p>
@@ -885,7 +890,7 @@
       <h2 data-i18n="hiw_title">Comment ça marche ?</h2>
       <p data-i18n="hiw_sub">Simple, rapide et transparent.</p>
     </div>
-    <div class="steps-grid-new" data-aos="fade-up" data-aos-delay="100">
+    <div class="steps-grid-new" data-reveal data-reveal-delay="100">
 
       <!-- Step 1 — Chat bubble icon -->
       <div class="step-card">
@@ -945,7 +950,7 @@
 
 
 <!-- ✡ SOURCES — Bibliothèque Sacrée -->
-<section id="sources" data-aos="fade-up">
+<section id="sources" data-reveal>
   <div class="container">
     <div class="section-heading">
       <span class="section-eyebrow" data-i18n="sources_eyebrow">Bibliothèque Sacrée</span>
@@ -953,7 +958,7 @@
       <p data-i18n="sources_sub">Chaque réponse de RebSam est ancrée dans l'un de ces textes fondamentaux — avec le Livre, le Siman et le Seif exacts.</p>
     </div>
     <!-- Catégorie 1 : Codes Fondamentaux -->
-    <div class="library-category" data-aos="fade-up" data-aos-delay="100">
+    <div class="library-category" data-reveal data-reveal-delay="100">
       <div class="library-cat-header">
         <span class="library-cat-badge blue">Codes Fondamentaux</span>
       </div>
@@ -986,7 +991,7 @@
     </div>
 
     <!-- Catégorie 2 : Décisionnaires Classiques -->
-    <div class="library-category" data-aos="fade-up" data-aos-delay="200">
+    <div class="library-category" data-reveal data-reveal-delay="200">
       <div class="library-cat-header">
         <span class="library-cat-badge purple">Décisionnaires Classiques</span>
       </div>
@@ -1019,7 +1024,7 @@
     </div>
 
     <!-- Catégorie 3 : Poskim Contemporains -->
-    <div class="library-category" data-aos="fade-up" data-aos-delay="300">
+    <div class="library-category" data-reveal data-reveal-delay="300">
       <div class="library-cat-header">
         <span class="library-cat-badge gold">Poskim Contemporains</span>
       </div>
@@ -1051,7 +1056,7 @@
       </div>
     </div>
 
-    <div class="sources-more" data-aos="fade-up" data-aos-delay="400">
+    <div class="sources-more" data-reveal data-reveal-delay="400">
       <p>… et <span data-i18n="sources_more_count">des milliers d'autres sifrey kodesh</span> numérisés, vérifiés, indexés.</p>
     </div>
   </div>
@@ -1819,11 +1824,16 @@
   });
 
   /* ═══════════════════════════════════════════════
-     AOS — init
+     REVEAL — IntersectionObserver natif (remplace AOS)
   ═══════════════════════════════════════════════ */
-  window.addEventListener('load', function() {
-    if (typeof AOS !== 'undefined') AOS.init({ duration: 700, easing: 'ease-out-cubic', once: true, offset: 60 });
-  });
+  (function() {
+    const obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('[data-reveal]').forEach(function(el) { obs.observe(el); });
+  })();
 
   /* ═══════════════════════════════════════════════
      ANIMATED COUNTERS — Bucket Stats
@@ -1865,8 +1875,7 @@
   window.addEventListener('load', startCounters);
 
 </script>
-<!-- AOS JS -->
-<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.min.js" defer></script>
+
 <script src="https://cdn.jsdelivr.net/npm/@calj.net/jdates/dist/cdn/calj.min.js" defer></script>
 </body>
 </html>
