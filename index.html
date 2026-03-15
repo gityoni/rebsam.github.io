@@ -1405,6 +1405,17 @@
     }
   };
 
+  // Pré-sélection langue depuis ?lang= (venant des pages /en, /heb, /fr)
+  (function() {
+    const p = new URLSearchParams(window.location.search).get('lang');
+    if (p && ['fr','en','he'].includes(p)) {
+      localStorage.setItem('rebsam-lang', p);
+      // Nettoyer l'URL sans recharger la page
+      const url = new URL(window.location.href);
+      url.searchParams.delete('lang');
+      history.replaceState(null, '', url.pathname + (url.search || ''));
+    }
+  })();
   let currentLang = localStorage.getItem('rebsam-lang') || 'fr';
 
   function applyTranslations(lang) {
