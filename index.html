@@ -61,22 +61,47 @@
   <link rel="preconnect" href="https://hook.eu1.make.com" crossorigin />
   <!-- Preload image LCP hero -->
   <link rel="preload" as="image" href="avatar.webp" fetchpriority="high" />
-  <!-- Fonts critiques (Inter + Outfit) — chargement NON-BLOQUANT -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" onload="this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600&display=swap"></noscript>
-  <!-- Fonts RTL (Heebo + Frank Ruhl) — chargement NON-BLOQUANT -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&family=Frank+Ruhl+Libre:wght@400;700&display=swap" onload="this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&family=Frank+Ruhl+Libre:wght@400;700&display=swap"></noscript>
+  <!-- Fonts critiques (Inter + Outfit) — chargement NON-BLOQUANT, display=optional → zéro CLS -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600&display=optional" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600&display=optional"></noscript>
+  <!-- Fonts RTL (Heebo + Frank Ruhl) — chargement NON-BLOQUANT, display=optional → zéro CLS -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&family=Frank+Ruhl+Libre:wght@400;700&display=optional" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&family=Frank+Ruhl+Libre:wght@400;700&display=optional"></noscript>
   <!-- AOS – Animate On Scroll — chargement NON-BLOQUANT -->
   <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" onload="this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"></noscript>
   <style>
+    /* ── FONT FALLBACKS avec size-adjust (anti-CLS) ── */
+    @font-face {
+      font-family: 'Inter-fallback';
+      src: local('Arial'), local('Helvetica Neue'), local('sans-serif');
+      ascent-override: 90%;
+      descent-override: 22%;
+      line-gap-override: 0%;
+      size-adjust: 107%;
+    }
+    @font-face {
+      font-family: 'Outfit-fallback';
+      src: local('Arial'), local('Helvetica Neue'), local('sans-serif');
+      ascent-override: 105%;
+      descent-override: 27%;
+      line-gap-override: 0%;
+      size-adjust: 96%;
+    }
+    @font-face {
+      font-family: 'Heebo-fallback';
+      src: local('Arial'), local('Helvetica Neue'), local('sans-serif');
+      ascent-override: 92%;
+      descent-override: 23%;
+      line-gap-override: 0%;
+      size-adjust: 105%;
+    }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; overflow-x: hidden; }
-    body { font-family: 'Inter', sans-serif; color: var(--text-primary); background: var(--body-bg); -webkit-font-smoothing: antialiased; transition: background .4s, color .3s; overflow-x: hidden; }
+    body { font-family: 'Inter', 'Inter-fallback', sans-serif; color: var(--text-primary); background: var(--body-bg); -webkit-font-smoothing: antialiased; transition: background .4s, color .3s; overflow-x: hidden; }
     a { text-decoration: none; color: inherit; }
-    [lang="he"], [dir="rtl"] { font-family: 'Heebo', sans-serif; }
-    [dir="rtl"] body { font-family: 'Frank Ruhl Libre', serif; }
+    [lang="he"], [dir="rtl"] { font-family: 'Heebo', 'Heebo-fallback', sans-serif; }
+    [dir="rtl"] body { font-family: 'Frank Ruhl Libre', 'Heebo-fallback', serif; }
     [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4,
     [dir="rtl"] .logo, [dir="rtl"] .hero-h1, [dir="rtl"] .msg-bubble,
     [dir="rtl"] .nav-links a, [dir="rtl"] .btn, [dir="rtl"] .lang-btn,
@@ -136,7 +161,7 @@
     #dark-toggle:hover { background: rgba(46,107,230,.1); border-color: var(--primary); color: var(--primary); }
     html.dark #dark-toggle { color: #fbbf24; border-color: rgba(251,191,36,.4); }
     html.dark #dark-toggle:hover { background: rgba(251,191,36,.1); }
-    .font-logo { font-family: 'Outfit', sans-serif; }
+    .font-logo { font-family: 'Outfit', 'Outfit-fallback', sans-serif; }
     h1,h2,h3,h4 { line-height: 1.2; }
     .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
 
@@ -144,7 +169,7 @@
     #header { position: fixed; top: 0; left: 0; right: 0; z-index: 500; padding: 1rem 0; background: var(--header-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 1px 3px rgba(0,0,0,.05); transition: all .25s; }
     #header.scrolled { background: var(--header-bg); box-shadow: var(--shadow-sm); padding: .65rem 0; }
     .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-    .logo { font-family: 'Outfit', sans-serif; font-size: 1.875rem; font-weight: 900; letter-spacing: -0.02em; line-height: 1; white-space: nowrap; }
+    .logo { font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-size: 1.875rem; font-weight: 900; letter-spacing: -0.02em; line-height: 1; white-space: nowrap; }
     .logo .reb { color: var(--primary); }
     .logo .sam { color: var(--secondary-dark); }
     .nav-links { display: flex; gap: 1.75rem; list-style: none; align-items: center; flex-shrink: 0; }
@@ -239,7 +264,7 @@
     .hero-badge { display: inline-flex; align-items: center; padding: .6rem 1.5rem; border-radius: var(--radius-full); background: rgba(46,107,230,.09); color: var(--primary); font-size: .875rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 1.75rem; }
 
     .hero-h1 { margin-bottom: 1rem; animation: fadeUp .6s .08s ease both; line-height: 1; }
-    .hero-h1 .rebsam-logo { display: block; font-family: 'Outfit', sans-serif; font-weight: 900; font-size: clamp(2.8rem,7vw,4.5rem); letter-spacing: -.04em; line-height: 1; margin-bottom: .4rem; }
+    .hero-h1 .rebsam-logo { display: block; font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-weight: 900; font-size: clamp(2.8rem,7vw,4.5rem); letter-spacing: -.04em; line-height: 1; margin-bottom: .4rem; }
     .hero-h1 .rebsam-logo .reb { color: var(--primary); }
     .hero-h1 .rebsam-logo .sam { color: var(--secondary-dark); }
     .hero-h1 [data-i18n="hero_tagline"] { display: block; font-size: clamp(1rem,2vw,1.3rem); font-weight: 500; color: rgba(55,65,81,.6); letter-spacing: -.01em; line-height: 1.4; }
@@ -270,7 +295,7 @@
     .hero-sources { font-size: .68rem; color: rgba(100,116,139,.5); letter-spacing: .03em; animation: fadeUp .6s .25s ease both; line-height: 1.6; max-width: 540px; margin: 0 auto .5rem; }
 
     .hero-avatar-wrap { position: relative; margin: 1rem auto 0; max-width: 340px; animation: fadeUp .6s .28s ease both; }
-    .hero-avatar-img { width: 100%; max-width: 300px; height: auto; aspect-ratio: 1/1; display: block; margin: 0 auto; filter: drop-shadow(0 12px 32px rgba(91,142,240,.28)) drop-shadow(0 4px 12px rgba(0,0,0,.12)); border-radius: 1.5rem; }
+    .hero-avatar-img { width: 100%; max-width: 300px; height: auto; aspect-ratio: 1/1; display: block; margin: 0 auto; filter: drop-shadow(0 12px 32px rgba(91,142,240,.28)) drop-shadow(0 4px 12px rgba(0,0,0,.12)); border-radius: 1.5rem; contain: layout; }
     .hero-avatar-btn { background: linear-gradient(135deg, #5B8EF0 0%, #7C6FCD 50%, #E07B5A 100%); box-shadow: 0 6px 24px rgba(124,111,205,.35); font-size: .825rem; padding: .6rem 1.25rem; }
     .hero-avatar-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 36px rgba(124,111,205,.5); }
     @media (max-width: 640px) { .hero-avatar-img { max-width: 220px; } }
@@ -293,7 +318,7 @@
     .bucket-fill { height:100%; border-radius:9999px; background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light)); width:0%; transition: width 1.8s cubic-bezier(.4,0,.2,1); }
 
     /* ── SOURCES SECTION ── */
-    #sources { padding: 5rem 0; background: var(--faq-bg); position:relative; overflow:hidden; }
+    #sources { padding: 5rem 0; background: var(--faq-bg); position:relative; overflow:hidden; content-visibility: auto; contain-intrinsic-size: 0 600px; }
     .sources-grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap:1rem; margin-top:2.5rem; }
     @media (max-width:640px) { .sources-grid { grid-template-columns: repeat(2,1fr); } }
     .source-tag { display:flex; align-items:center; gap:.65rem; background: var(--card-bg); border:1.5px solid var(--border); border-radius:.875rem; padding:.875rem 1.125rem; transition:all .3s; cursor:default; }
@@ -309,7 +334,7 @@
     /* SECTIONS */
     .section-heading { text-align: center; margin-bottom: 3rem; }
     [dir="rtl"] .section-heading { text-align: right; }
-    .section-heading h2 { font-family: 'Outfit', sans-serif; font-size: clamp(1.75rem,4vw,2.5rem); font-weight: 900; color: var(--secondary-dark); margin-bottom: .75rem; letter-spacing: -.02em; }
+    .section-heading h2 { font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-size: clamp(1.75rem,4vw,2.5rem); font-weight: 900; color: var(--secondary-dark); margin-bottom: .75rem; letter-spacing: -.02em; }
     .section-heading p { font-size: 1.0625rem; color: var(--text-secondary); max-width: 560px; margin: 0 auto; line-height: 1.65; }
     .section-eyebrow { display: inline-block; padding: .28rem .95rem; border-radius: var(--radius-full); background: linear-gradient(135deg, #5B8EF0 0%, #7C6FCD 50%, #E07B5A 100%); color: #fff; font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; box-shadow: 0 4px 15px rgba(91,142,240,.3); }
     #how-it-works .section-eyebrow { font-size: .85rem; padding: .45rem 1.4rem; letter-spacing: .12em; box-shadow: 0 6px 24px rgba(91,142,240,.4); margin-bottom: 1.5rem; }
@@ -324,7 +349,7 @@
     #faq .section-eyebrow { background: none; color: var(--primary); box-shadow: none; font-size: .8rem; letter-spacing: .1em; font-weight: 700; padding: 0; }
 
     /* HOW IT WORKS */
-    #how-it-works { padding: 6rem 0; background: rgba(255,255,255,.45); position: relative; overflow: hidden; }
+    #how-it-works { padding: 6rem 0; background: rgba(255,255,255,.45); position: relative; overflow: hidden; content-visibility: auto; contain-intrinsic-size: 0 700px; }
     /* Legacy - keep for safety */
     .steps-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 3rem; position: relative; }
     @media (max-width: 767px) { .steps-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
@@ -375,7 +400,7 @@
     .source-book-sub { font-size: .75rem; font-weight: 400; color: var(--text-muted); }
 
     /* PILLARS */
-    #pillars { padding: 6rem 0; background: rgba(255,255,255,.3); position: relative; overflow: hidden; }
+    #pillars { padding: 6rem 0; background: rgba(255,255,255,.3); position: relative; overflow: hidden; content-visibility: auto; contain-intrinsic-size: 0 700px; }
     .pillars-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; position: relative; }
     @media (max-width: 767px) { .pillars-grid { grid-template-columns: 1fr; } }
     .pillars-glow { position: absolute; inset: -8rem; pointer-events: none; z-index: 0; }
@@ -394,17 +419,17 @@
     .feature-card p { font-size: .9375rem; color: var(--text-secondary); line-height: 1.65; }
 
     /* FAQ - ENHANCED */
-    #faq { padding: 7rem 0 6rem; background: var(--faq-bg); position: relative; overflow: hidden; }
+    #faq { padding: 7rem 0 6rem; background: var(--faq-bg); position: relative; overflow: hidden; content-visibility: auto; contain-intrinsic-size: 0 800px; }
     #faq::before { content:''; position:absolute; top:-200px; right:-150px; width:600px; height:600px; border-radius:50%; background: radial-gradient(circle, rgba(186,210,255,.35) 0%, transparent 65%); opacity: .7; }
     #faq::after { content:''; position:absolute; bottom:-150px; left:-100px; width:500px; height:500px; border-radius:50%; background: radial-gradient(circle, rgba(210,225,255,.25) 0%, transparent 65%); opacity: .6; }
     #faq .section-eyebrow { background: none; color: var(--primary); box-shadow: none; font-size: .75rem; letter-spacing: .12em; font-weight: 700; padding: 0; display: block; text-align: center; margin-bottom: 1rem; }
-    #faq .section-heading h2 { font-family: 'Outfit', sans-serif; font-size: clamp(2rem,5vw,3rem); font-weight: 900; color: var(--secondary-dark); margin-bottom: .75rem; letter-spacing: -.02em; }
+    #faq .section-heading h2 { font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-size: clamp(2rem,5vw,3rem); font-weight: 900; color: var(--secondary-dark); margin-bottom: .75rem; letter-spacing: -.02em; }
     #faq .section-heading p { color: var(--text-secondary); font-size: 1.05rem; }
     .faq-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: .85rem; position: relative; z-index: 1; }
     .faq-item { background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 1.1rem; overflow: hidden; transition: box-shadow .25s, border-color .25s, background .25s; }
     .faq-item:hover { box-shadow: 0 6px 28px rgba(46,107,230,.12); border-color: rgba(46,107,230,.25); background: rgba(255,255,255,.96); }
     .faq-item.open { border-color: var(--border-strong); background: var(--surface); box-shadow: 0 4px 20px rgba(46,107,230,.1); }
-    .faq-question { width: 100%; display: flex; align-items: center; justify-content: space-between; text-align: left; padding: 1.35rem 1.75rem; cursor: pointer; background: none; border: none; font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700; color: var(--secondary-dark); transition: all .25s; }
+    .faq-question { width: 100%; display: flex; align-items: center; justify-content: space-between; text-align: left; padding: 1.35rem 1.75rem; cursor: pointer; background: none; border: none; font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-size: 1rem; font-weight: 700; color: var(--secondary-dark); transition: all .25s; }
     html.dark .faq-question { color: var(--secondary-dark); }
     [dir="rtl"] .faq-question { text-align: right; }
     .faq-question:hover { color: var(--primary); }
@@ -465,7 +490,7 @@
     @keyframes modalIn { from{opacity:0;transform:scale(.95) translateY(20px);} to{opacity:1;transform:scale(1) translateY(0);} }
     .chat-header { background: linear-gradient(90deg, var(--primary-pastel) 0%, var(--primary-pastel-dark) 100%); padding: 1.125rem 1.25rem; display: flex; align-items: center; justify-content: space-between; border-radius: 1.5rem 1.5rem 0 0; }
     .chat-header-left { display: flex; align-items: center; gap: .75rem; }
-    .chat-avatar { width: 2.75rem; height: 2.75rem; border-radius: 50%; background: rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center; font-family: 'Outfit', sans-serif; font-weight: 700; color: #fff; font-size: .9rem; }
+    .chat-avatar { width: 2.75rem; height: 2.75rem; border-radius: 50%; background: rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center; font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-weight: 700; color: #fff; font-size: .9rem; }
     .chat-header-name { font-weight: 700; color: #fff; font-size: .9375rem; }
     .chat-header-status { font-size: .75rem; color: rgba(255,255,255,.72); display: flex; align-items: center; gap: .35rem; margin-top: .15rem; }
     .chat-header-status .dot { width: .45rem; height: .45rem; border-radius: 50%; background: #4ade80; display: inline-block; }
