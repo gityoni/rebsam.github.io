@@ -1970,6 +1970,7 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
 
   let _zmanimData = null;
   let _zmanimCity = '';
+  let _zmanimUserLocked = false; // l'utilisateur a choisi sa ville → bloquer l'auto-geo
 
   const ZMANIM_ITEMS = [
     'alotHaShachar', 'sunrise', 'sofZmanShmaMGA', 'sofZmanShma',
@@ -2021,11 +2022,16 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
 
   function _requestZmanimLocation() {
     const lbl = ZMANIM_LABELS[currentLang] || ZMANIM_LABELS.fr;
-    const btn = document.querySelector('.zmanim-loc-btn');
-    const _resetBtn = (txt) => { if (btn) { btn.textContent = txt || lbl.share_loc; btn.disabled = false; } };
+    const _resetBtn = (txt) => {
+      const b = document.querySelector('.zmanim-loc-btn');
+      if (b) { b.textContent = txt || lbl.share_loc; b.disabled = false; }
+    };
+
+    _zmanimUserLocked = true;
 
     if (!navigator.geolocation) { _resetBtn(lbl.btn_error); return; }
 
+    const btn = document.querySelector('.zmanim-loc-btn');
     if (btn) { btn.textContent = lbl.btn_locating; btn.disabled = true; }
 
     navigator.geolocation.getCurrentPosition(
@@ -2070,10 +2076,11 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
 
     if (!navigator.geolocation) return;
 
-    // Then try to refine with actual location
+    // Then try to refine with actual location (only if user hasn't explicitly chosen)
     navigator.geolocation.getCurrentPosition(
       pos => {
-        _loadZmanim(pos.coords.latitude, pos.coords.longitude, '').catch(() => {});
+        if (!_zmanimUserLocked)
+          _loadZmanim(pos.coords.latitude, pos.coords.longitude, '').catch(() => {});
       },
       () => {},
       {timeout: 8000, enableHighAccuracy: false}
