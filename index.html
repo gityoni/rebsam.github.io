@@ -57,16 +57,17 @@
   <!-- Preconnect — uniquement les origines critiques au chargement initial -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-  <!-- fonts.gstatic.com supprimé : display=optional ne charge pas les fonts si non cachées -->
+  <!-- fonts.gstatic.com requis pour display=swap (préconnexion pour vitesse) -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <!-- hook.eu1.make.com supprimé : webhook appelé seulement sur interaction utilisateur -->
   <!-- Preload image LCP hero -->
   <link rel="preload" as="image" href="avatar.webp" fetchpriority="high" imagesizes="(max-width:400px) 200px, (max-width:640px) 220px, 300px" />
-  <!-- Fonts critiques (Inter + Outfit) — chargement NON-BLOQUANT, display=optional → zéro CLS -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600&display=optional" onload="this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600&display=optional"></noscript>
-  <!-- Fonts RTL (Heebo + Frank Ruhl) — chargement NON-BLOQUANT, display=optional → zéro CLS -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&family=Frank+Ruhl+Libre:wght@400;700&display=optional" onload="this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&family=Frank+Ruhl+Libre:wght@400;700&display=optional"></noscript>
+  <!-- Fonts critiques (Inter + Outfit) — display=swap + size-adjust fallbacks → logo toujours visible, CLS minimal -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600&display=swap"></noscript>
+  <!-- Fonts RTL (Heebo + Frank Ruhl) — display=swap + fallbacks calibrés -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&family=Frank+Ruhl+Libre:wght@400;700&display=swap" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&family=Frank+Ruhl+Libre:wght@400;700&display=swap"></noscript>
   <!-- AOS remplacé par IntersectionObserver natif — zéro CDN, zéro CLS -->
   <style>
     /* ── FONT FALLBACKS avec size-adjust (anti-CLS) ── */
