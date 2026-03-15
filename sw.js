@@ -1,4 +1,4 @@
-const CACHE = 'rebsam-v3';
+const CACHE = 'rebsam-v4';
 const ASSETS = ['/','index.html','manifest.json'];
 
 self.addEventListener('install', e => {
@@ -13,7 +13,16 @@ self.addEventListener('activate', e => {
 });
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
-  // Network-first : toujours essayer le réseau, cache uniquement en fallback offline
+  // Ignorer les URLs non-http (chrome-extension://, etc.)
+  const url = e.request.url;
+  if (!url.startsWith('http://') && !url.startsWith('https://')) return;
+  // Pour les requêtes cross-origin (CDN, API tierces) : passer directement sans cache
+  const isSameOrigin = url.startsWith(self.location.origin);
+  if (!isSameOrigin) {
+    e.respondWith(fetch(e.request));
+    return;
+  }
+  // Network-first pour les requêtes same-origin : réseau, cache en fallback offline
   e.respondWith(
     fetch(e.request).then(resp => {
       const clone = resp.clone();
