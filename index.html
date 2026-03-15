@@ -1941,7 +1941,8 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
       minchaGedola: 'Minha Guedola', plagHaMincha: 'Plag HaMinha',
       sunset: 'Chkia (Coucher)', tzeit: 'Tseit HaKokhavim',
       locating: 'Chargement des zmanim…', error: 'Zmanim indisponibles',
-      jerusalem: 'Jérusalem (par défaut)', share_loc: '📍 Zmanim de ma ville'
+      jerusalem: 'Jérusalem (par défaut)', share_loc: '📍 Zmanim de ma ville',
+      btn_locating: '⏳ Localisation…', btn_denied: '⚠️ Géoloc. refusée', btn_error: '⚠️ Erreur'
     },
     en: {
       title: '⏰ Zmanim', subtitle: 'Today\'s Halachic times',
@@ -1951,7 +1952,8 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
       minchaGedola: 'Mincha Gedola', plagHaMincha: 'Plag HaMincha',
       sunset: 'Shkia (Sunset)', tzeit: 'Tzait HaKochavim',
       locating: 'Loading zmanim…', error: 'Zmanim unavailable',
-      jerusalem: 'Jerusalem (default)', share_loc: '📍 My city\'s zmanim'
+      jerusalem: 'Jerusalem (default)', share_loc: '📍 My city\'s zmanim',
+      btn_locating: '⏳ Locating…', btn_denied: '⚠️ Location denied', btn_error: '⚠️ Error'
     },
     he: {
       title: '⏰ זמנים', subtitle: 'זמנים הלכתיים להיום',
@@ -1961,7 +1963,8 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
       minchaGedola: 'מנחה גדולה', plagHaMincha: 'פלג המנחה',
       sunset: 'שקיעת החמה', tzeit: 'צאת הכוכבים',
       locating: '...טוען זמנים', error: 'זמנים לא זמינים',
-      jerusalem: 'ירושלים (ברירת מחדל)', share_loc: '📍 זמנים של עירי'
+      jerusalem: 'ירושלים (ברירת מחדל)', share_loc: '📍 זמנים של עירי',
+      btn_locating: '⏳ מאתר…', btn_denied: '⚠️ גישה נדחתה', btn_error: '⚠️ שגיאה'
     }
   };
 
@@ -2017,11 +2020,36 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
   }
 
   function _requestZmanimLocation() {
-    if (!navigator.geolocation) return;
+    const lbl = ZMANIM_LABELS[currentLang] || ZMANIM_LABELS.fr;
+    const btn = document.querySelector('.zmanim-loc-btn');
+    const _resetBtn = (txt) => { if (btn) { btn.textContent = txt || lbl.share_loc; btn.disabled = false; } };
+
+    if (!navigator.geolocation) { _resetBtn(lbl.btn_error); return; }
+
+    if (btn) { btn.textContent = lbl.btn_locating; btn.disabled = true; }
+
     navigator.geolocation.getCurrentPosition(
-      pos => _loadZmanim(pos.coords.latitude, pos.coords.longitude, '').catch(() => {}),
-      () => {},
-      {timeout: 8000, enableHighAccuracy: false}
+      async pos => {
+        const lat = pos.coords.latitude, lon = pos.coords.longitude;
+        let city = '';
+        try {
+          const r = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat.toFixed(6)}&lon=${lon.toFixed(6)}`,
+            { headers: { 'Accept-Language': currentLang || 'fr' } }
+          );
+          const d = await r.json();
+          city = d.address?.city || d.address?.town || d.address?.village || d.address?.county || '';
+        } catch { /* reverse geocoding optionnel */ }
+        _loadZmanim(lat, lon, city)
+          .then(() => _resetBtn())
+          .catch(() => _resetBtn(lbl.btn_error));
+      },
+      (err) => {
+        const denied = err.code === 1; /* PERMISSION_DENIED */
+        _resetBtn(denied ? lbl.btn_denied : lbl.btn_error);
+        setTimeout(() => _resetBtn(), 3000);
+      },
+      { timeout: 8000, enableHighAccuracy: false }
     );
   }
 
