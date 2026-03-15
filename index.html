@@ -15,19 +15,22 @@
 
   <!-- ══ OPEN GRAPH (Facebook, WhatsApp, LinkedIn) ══ -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://rebsam.com/">
+  <meta property="og:url" content="https://callsam.net/">
   <meta property="og:title" content="RebSam — Ton expert Halakha, 24h/24">
-  <meta property="og:description" content="Nos sources, pas le net. Choulhan Aroukh, Michna Beroura, Responsa... Pose tes questions en FR / עברית / EN">
-  <meta property="og:image" content="https://rebsam.com/og-image.png">
+  <meta property="og:description" content="Nos sources uniquement : Choulhan Aroukh, Michna Beroura, Yalkout Yossef, Responsa… Pas le net — la Torah. Pose tes questions en FR / עברית / EN — RebSam te répond en quelques secondes.">
+  <meta property="og:image" content="https://callsam.net/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="RebSam — Expert IA Rabbinique, disponible 24h/24 en français, hébreu et anglais">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:locale:alternate" content="en_US">
   <meta property="og:locale:alternate" content="he_IL">
 
   <!-- ══ TWITTER CARD ══ -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="RebSam — Expert Halakha IA">
-  <meta name="twitter:description" content="Des milliers de sifrey kodesh. Réponses sourcées en 1 seconde. Disponible 24h/24.">
-  <meta name="twitter:image" content="https://rebsam.com/og-image.png">
+  <meta name="twitter:title" content="RebSam — Expert Halakha IA, 24h/24">
+  <meta name="twitter:description" content="Nos sources uniquement : Choulhan Aroukh, Michna Beroura, Yalkout Yossef, Responsa… Pas le net — la Torah. Pose tes questions en FR / עברית / EN — RebSam te répond en quelques secondes.">
+  <meta name="twitter:image" content="https://callsam.net/og-image.png">
 
   <!-- ══ PWA ══ -->
   <link rel="manifest" href="manifest.json">
@@ -1402,6 +1405,17 @@
     }
   };
 
+  // Pré-sélection langue depuis ?lang= (venant des pages /en, /heb, /fr)
+  (function() {
+    const p = new URLSearchParams(window.location.search).get('lang');
+    if (p && ['fr','en','he'].includes(p)) {
+      localStorage.setItem('rebsam-lang', p);
+      // Nettoyer l'URL sans recharger la page
+      const url = new URL(window.location.href);
+      url.searchParams.delete('lang');
+      history.replaceState(null, '', url.pathname + (url.search || ''));
+    }
+  })();
   let currentLang = localStorage.getItem('rebsam-lang') || 'fr';
 
   function applyTranslations(lang) {
