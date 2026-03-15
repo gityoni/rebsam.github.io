@@ -244,15 +244,15 @@
     .hero-cloud-2 { position: absolute; top: 30%; right: -80px; width: 800px; height: 600px; background: radial-gradient(ellipse, rgba(248,246,252,.55) 0%, rgba(255,252,254,.25) 40%, transparent 70%); filter: blur(80px); will-change: transform; }
     .hero-cloud-3 { display: none; }
     .halo { position: absolute; border-radius: 50%; filter: blur(80px); }
-    .halo-1 { top: -15%; right: -10%; width: 700px; height: 700px; background: radial-gradient(circle, rgba(220,225,255,.08) 0%, rgba(240,238,252,.12) 40%, transparent 70%); opacity: .7; animation: floatA 20s ease-in-out infinite; }
-    .halo-2 { bottom: -20%; left: -15%; width: 800px; height: 800px; background: radial-gradient(circle, rgba(186,230,255,.25) 0%, rgba(219,234,254,.18) 40%, transparent 70%); opacity: .6; animation: floatB 25s ease-in-out infinite; }
-    .halo-3 { top: 30%; left: 40%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(237,233,254,.18) 0%, rgba(252,231,243,.22) 40%, transparent 70%); opacity: .5; animation: floatC 22s ease-in-out infinite; }
-    .blob-1 { position: absolute; top: 15%; right: 12%; width: 18rem; height: 18rem; border-radius: 45% 55% 65% 35%/50% 60% 40% 50%; background: linear-gradient(135deg, rgba(255,127,80,.07), rgba(252,231,243,.12)); animation: morphA 15s ease-in-out infinite; }
-    .blob-2 { position: absolute; bottom: 10%; left: 8%; width: 14rem; height: 14rem; border-radius: 55% 45% 35% 65%/40% 50% 60% 50%; background: linear-gradient(135deg, rgba(186,230,255,.12), rgba(219,234,254,.18)); animation: morphB 18s ease-in-out infinite; }
+    .halo-1 { top: -15%; right: -10%; width: 700px; height: 700px; background: radial-gradient(circle, rgba(220,225,255,.08) 0%, rgba(240,238,252,.12) 40%, transparent 70%); opacity: .7; animation: floatA 20s ease-in-out infinite; will-change: transform; }
+    .halo-2 { bottom: -20%; left: -15%; width: 800px; height: 800px; background: radial-gradient(circle, rgba(186,230,255,.25) 0%, rgba(219,234,254,.18) 40%, transparent 70%); opacity: .6; animation: floatB 25s ease-in-out infinite; will-change: transform; }
+    .halo-3 { top: 30%; left: 40%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(237,233,254,.18) 0%, rgba(252,231,243,.22) 40%, transparent 70%); opacity: .5; animation: floatC 22s ease-in-out infinite; will-change: transform; }
+    .blob-1 { position: absolute; top: 15%; right: 12%; width: 18rem; height: 18rem; border-radius: 45% 55% 65% 35%/50% 60% 40% 50%; background: linear-gradient(135deg, rgba(255,127,80,.07), rgba(252,231,243,.12)); animation: morphA 15s ease-in-out infinite; will-change: transform; }
+    .blob-2 { position: absolute; bottom: 10%; left: 8%; width: 14rem; height: 14rem; border-radius: 55% 45% 35% 65%/40% 50% 60% 50%; background: linear-gradient(135deg, rgba(186,230,255,.12), rgba(219,234,254,.18)); animation: morphB 18s ease-in-out infinite; will-change: transform; }
     @keyframes floatA { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(20px,-30px) scale(1.08);} }
     @keyframes floatB { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-25px,20px) scale(1.05);} }
     @keyframes floatC { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(15px,-15px) scale(1.06);} }
-    @keyframes morphA { 0%,100%{transform:translate(0,0) rotate(0deg) scale(1); border-radius:45% 55% 65% 35%/50% 60% 40% 50%;} 33%{transform:translate(-12px,18px) rotate(6deg) scale(1.05);} 66%{transform:translate(8px,-10px) rotate(-5deg) scale(0.95);} }
+    @keyframes morphA { 0%,100%{transform:translate(0,0) rotate(0deg) scale(1);} 33%{transform:translate(-12px,18px) rotate(6deg) scale(1.05);} 66%{transform:translate(8px,-10px) rotate(-5deg) scale(0.95);} }
     @keyframes morphB { 0%,100%{transform:translate(0,0) rotate(0deg) scale(1);} 50%{transform:translate(10px,-15px) rotate(-5deg) scale(1.04);} }
     @keyframes fadeUp { from{opacity:0;transform:translateY(24px);} to{opacity:1;transform:translateY(0);} }
 
@@ -755,6 +755,12 @@
     [dir="rtl"] .zmanim-header { flex-direction: row-reverse; }
     @media (max-width: 767px) { #zmanim-section { padding: 1.5rem 0; } .zmanim-card { padding: 1.1rem 1rem; border-radius: 1.1rem; } .zmanim-grid { grid-template-columns: 1fr 1fr; gap: .35rem; } .zmanim-title { font-size: 1.05rem; } }
     @media (max-width: 380px) { .zmanim-grid { grid-template-columns: 1fr; } }
+
+    /* ── Respect prefers-reduced-motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      .halo-1, .halo-2, .halo-3, .blob-1, .blob-2 { animation: none; will-change: auto; }
+    }
   </style>
 </head>
 <body>
