@@ -2031,23 +2031,18 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
         widget.innerHTML = `<div class="zmanim-loading">${lbl.error}</div>`;
       });
 
-    if (!navigator.geolocation) { fallbackToJerusalem(); return; }
+    // Load Jerusalem immediately so _zmanimData is populated ASAP
+    fallbackToJerusalem();
 
-    let resolved = false;
-    const timer = setTimeout(() => { if (!resolved) { resolved = true; fallbackToJerusalem(); } }, 4000);
+    if (!navigator.geolocation) return;
 
+    // Then try to refine with actual location
     navigator.geolocation.getCurrentPosition(
       pos => {
-        if (resolved) return;
-        resolved = true; clearTimeout(timer);
-        _loadZmanim(pos.coords.latitude, pos.coords.longitude, '').catch(fallbackToJerusalem);
+        _loadZmanim(pos.coords.latitude, pos.coords.longitude, '').catch(() => {});
       },
-      () => {
-        if (resolved) return;
-        resolved = true; clearTimeout(timer);
-        fallbackToJerusalem();
-      },
-      {timeout: 4000, enableHighAccuracy: false}
+      () => {},
+      {timeout: 8000, enableHighAccuracy: false}
     );
   }
 
