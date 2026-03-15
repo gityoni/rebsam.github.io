@@ -110,6 +110,15 @@
   [headers.values]
     Cache-Control = "public, max-age=2592000, immutable"
 
+# ── Digital Asset Links (TWA / Play Store) ─────────────────
+[[headers]]
+  for = "/.well-known/assetlinks.json"
+  [headers.values]
+    Content-Type  = "application/json"
+    Cache-Control = "public, max-age=3600"
+    # Pas de X-Frame-Options ici (override du bloc /* ci-dessus)
+    X-Frame-Options = ""
+
 # ── Plugins Netlify ────────────────────────────────────────
 [[plugins]]
   package = "@netlify/plugin-lighthouse"
