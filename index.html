@@ -66,7 +66,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <!-- hook.eu1.make.com supprimé : webhook appelé seulement sur interaction utilisateur -->
   <!-- Preload image LCP hero -->
-  <link rel="preload" as="image" href="avatar.webp" fetchpriority="high" imagesizes="(max-width:400px) 200px, (max-width:640px) 220px, 300px" />
+  <link rel="preload" as="image" href="avatar.webp" type="image/webp" fetchpriority="high" imagesizes="(max-width:400px) 200px, (max-width:640px) 220px, 300px" />
   <!-- Fonts critiques (Inter + Outfit) — display=swap + size-adjust fallbacks → logo toujours visible, CLS minimal -->
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" onload="this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600&display=swap"></noscript>
@@ -247,7 +247,7 @@
     @media (max-width: 767px) { #hero { padding: 5rem 0 1.5rem; min-height: auto; } }
     .hero-bg { position: absolute; inset: 0; background: transparent; z-index: -2; overflow: hidden; }
     .hero-cloud-1 { position: absolute; top: -80px; left: -120px; width: 700px; height: 500px; background: radial-gradient(ellipse, rgba(199,210,254,.55) 0%, rgba(224,231,255,.3) 40%, transparent 70%); filter: blur(60px); }
-    .hero-cloud-2 { position: absolute; top: 30%; right: -80px; width: 800px; height: 600px; background: radial-gradient(ellipse, rgba(248,246,252,.55) 0%, rgba(255,252,254,.25) 40%, transparent 70%); filter: blur(80px); will-change: transform; }
+    .hero-cloud-2 { position: absolute; top: 30vh; right: -80px; width: 800px; height: 600px; background: radial-gradient(ellipse, rgba(248,246,252,.55) 0%, rgba(255,252,254,.25) 40%, transparent 70%); filter: blur(80px); will-change: transform; }
     .hero-cloud-3 { display: none; }
     .halo { position: absolute; border-radius: 50%; filter: blur(80px); }
     .halo-1 { top: -15%; right: -10%; width: 700px; height: 700px; background: radial-gradient(circle, rgba(220,225,255,.08) 0%, rgba(240,238,252,.12) 40%, transparent 70%); opacity: .7; animation: floatA 20s ease-in-out infinite; will-change: transform; }
@@ -298,7 +298,7 @@
 
     .hero-sources { font-size: .68rem; color: rgba(100,116,139,.5); letter-spacing: .03em; animation: fadeUp .6s .25s ease both; line-height: 1.6; max-width: 540px; margin: 0 auto .5rem; }
 
-    .hero-avatar-wrap { position: relative; margin: 1rem auto 0; max-width: 340px; animation: fadeUp .6s 0s ease both; }
+    .hero-avatar-wrap { position: relative; margin: 1rem auto 0; max-width: 340px; }
     /* ── REVEAL — IntersectionObserver natif (remplace AOS) ── */
     [data-reveal] { opacity: 0; transform: translateY(20px); transition: opacity .7s ease, transform .7s cubic-bezier(.25,.46,.45,.94); }
     [data-reveal][data-reveal-delay="100"] { transition-delay: 100ms; }
