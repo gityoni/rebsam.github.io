@@ -31,17 +31,44 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Detect and setup Android SDK
+        run: |
+          # Find Android SDK path
+          if [ -n "$ANDROID_HOME" ] && [ -d "$ANDROID_HOME" ]; then
+            ANDROID_SDK_PATH="$ANDROID_HOME"
+          elif [ -n "$ANDROID_SDK_ROOT" ] && [ -d "$ANDROID_SDK_ROOT" ]; then
+            ANDROID_SDK_PATH="$ANDROID_SDK_ROOT"
+          elif [ -d "/usr/local/lib/android/sdk" ]; then
+            ANDROID_SDK_PATH="/usr/local/lib/android/sdk"
+          else
+            echo "Android SDK not found, listing candidates:"
+            find /usr/local /opt -maxdepth 4 -name "sdkmanager" 2>/dev/null || true
+            exit 1
+          fi
+          echo "ANDROID_SDK_PATH=$ANDROID_SDK_PATH" >> $GITHUB_ENV
+          echo "Found Android SDK at: $ANDROID_SDK_PATH"
+          ls "$ANDROID_SDK_PATH"
+
+          # Accept licenses and install required components
+          SDKMANAGER=""
+          if [ -f "$ANDROID_SDK_PATH/cmdline-tools/latest/bin/sdkmanager" ]; then
+            SDKMANAGER="$ANDROID_SDK_PATH/cmdline-tools/latest/bin/sdkmanager"
+          elif [ -f "$ANDROID_SDK_PATH/tools/bin/sdkmanager" ]; then
+            SDKMANAGER="$ANDROID_SDK_PATH/tools/bin/sdkmanager"
+          fi
+
+          if [ -n "$SDKMANAGER" ]; then
+            yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
+            "$SDKMANAGER" "build-tools;34.0.0" "platforms;android-34" "platform-tools" || true
+          fi
+
       - name: Install Bubblewrap CLI
         run: npm install -g @bubblewrap/cli
 
       - name: Configure Bubblewrap (JDK + Android SDK paths)
         run: |
           mkdir -p ~/.bubblewrap
-          # Java home from setup-java
-          JAVA_HOME_PATH="${JAVA_HOME}"
-          # Android SDK is pre-installed on ubuntu-latest
-          ANDROID_SDK_PATH="${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}"
-          echo "{\"jdkPath\":\"${JAVA_HOME_PATH}\",\"androidSdkPath\":\"${ANDROID_SDK_PATH}\"}" > ~/.bubblewrap/config.json
+          echo "{\"jdkPath\":\"${JAVA_HOME}\",\"androidSdkPath\":\"${ANDROID_SDK_PATH}\"}" > ~/.bubblewrap/config.json
           cat ~/.bubblewrap/config.json
 
       - name: Restore keystore from secret
