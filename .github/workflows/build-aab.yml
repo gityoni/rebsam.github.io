@@ -51,7 +51,7 @@ jobs:
           chmod +x "$SDKMANAGER"
 
           echo "=== Accepting licenses ==="
-          yes | "$SDKMANAGER" --licenses
+          (yes 2>/dev/null || true) | "$SDKMANAGER" --licenses
 
           echo "=== Installing SDK components ==="
           "$SDKMANAGER" \
