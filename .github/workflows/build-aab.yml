@@ -16,9 +16,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      ANDROID_SDK_ROOT: ${{ github.workspace }}/android-sdk
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,34 +31,12 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install Android SDK (clean, user-owned)
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK components
         run: |
-          set -euo pipefail
-
-          SDK="$ANDROID_SDK_ROOT"
-          mkdir -p "$SDK/cmdline-tools"
-
-          echo "=== Downloading Android command-line tools ==="
-          wget -q "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" \
-            -O /tmp/cmdlt.zip
-          unzip -q /tmp/cmdlt.zip -d /tmp/cmdlt_extract
-          mv /tmp/cmdlt_extract/cmdline-tools "$SDK/cmdline-tools/latest"
-
-          SDKMANAGER="$SDK/cmdline-tools/latest/bin/sdkmanager"
-          chmod +x "$SDKMANAGER"
-
-          echo "=== Accepting licenses ==="
-          (yes 2>/dev/null || true) | "$SDKMANAGER" --licenses
-
-          echo "=== Installing SDK components ==="
-          "$SDKMANAGER" \
-            "build-tools;34.0.0" \
-            "platforms;android-34" \
-            "platform-tools"
-
-          echo "=== Verifying installation ==="
-          echo "build-tools:" && ls "$SDK/build-tools/"
-          echo "platforms:"   && ls "$SDK/platforms/"
+          sdkmanager "build-tools;34.0.0" "platforms;android-34" "platform-tools"
 
       - name: Install Bubblewrap CLI
         run: npm install -g @bubblewrap/cli
