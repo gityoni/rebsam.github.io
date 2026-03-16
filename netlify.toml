@@ -38,6 +38,16 @@
   force  = true
 
 [[redirects]]
+  from = "/heb"
+  to   = "/heb/"
+  status = 301
+
+[[redirects]]
+  from = "/en"
+  to   = "/en/"
+  status = 301
+
+[[redirects]]
   from = "/halakha"
   to   = "/#faq"
   status = 301
