@@ -62,7 +62,7 @@ STRUCTURE DE RÉPONSE COMPLÈTE (TYPE 1 — IMMUABLE)
 
 5. **📍 CONCLUSION PRATIQUE (LÉ-MAASSÉ)** : 1-2 phrases concrètes et actionnables.
 
-6. **📖 SOURCES PRÉCISES** : Liste à puces au format "[Nom du PDF] — Nom du Livre, Siman X, Seif Y".
+6. **📖 SOURCES PRÉCISES** : À la FIN de la réponse uniquement — jamais à l'intérieur du texte. Liste à puces au format "Nom du Livre, Chapitre/Siman, Paragraphe".
 
 7. **SIGNATURE** : Termine chaque réponse par :
    RebSam 🔥
