@@ -1,6 +1,6 @@
 {
   "packageId": "com.rebsam.app",
-  "host": "rebsam.netlify.app",
+  "host": "callsam.net",
   "name": "RebSam — Expert Halakha IA",
   "launcherName": "RebSam",
   "display": "standalone",
@@ -13,9 +13,9 @@
   "backgroundColor": "#ffffff",
   "enableNotifications": false,
   "startUrl": "/",
-  "iconUrl": "https://rebsam.netlify.app/icon-512.png",
-  "maskableIconUrl": "https://rebsam.netlify.app/icon-512.png",
-  "monochromeIconUrl": "https://rebsam.netlify.app/icon-192.png",
+  "iconUrl": "https://www.callsam.net/icon-512.png",
+  "maskableIconUrl": "https://www.callsam.net/icon-512.png",
+  "monochromeIconUrl": "https://www.callsam.net/icon-192.png",
   "appVersion": "1.0.0",
   "appVersionCode": 1,
   "signingKey": {
@@ -26,11 +26,11 @@
   "enableSiteSettingsShortcut": true,
   "isChromeOSOnly": false,
   "isMetaQuest": false,
-  "fullScopeUrl": "https://rebsam.netlify.app/",
+  "fullScopeUrl": "https://callsam.net/",
   "minSdkVersion": 19,
   "targetSdkVersion": 34,
   "generatorApp": "bubblewrap",
-  "webManifestUrl": "https://rebsam.netlify.app/manifest.json",
+  "webManifestUrl": "https://www.callsam.net/manifest.json",
   "fallbackType": "customtabs",
   "features": {},
   "alphaDependencies": {
@@ -42,7 +42,7 @@
       "name": "Poser une question",
       "short_name": "Question",
       "url": "/#chat",
-      "icons": [{ "src": "https://rebsam.netlify.app/icon-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "https://www.callsam.net/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
