@@ -45,6 +45,16 @@ WHATSAPP_TOKEN     = os.environ.get("WHATSAPP_TOKEN", "")
 WHATSAPP_PHONE_ID  = os.environ.get("WHATSAPP_PHONE_ID", "")
 WEBHOOK_VERIFY_TOKEN = os.environ.get("WEBHOOK_VERIFY_TOKEN", "rebsam-webhook-2026")
 
+# ── Config Vertex AI Search (RAG — Corpus-Sifrey-Global) ──
+DATASTORE_ID = os.environ.get(
+    "VERTEX_SEARCH_DATASTORE",
+    "corpus-sifrey-global_1772101356063"
+)
+DATASTORE_PATH = (
+    f"projects/{PROJECT_ID}/locations/global"
+    f"/collections/default_collection/dataStores/{DATASTORE_ID}"
+)
+
 # ← Pour modifier le prompt sans rebuild : Cloud Console → Cloud Run → Variables d'env → SYSTEM_PROMPT
 SYSTEM_PROMPT_ENV  = os.environ.get("SYSTEM_PROMPT", "")
 
@@ -248,6 +258,14 @@ def build_gemini_payload(system_prompt: str, history: list, message: str) -> dic
     return {
         "systemInstruction": {"parts": [{"text": system_prompt or SYSTEM_FALLBACK}]},
         "contents": contents,
+        "tools": [{
+            "retrieval": {
+                "vertexAiSearch": {
+                    "datastore": DATASTORE_PATH
+                },
+                "disableAttribution": False
+            }
+        }],
         "generationConfig": {
             "temperature": 0.7,
             "maxOutputTokens": 2048,

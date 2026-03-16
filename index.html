@@ -1523,6 +1523,7 @@
 
   function trackWAClick() {
     const payload = JSON.stringify({
+      id: _sid(),
       event: 'wa_click',
       lang: currentLang,
       sessionId: _sid(),
