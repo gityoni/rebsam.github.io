@@ -42,7 +42,8 @@
       "name": "Poser une question",
       "short_name": "Question",
       "url": "/#chat",
-      "icons": [{ "src": "https://www.rebsam.fr/icon-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "https://www.rebsam.fr/icon-192.png", "sizes": "192x192" }],
+      "chosenIconUrl": "https://www.rebsam.fr/icon-192.png"
     }
   ]
 }
