@@ -16,22 +16,32 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="RebSam — Your AI Rabbinical Expert, 24/7">
   <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="RebSam">
 
   <!-- ══ TWITTER CARD ══ -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="RebSam — Your Halachic Expert, 24/7">
   <meta name="twitter:description" content="Primary sources only: Shulchan Aruch, Mishna Berura, Yalkut Yosef, Responsa… Not the internet — the Torah. Ask in EN / FR / עברית — RebSam answers in seconds.">
-  <meta name="twitter:image" content="https://callsam.net/og-image-en.png">
+  <meta name="twitter:image" content="https://callsam.net/og-image-en.png?v=2">
 
+  <style>
+    body { margin: 0; background: #0f1d3a; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .wrap { max-width: 480px; padding: 2rem; }
+    h1 { font-size: 2rem; color: #c9a84c; margin: 0 0 .5rem; }
+    p { color: #c5cfe0; line-height: 1.6; }
+    a { display: inline-block; margin-top: 1rem; background: #2E6BE6; color: #fff; padding: .75rem 1.5rem; border-radius: 8px; text-decoration: none; font-size: 1.1rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>RebSam — Your Halachic Expert, 24/7</h1>
+    <p>Primary sources only: Shulchan Aruch, Mishna Berura, Yalkut Yosef, Responsa…<br>Not the internet — the Torah.</p>
+    <p>Ask your questions in English, French or Hebrew — RebSam answers in seconds.</p>
+    <a href="https://callsam.net/?lang=en">Open RebSam →</a>
+  </div>
   <script>
-    // Redirect to main app with English language preference
     localStorage.setItem('rebsam-lang', 'en');
     window.location.replace('/?lang=en');
   </script>
-</head>
-<body>
-  <noscript>
-    <meta http-equiv="refresh" content="0;url=/?lang=en">
-  </noscript>
 </body>
 </html>
