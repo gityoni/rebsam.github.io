@@ -10,7 +10,7 @@ Reb Sam est un expert rabbinique augmenté — système expert qui navigue dans 
 - **Android TWA** : twa-manifest.json, .well-known/
 - **Déploiement** : Netlify (auto-deploy sur push main)
 - **Repo** : gityoni/rebsam.github.io (branche `main`)
-- **URL prod** : callsam.net
+- **URL prod** : rebsam.fr
 - **Netlify project** : rebsam
 
 ## Fichiers clés
@@ -29,7 +29,7 @@ Reb Sam est un expert rabbinique augmenté — système expert qui navigue dans 
 modifier fichiers
 → git add . && git commit -m "description" && git push
 → Netlify auto-deploy déclenché sur branche main
-→ prod live sur callsam.net
+→ prod live sur rebsam.fr
 ```
 
 ## Règles importantes

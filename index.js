@@ -131,7 +131,7 @@ function detectLanguage(text) {
 }
 
 exports.rebsamProxy = async (req, res) => {
-  const allowedOrigin = process.env.ALLOWED_ORIGIN || 'https://rebsam.netlify.app';
+  const allowedOrigin = process.env.ALLOWED_ORIGIN || 'https://rebsam.fr';
   res.set('Access-Control-Allow-Origin', allowedOrigin);
   res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.set('Access-Control-Allow-Headers', 'Content-Type, x-secret-token');
