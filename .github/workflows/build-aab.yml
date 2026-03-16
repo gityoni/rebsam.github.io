@@ -16,6 +16,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      ANDROID_SDK_ROOT: ${{ github.workspace }}/android-sdk
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,61 +34,48 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK components
+      - name: Install Android SDK (clean, user-owned)
         run: |
-          echo "=== Android SDK debug ==="
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          set -euo pipefail
 
-          SDK="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
-          echo "Using SDK: $SDK"
-          ls "$SDK" || (echo "SDK dir not found at $SDK" && exit 1)
+          SDK="$ANDROID_SDK_ROOT"
+          mkdir -p "$SDK/cmdline-tools"
 
-          # Locate sdkmanager
-          SDKMANAGER=""
-          for candidate in \
-            "$SDK/cmdline-tools/latest/bin/sdkmanager" \
-            "$SDK/cmdline-tools/11.0/bin/sdkmanager" \
-            "$SDK/tools/bin/sdkmanager"; do
-            if [ -f "$candidate" ]; then
-              SDKMANAGER="$candidate"
-              echo "Found sdkmanager at: $SDKMANAGER"
-              break
-            fi
-          done
+          echo "=== Downloading Android command-line tools ==="
+          wget -q "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" \
+            -O /tmp/cmdlt.zip
+          unzip -q /tmp/cmdlt.zip -d /tmp/cmdlt_extract
+          mv /tmp/cmdlt_extract/cmdline-tools "$SDK/cmdline-tools/latest"
 
-          if [ -z "$SDKMANAGER" ]; then
-            echo "sdkmanager not found — installing cmdline-tools"
-            ls "$SDK/cmdline-tools/" 2>/dev/null || echo "(no cmdline-tools dir)"
-            # Install fresh cmdline-tools
-            wget -q "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" -O /tmp/cmdlt.zip
-            mkdir -p "$SDK/cmdline-tools"
-            unzip -q /tmp/cmdlt.zip -d /tmp/cmdlt
-            mv /tmp/cmdlt/cmdline-tools "$SDK/cmdline-tools/latest"
-            SDKMANAGER="$SDK/cmdline-tools/latest/bin/sdkmanager"
-          fi
+          SDKMANAGER="$SDK/cmdline-tools/latest/bin/sdkmanager"
+          chmod +x "$SDKMANAGER"
 
           echo "=== Accepting licenses ==="
           yes | "$SDKMANAGER" --licenses
 
-          echo "=== Installing build-tools and platform ==="
-          "$SDKMANAGER" "build-tools;34.0.0" "platforms;android-34" "platform-tools"
+          echo "=== Installing SDK components ==="
+          "$SDKMANAGER" \
+            "build-tools;34.0.0" \
+            "platforms;android-34" \
+            "platform-tools"
 
-          echo "=== Installed build-tools ==="
-          ls "$SDK/build-tools/"
-          echo "=== Installed platforms ==="
-          ls "$SDK/platforms/"
-
-          echo "ANDROID_SDK_PATH=$SDK" >> $GITHUB_ENV
+          echo "=== Verifying installation ==="
+          echo "build-tools:" && ls "$SDK/build-tools/"
+          echo "platforms:"   && ls "$SDK/platforms/"
 
       - name: Install Bubblewrap CLI
         run: npm install -g @bubblewrap/cli
 
-      - name: Configure Bubblewrap (JDK + Android SDK paths)
+      - name: Configure Bubblewrap
         run: |
           mkdir -p ~/.bubblewrap
-          echo "{\"jdkPath\":\"${JAVA_HOME}\",\"androidSdkPath\":\"${ANDROID_SDK_PATH}\"}" > ~/.bubblewrap/config.json
-          echo "Bubblewrap config:"
+          cat > ~/.bubblewrap/config.json <<EOF
+          {
+            "jdkPath": "${JAVA_HOME}",
+            "androidSdkPath": "${ANDROID_SDK_ROOT}"
+          }
+          EOF
+          echo "=== Bubblewrap config ==="
           cat ~/.bubblewrap/config.json
 
       - name: Restore keystore from secret
