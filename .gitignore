@@ -1,0 +1,14 @@
+# Keystore Android — NE JAMAIS COMMITTER
+*.keystore
+*.jks
+
+# Env vars
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
