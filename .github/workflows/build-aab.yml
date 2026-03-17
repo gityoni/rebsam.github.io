@@ -73,14 +73,12 @@ jobs:
 
       - name: Build AAB with Bubblewrap
         env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          printf 'no\n%s\n%s\n' "${KEYSTORE_PASSWORD}" "${KEY_PASSWORD}" | bubblewrap build \
+          echo "no" | bubblewrap build \
             --skipPwaValidation \
-            --manifest ./twa-manifest.json \
-            --keystorePassword "${KEYSTORE_PASSWORD}" \
-            --keyPassword "${KEY_PASSWORD}"
+            --manifest ./twa-manifest.json
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
