@@ -71,12 +71,21 @@ jobs:
             console.log('Version:', m.appVersion, 'Code:', m.appVersionCode);
           "
 
+      - name: Generate Android project with Bubblewrap
+        env:
+          BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          bubblewrap update \
+            --skipPwaValidation \
+            --manifest ./twa-manifest.json
+
       - name: Build AAB with Bubblewrap
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          echo "Y" | bubblewrap build \
+          bubblewrap build \
             --skipPwaValidation \
             --manifest ./twa-manifest.json
 
