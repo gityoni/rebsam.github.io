@@ -58,105 +58,106 @@
     /* Export at 3× = 1080×1920 */
   }
 
-  /* ── SCREEN 1 — Accueil ─────────────────────────── */
+  /* ── SCREEN 1 — Accueil (style site réel) ──────── */
   .s1 {
-    background: linear-gradient(160deg, #0f1729 0%, #1a2d5a 55%, #0f2044 100%);
+    background: #EEF2FF;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  /* Bannière slogan */
+  .s1-banner {
+    background: linear-gradient(135deg, #dbeafe 0%, #c7d7fc 100%);
+    border-bottom: 1px solid #bfcffd;
+    padding: 10px 16px;
+    text-align: center;
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #2E6BE6;
+    flex-shrink: 0;
+  }
+  /* Hero central */
+  .s1-hero {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 40px 32px;
+    padding: 28px 28px 20px;
     text-align: center;
-  }
-  .s1-stars {
-    position: absolute;
-    inset: 0;
-    background-image:
-      radial-gradient(1px 1px at 20% 15%, rgba(255,255,255,.7) 0%, transparent 100%),
-      radial-gradient(1px 1px at 60% 25%, rgba(255,255,255,.5) 0%, transparent 100%),
-      radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,.6) 0%, transparent 100%),
-      radial-gradient(1px 1px at 35% 40%, rgba(255,255,255,.4) 0%, transparent 100%),
-      radial-gradient(1px 1px at 90% 55%, rgba(255,255,255,.5) 0%, transparent 100%),
-      radial-gradient(1px 1px at 10% 70%, rgba(255,255,255,.4) 0%, transparent 100%),
-      radial-gradient(1px 1px at 55% 80%, rgba(255,255,255,.3) 0%, transparent 100%),
-      radial-gradient(2px 2px at 75% 45%, rgba(212,175,55,.6) 0%, transparent 100%),
-      radial-gradient(2px 2px at 25% 85%, rgba(212,175,55,.4) 0%, transparent 100%);
-  }
-  .s1-glow {
-    position: absolute;
-    width: 280px;
-    height: 280px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(46,107,230,.35) 0%, transparent 70%);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -55%);
-  }
-  .s1-content { position: relative; z-index: 1; }
-  .s1-badge {
-    display: inline-block;
-    background: rgba(212,175,55,.15);
-    border: 1px solid rgba(212,175,55,.4);
-    color: #e8c84a;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    padding: 5px 14px;
-    border-radius: 99px;
-    margin-bottom: 24px;
+    gap: 0;
   }
   .s1-logo {
-    font-size: 52px;
+    font-size: 54px;
     font-weight: 900;
     line-height: 1;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    letter-spacing: -.02em;
   }
-  .s1-logo .reb { color: #5B8EF0; }
-  .s1-logo .sam { color: #E2E8F0; }
-  .s1-hebrew {
-    font-size: 18px;
-    color: rgba(212,175,55,.8);
-    margin-bottom: 20px;
-    letter-spacing: .05em;
-  }
+  .s1-logo .reb { color: #2E6BE6; }
+  .s1-logo .sam { color: #1E293B; }
   .s1-tagline {
-    font-size: 15px;
-    color: #94a3b8;
-    line-height: 1.6;
-    margin-bottom: 32px;
-    padding: 0 8px;
-  }
-  .s1-tagline strong { color: #e2e8f0; }
-  .s1-cta {
-    display: inline-block;
-    background: linear-gradient(135deg, #4C7FE8 0%, #2E6BE6 100%);
-    color: #fff;
     font-size: 13px;
-    font-weight: 700;
-    padding: 12px 28px;
-    border-radius: 99px;
-    box-shadow: 0 8px 24px rgba(46,107,230,.4);
-    margin-bottom: 40px;
+    color: #475569;
+    line-height: 1.5;
+    margin-bottom: 6px;
+    font-weight: 500;
   }
-  .s1-pillars {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
+  .s1-divider {
+    width: 32px;
+    height: 3px;
+    background: #2E6BE6;
+    border-radius: 2px;
+    margin: 10px auto 22px;
   }
-  .s1-pillar {
+  /* Feature cards */
+  .s1-cards {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    background: rgba(255,255,255,.06);
-    border: 1px solid rgba(255,255,255,.1);
-    border-radius: 12px;
-    padding: 10px 12px;
-    flex: 1;
+    gap: 9px;
+    width: 100%;
+    margin-bottom: 20px;
   }
-  .s1-pillar-icon { font-size: 18px; }
-  .s1-pillar-text { font-size: 9px; font-weight: 700; color: #94a3b8; text-align: center; line-height: 1.3; }
+  .s1-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 11px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  }
+  .s1-card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  .s1-card-text {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #1E293B;
+    line-height: 1.45;
+  }
+  /* CTA */
+  .s1-cta {
+    display: inline-block;
+    background: linear-gradient(135deg, #4C7FE8 0%, #1A4DB3 100%);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 11px 26px;
+    border-radius: 99px;
+    box-shadow: 0 6px 20px rgba(46,107,230,.35);
+  }
 
   /* ── SCREEN 2 — Chat Question ───────────────────── */
   .s2 {
@@ -601,31 +602,31 @@
 <div class="screen-wrapper">
   <div class="screen-label">Écran 1 — Accueil</div>
   <div class="screen s1">
-    <div class="s1-stars"></div>
-    <div class="s1-glow"></div>
-    <div class="s1-content">
-      <div class="s1-badge">✡ Expert Rabbinique IA</div>
+    <!-- Bannière slogan -->
+    <div class="s1-banner">
+      Assistant Halachique IA — Réponses fiables, issues uniquement de nos sources
+    </div>
+    <!-- Hero -->
+    <div class="s1-hero">
       <div class="s1-logo"><span class="reb">Reb</span><span class="sam">Sam</span></div>
-      <div class="s1-hebrew">רַב־סַם</div>
-      <p class="s1-tagline">
-        <strong>L'assistant halachique intelligent.</strong><br>
-        Réponses fiables, issues uniquement<br>de nos sources sacrées.
-      </p>
-      <div class="s1-cta">Pose ta première question →</div>
-      <div class="s1-pillars">
-        <div class="s1-pillar">
-          <div class="s1-pillar-icon">✓</div>
-          <div class="s1-pillar-text">Sources<br>Validées</div>
+      <div class="s1-tagline">Un Rebbe dans votre dose d'IA quotidienne.</div>
+      <div class="s1-divider"></div>
+      <!-- Feature cards -->
+      <div class="s1-cards">
+        <div class="s1-card">
+          <div class="s1-card-icon" style="background:#fff7ed;">⚡</div>
+          <div class="s1-card-text">Répond aux multitudes de questions qui émanent de chaque aspect de la vie juive, avec précision et clarté.</div>
         </div>
-        <div class="s1-pillar">
-          <div class="s1-pillar-icon">🔒</div>
-          <div class="s1-pillar-text">Privé &<br>Sécurisé</div>
+        <div class="s1-card">
+          <div class="s1-card-icon" style="background:#eff6ff;">🛡️</div>
+          <div class="s1-card-text">Aucune "hallucination" — uniquement des réponses sourcées et vérifiables, issues de nos textes sacrés.</div>
         </div>
-        <div class="s1-pillar">
-          <div class="s1-pillar-icon">⚡</div>
-          <div class="s1-pillar-text">Rapide &<br>Fiable</div>
+        <div class="s1-card">
+          <div class="s1-card-icon" style="background:#f0fdf4;">📚</div>
+          <div class="s1-card-text">Digitalise et rend interactive une bibliothèque immense qui serait autrement difficile à consulter rapidement.</div>
         </div>
       </div>
+      <div class="s1-cta">Pose ta première question à RebSam →</div>
     </div>
   </div>
 </div>
