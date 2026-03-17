@@ -84,9 +84,14 @@ jobs:
           VERSION_CODE: "${{ github.event.inputs.version_code || '1' }}"
         run: |
           # Pipe all expected prompts: versionName, versionCode, then empty lines for any other prompts
-          printf "%s\n%s\n\n\n\n\n" "$VERSION_NAME" "$VERSION_CODE" | bubblewrap update \
-            --skipPwaValidation \
-            --manifest ./twa-manifest.json
+          # Retry up to 3 times on transient network errors (ECONNRESET)
+          for attempt in 1 2 3; do
+            printf "%s\n%s\n\n\n\n\n" "$VERSION_NAME" "$VERSION_CODE" | bubblewrap update \
+              --skipPwaValidation \
+              --manifest ./twa-manifest.json && break
+            echo "Attempt $attempt failed, retrying in $((attempt * 10))s..."
+            sleep $((attempt * 10))
+          done
 
       - name: Build AAB with Bubblewrap
         env:
