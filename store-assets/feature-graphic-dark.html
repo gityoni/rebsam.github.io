@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -10,185 +10,228 @@
     width: 1024px;
     height: 500px;
     overflow: hidden;
-    font-family: 'Outfit', system-ui, sans-serif;
-    background: #0a0f1e;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: linear-gradient(160deg, #0a1120 0%, #0d1628 30%, #0f1b30 60%, #111f38 100%);
     display: flex;
+    flex-direction: column;
     position: relative;
   }
 
-  /* Fond gradient */
-  .bg {
+  /* Glow de fond */
+  body::before {
+    content: '';
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse 60% 80% at 70% 50%, rgba(30, 60, 120, 0.6) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 60% at 15% 50%, rgba(50, 90, 180, 0.25) 0%, transparent 60%),
-      linear-gradient(160deg, #0d1528 0%, #0a0f1e 40%, #0c1a35 100%);
-  }
-
-  /* Étoile déco très subtile */
-  .star-deco {
-    position: absolute;
-    right: 340px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 420px;
-    color: rgba(100, 150, 255, 0.04);
-    line-height: 1;
+      radial-gradient(ellipse 55% 90% at 72% 55%, rgba(46,107,230,0.18) 0%, transparent 65%),
+      radial-gradient(ellipse 35% 50% at 10% 50%, rgba(91,142,240,0.10) 0%, transparent 55%);
     pointer-events: none;
-    user-select: none;
   }
 
-  /* Colonne gauche */
-  .left {
+  /* ── BANNIÈRE TOP ── */
+  .banner {
     position: relative;
-    z-index: 2;
-    width: 560px;
-    padding: 50px 50px 50px 60px;
+    z-index: 10;
+    width: 100%;
+    background: linear-gradient(90deg, #1A3A8F 0%, #1E4BB5 35%, #2557D6 60%, #1C3FA0 100%);
+    padding: 9px 48px;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: center;
+    gap: 10px;
+    flex-shrink: 0;
   }
 
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(80, 130, 255, 0.12);
-    border: 1px solid rgba(80, 130, 255, 0.35);
-    color: #7aabff;
+  .banner-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.55);
+    flex-shrink: 0;
+  }
+
+  .banner-text {
+    font-family: 'Inter', sans-serif;
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 2.5px;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    padding: 7px 16px;
-    border-radius: 100px;
-    margin-bottom: 22px;
-    width: fit-content;
+    color: rgba(255,255,255,0.92);
+    white-space: nowrap;
   }
 
-  .logo {
-    font-size: 80px;
-    font-weight: 800;
-    line-height: 1;
-    margin-bottom: 14px;
-    letter-spacing: -2px;
-    color: #ffffff;
-  }
-
-  .logo .blue { color: #5b9cf6; }
-
-  .separator {
-    width: 48px;
-    height: 3px;
-    background: linear-gradient(90deg, #5b9cf6, #a78bfa);
-    border-radius: 2px;
-    margin-bottom: 18px;
-  }
-
-  .tagline {
-    font-size: 17px;
-    color: rgba(255,255,255,0.65);
-    line-height: 1.55;
-    margin-bottom: 30px;
-    max-width: 400px;
-  }
-
-  .features {
-    display: flex;
-    flex-direction: column;
-    gap: 11px;
-  }
-
-  .feature {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .feature-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .feature-icon.yellow { background: rgba(250, 190, 50, 0.15); }
-  .feature-icon.blue   { background: rgba(91, 156, 246, 0.15); }
-  .feature-icon.purple { background: rgba(167, 139, 250, 0.15); }
-
-  .feature-text {
-    font-size: 13.5px;
-    color: rgba(255,255,255,0.78);
-    line-height: 1.4;
-  }
-
-  /* Colonne droite — avatar */
-  .right {
+  /* ── CORPS ── */
+  .body {
     position: relative;
     z-index: 2;
     flex: 1;
     display: flex;
+    align-items: stretch;
+    padding: 32px 48px 32px 52px;
+    gap: 0;
+  }
+
+  /* ── COLONNE GAUCHE ── */
+  .left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 530px;
+    flex-shrink: 0;
+  }
+
+  .logo {
+    font-family: 'Outfit', sans-serif;
+    font-size: 72px;
+    font-weight: 900;
+    letter-spacing: -2.5px;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .logo .reb { color: #ffffff; }
+  .logo .sam { color: #5B8EF0; }
+
+  .sep {
+    width: 42px;
+    height: 3px;
+    background: linear-gradient(90deg, #5B8EF0, #a78bfa);
+    border-radius: 2px;
+    margin-bottom: 10px;
+  }
+
+  .tagline {
+    font-size: 15px;
+    color: rgba(203,213,225,0.80);
+    line-height: 1.5;
+    margin-bottom: 22px;
+    max-width: 440px;
+  }
+
+  /* ── CARTES FEATURES ── */
+  .features {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .feat-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(26,37,64,0.85);
+    border: 1px solid rgba(94,130,198,0.28);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+
+  .feat-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .feat-icon.y { background: rgba(250,190,50,0.15); }
+  .feat-icon.b { background: rgba(91,142,240,0.15); }
+  .feat-icon.p { background: rgba(167,139,250,0.18); }
+
+  .feat-text {
+    font-size: 12.5px;
+    color: rgba(226,232,240,0.88);
+    line-height: 1.4;
+    font-weight: 500;
+  }
+
+  /* Sources */
+  .sources {
+    margin-top: 14px;
+    font-size: 10.5px;
+    color: rgba(148,163,184,0.65);
+    line-height: 1.55;
+    max-width: 470px;
+  }
+
+  /* ── COLONNE DROITE — AVATAR ── */
+  .right {
+    position: relative;
+    flex: 1;
+    display: flex;
     align-items: flex-end;
     justify-content: center;
-    padding-bottom: 0;
   }
 
   .avatar-glow {
     position: absolute;
-    bottom: -40px;
+    bottom: -20px;
     left: 50%;
     transform: translateX(-50%);
-    width: 340px;
-    height: 340px;
+    width: 320px;
+    height: 320px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(91,156,246,0.22) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(46,107,230,0.22) 0%, transparent 70%);
+    pointer-events: none;
   }
 
   .right img {
     position: relative;
     z-index: 1;
-    height: 490px;
+    height: 430px;
     width: auto;
     object-fit: contain;
     object-position: bottom;
-    filter: drop-shadow(0 10px 40px rgba(91,156,246,0.35));
+    filter: drop-shadow(0 8px 32px rgba(91,142,240,0.4));
   }
 </style>
 </head>
 <body>
-  <div class="bg"></div>
-  <div class="star-deco">✡</div>
 
-  <div class="left">
-    <div class="badge">Assistant Halachique IA</div>
-    <div class="logo">Reb<span class="blue">Sam</span></div>
-    <div class="separator"></div>
-    <div class="tagline">Un Rebbe dans votre poche.<br>Réponses sourcées, fiables, issues uniquement de nos textes sacrés.</div>
-    <div class="features">
-      <div class="feature">
-        <div class="feature-icon yellow">⚡</div>
-        <div class="feature-text">Questions de vie juive — réponses précises et sourcées</div>
+  <!-- BANNIÈRE HAUT -->
+  <div class="banner">
+    <div class="banner-dot"></div>
+    <div class="banner-text">Assistant Halachique IA — Réponses fiables, issues uniquement de nos sources</div>
+    <div class="banner-dot"></div>
+  </div>
+
+  <!-- CORPS -->
+  <div class="body">
+
+    <!-- GAUCHE -->
+    <div class="left">
+      <div class="logo"><span class="reb">Reb</span><span class="sam">Sam</span></div>
+      <div class="sep"></div>
+      <div class="tagline">Un Rebbe dans votre dose d'IA quotidienne.</div>
+
+      <div class="features">
+        <div class="feat-card">
+          <div class="feat-icon y">⚡</div>
+          <div class="feat-text">Répond à chaque question de vie juive — avec précision et clarté.</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon b">🛡</div>
+          <div class="feat-text">Aucune hallucination — uniquement des réponses sourcées et vérifiables.</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon p">📚</div>
+          <div class="feat-text">+2000 Sifrey Kodesh · Hébreu · Français · English</div>
+        </div>
       </div>
-      <div class="feature">
-        <div class="feature-icon blue">🛡</div>
-        <div class="feature-text">Aucune hallucination · Choulhan Aroukh, Talmud, Responsa</div>
-      </div>
-      <div class="feature">
-        <div class="feature-icon purple">📚</div>
-        <div class="feature-text">Hébreu · Français · English · +2000 Sifrey Kodesh</div>
+
+      <div class="sources">
+        Choulhan Aroukh · Michna Beroura · Yalkout Yossef · Igrot Moshé · Choulhan Aroukh HaRav · Peniné Halakha · Iyounim Halacha et Chass
       </div>
     </div>
+
+    <!-- DROITE -->
+    <div class="right">
+      <div class="avatar-glow"></div>
+      <img src="../avatar.webp" alt="RebSam">
+    </div>
+
   </div>
 
-  <div class="right">
-    <div class="avatar-glow"></div>
-    <img src="../avatar.webp" alt="RebSam">
-  </div>
 </body>
 </html>
