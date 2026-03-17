@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1024px;
+    height: 500px;
+    overflow: hidden;
+    font-family: 'Outfit', system-ui, sans-serif;
+    background: #0a0f1e;
+    display: flex;
+    position: relative;
+  }
+
+  /* Fond gradient */
+  .bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 70% 50%, rgba(30, 60, 120, 0.6) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 15% 50%, rgba(50, 90, 180, 0.25) 0%, transparent 60%),
+      linear-gradient(160deg, #0d1528 0%, #0a0f1e 40%, #0c1a35 100%);
+  }
+
+  /* Étoile déco très subtile */
+  .star-deco {
+    position: absolute;
+    right: 340px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 420px;
+    color: rgba(100, 150, 255, 0.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* Colonne gauche */
+  .left {
+    position: relative;
+    z-index: 2;
+    width: 560px;
+    padding: 50px 50px 50px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(80, 130, 255, 0.12);
+    border: 1px solid rgba(80, 130, 255, 0.35);
+    color: #7aabff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 7px 16px;
+    border-radius: 100px;
+    margin-bottom: 22px;
+    width: fit-content;
+  }
+
+  .logo {
+    font-size: 80px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 14px;
+    letter-spacing: -2px;
+    color: #ffffff;
+  }
+
+  .logo .blue { color: #5b9cf6; }
+
+  .separator {
+    width: 48px;
+    height: 3px;
+    background: linear-gradient(90deg, #5b9cf6, #a78bfa);
+    border-radius: 2px;
+    margin-bottom: 18px;
+  }
+
+  .tagline {
+    font-size: 17px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.55;
+    margin-bottom: 30px;
+    max-width: 400px;
+  }
+
+  .features {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+
+  .feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .feature-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .feature-icon.yellow { background: rgba(250, 190, 50, 0.15); }
+  .feature-icon.blue   { background: rgba(91, 156, 246, 0.15); }
+  .feature-icon.purple { background: rgba(167, 139, 250, 0.15); }
+
+  .feature-text {
+    font-size: 13.5px;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.4;
+  }
+
+  /* Colonne droite — avatar */
+  .right {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 0;
+  }
+
+  .avatar-glow {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(91,156,246,0.22) 0%, transparent 70%);
+  }
+
+  .right img {
+    position: relative;
+    z-index: 1;
+    height: 490px;
+    width: auto;
+    object-fit: contain;
+    object-position: bottom;
+    filter: drop-shadow(0 10px 40px rgba(91,156,246,0.35));
+  }
+</style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="star-deco">✡</div>
+
+  <div class="left">
+    <div class="badge">Assistant Halachique IA</div>
+    <div class="logo">Reb<span class="blue">Sam</span></div>
+    <div class="separator"></div>
+    <div class="tagline">Un Rebbe dans votre poche.<br>Réponses sourcées, fiables, issues uniquement de nos textes sacrés.</div>
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon yellow">⚡</div>
+        <div class="feature-text">Questions de vie juive — réponses précises et sourcées</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon blue">🛡</div>
+        <div class="feature-text">Aucune hallucination · Choulhan Aroukh, Talmud, Responsa</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon purple">📚</div>
+        <div class="feature-text">Hébreu · Français · English · +2000 Sifrey Kodesh</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="avatar-glow"></div>
+    <img src="../avatar.webp" alt="RebSam">
+  </div>
+</body>
+</html>
