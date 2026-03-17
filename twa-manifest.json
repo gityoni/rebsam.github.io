@@ -27,7 +27,7 @@
   "isChromeOSOnly": false,
   "isMetaQuest": false,
   "fullScopeUrl": "https://rebsam.fr/",
-  "minSdkVersion": 19,
+  "minSdkVersion": 21,
   "targetSdkVersion": 34,
   "generatorApp": "bubblewrap",
   "webManifestUrl": "https://www.rebsam.fr/manifest.json",
