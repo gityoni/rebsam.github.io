@@ -58,24 +58,24 @@
     /* Export at 3× = 1080×1920 */
   }
 
-  /* ── SCREEN 1 — Accueil (style site réel) ──────── */
+  /* ── SCREEN 1 — Accueil (version nuit) ─────────── */
   .s1 {
-    background: #EEF2FF;
+    background: linear-gradient(170deg, #0f1729 0%, #1a2d5a 60%, #0f1e3d 100%);
     display: flex;
     flex-direction: column;
     align-items: stretch;
   }
   /* Bannière slogan */
   .s1-banner {
-    background: linear-gradient(135deg, #dbeafe 0%, #c7d7fc 100%);
-    border-bottom: 1px solid #bfcffd;
+    background: rgba(91,142,240,.12);
+    border-bottom: 1px solid rgba(91,142,240,.2);
     padding: 10px 16px;
     text-align: center;
     font-size: 8.5px;
     font-weight: 800;
     letter-spacing: .08em;
     text-transform: uppercase;
-    color: #2E6BE6;
+    color: #5B8EF0;
     flex-shrink: 0;
   }
   /* Hero central */
@@ -85,7 +85,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 28px 28px 20px;
+    padding: 22px 24px 20px;
     text-align: center;
     gap: 0;
   }
@@ -96,11 +96,11 @@
     margin-bottom: 10px;
     letter-spacing: -.02em;
   }
-  .s1-logo .reb { color: #2E6BE6; }
-  .s1-logo .sam { color: #1E293B; }
+  .s1-logo .reb { color: #5B8EF0; }
+  .s1-logo .sam { color: #E2E8F0; }
   .s1-tagline {
     font-size: 13px;
-    color: #475569;
+    color: #94a3b8;
     line-height: 1.5;
     margin-bottom: 6px;
     font-weight: 500;
@@ -108,28 +108,44 @@
   .s1-divider {
     width: 32px;
     height: 3px;
-    background: #2E6BE6;
+    background: #5B8EF0;
     border-radius: 2px;
-    margin: 10px auto 22px;
+    margin: 10px auto 18px;
+    opacity: .6;
+  }
+  /* Avatar */
+  .s1-avatar {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid rgba(91,142,240,.4);
+    box-shadow: 0 0 28px rgba(91,142,240,.25);
+    margin-bottom: 18px;
+    flex-shrink: 0;
+  }
+  .s1-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   /* Feature cards */
   .s1-cards {
     display: flex;
     flex-direction: column;
-    gap: 9px;
+    gap: 10px;
     width: 100%;
     margin-bottom: 20px;
   }
   .s1-card {
-    background: #fff;
-    border: 1px solid #e2e8f0;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.1);
     border-radius: 14px;
-    padding: 11px 14px;
+    padding: 13px 14px;
     display: flex;
     align-items: center;
     gap: 12px;
     text-align: left;
-    box-shadow: 0 2px 8px rgba(0,0,0,.04);
   }
   .s1-card-icon {
     width: 36px;
@@ -144,7 +160,7 @@
   .s1-card-text {
     font-size: 10.5px;
     font-weight: 600;
-    color: #1E293B;
+    color: #cbd5e1;
     line-height: 1.45;
   }
   /* CTA */
@@ -156,7 +172,7 @@
     font-weight: 700;
     padding: 11px 26px;
     border-radius: 99px;
-    box-shadow: 0 6px 20px rgba(46,107,230,.35);
+    box-shadow: 0 6px 20px rgba(46,107,230,.4);
   }
 
   /* ── SCREEN 2 — Chat Question ───────────────────── */
@@ -611,19 +627,19 @@
       <div class="s1-logo"><span class="reb">Reb</span><span class="sam">Sam</span></div>
       <div class="s1-tagline">Un Rebbe dans votre dose d'IA quotidienne.</div>
       <div class="s1-divider"></div>
-      <!-- Feature cards -->
+      <!-- Avatar -->
+      <div class="s1-avatar">
+        <img src="../avatar.webp" alt="RebSam avatar">
+      </div>
+      <!-- Feature cards (2 seulement) -->
       <div class="s1-cards">
         <div class="s1-card">
-          <div class="s1-card-icon" style="background:#fff7ed;">⚡</div>
+          <div class="s1-card-icon" style="background:rgba(251,146,60,.15);">⚡</div>
           <div class="s1-card-text">Répond aux multitudes de questions qui émanent de chaque aspect de la vie juive, avec précision et clarté.</div>
         </div>
         <div class="s1-card">
-          <div class="s1-card-icon" style="background:#eff6ff;">🛡️</div>
+          <div class="s1-card-icon" style="background:rgba(91,142,240,.15);">🛡️</div>
           <div class="s1-card-text">Aucune "hallucination" — uniquement des réponses sourcées et vérifiables, issues de nos textes sacrés.</div>
-        </div>
-        <div class="s1-card">
-          <div class="s1-card-icon" style="background:#f0fdf4;">📚</div>
-          <div class="s1-card-text">Digitalise et rend interactive une bibliothèque immense qui serait autrement difficile à consulter rapidement.</div>
         </div>
       </div>
       <div class="s1-cta">Pose ta première question à RebSam →</div>
