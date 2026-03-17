@@ -80,8 +80,11 @@ jobs:
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          VERSION_NAME: "${{ github.event.inputs.version_name || '1.0.0' }}"
+          VERSION_CODE: "${{ github.event.inputs.version_code || '1' }}"
         run: |
-          bubblewrap update \
+          # Pipe all expected prompts: versionName, versionCode, then empty lines for any other prompts
+          printf "%s\n%s\n\n\n\n\n" "$VERSION_NAME" "$VERSION_CODE" | bubblewrap update \
             --skipPwaValidation \
             --manifest ./twa-manifest.json
 
