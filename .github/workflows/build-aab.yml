@@ -60,16 +60,21 @@ jobs:
 
       - name: Update version in twa-manifest.json
         run: |
-          VERSION_NAME="${{ github.event.inputs.version_name }}"
-          VERSION_CODE="${{ github.event.inputs.version_code }}"
+          VERSION_NAME="${{ github.event.inputs.version_name || '1.0.0' }}"
+          VERSION_CODE="${{ github.event.inputs.version_code || '1' }}"
           node -e "
             const fs = require('fs');
             const m = JSON.parse(fs.readFileSync('twa-manifest.json', 'utf8'));
-            m.appVersion = '${VERSION_NAME}';
-            m.appVersionCode = parseInt('${VERSION_CODE}');
+            const versionName = process.env.VERSION_NAME || '1.0.0';
+            const versionCode = parseInt(process.env.VERSION_CODE || '1', 10);
+            m.appVersion = versionName;
+            m.appVersionCode = versionCode;
             fs.writeFileSync('twa-manifest.json', JSON.stringify(m, null, 2));
             console.log('Version:', m.appVersion, 'Code:', m.appVersionCode);
           "
+        env:
+          VERSION_NAME: "${{ github.event.inputs.version_name || '1.0.0' }}"
+          VERSION_CODE: "${{ github.event.inputs.version_code || '1' }}"
 
       - name: Generate Android project with Bubblewrap
         env:
