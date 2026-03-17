@@ -30,15 +30,14 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
-      - name: Cache Gradle dependencies
+      - name: Restore Gradle cache
         uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: gradle-${{ runner.os }}-wrapper
           restore-keys: |
             gradle-${{ runner.os }}-
 
@@ -95,13 +94,19 @@ jobs:
           VERSION_CODE: "${{ github.event.inputs.version_code || '1' }}"
         run: |
           # Pipe all expected prompts: versionName, versionCode, then empty lines for any other prompts
-          # Retry up to 3 times on transient network errors (ECONNRESET)
-          for attempt in 1 2 3; do
+          # Retry up to 5 times on transient network errors (ECONNRESET) with exponential backoff
+          for attempt in 1 2 3 4 5; do
             printf "%s\n%s\n\n\n\n\n" "$VERSION_NAME" "$VERSION_CODE" | bubblewrap update \
               --skipPwaValidation \
               --manifest ./twa-manifest.json && break
-            echo "Attempt $attempt failed, retrying in $((attempt * 10))s..."
-            sleep $((attempt * 10))
+            if [ $attempt -lt 5 ]; then
+              WAIT=$((2 ** attempt))
+              echo "Attempt $attempt failed, retrying in ${WAIT}s..."
+              sleep $WAIT
+            else
+              echo "All attempts failed."
+              exit 1
+            fi
           done
 
       - name: Build AAB with Bubblewrap
@@ -109,9 +114,20 @@ jobs:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          echo "no" | bubblewrap build \
-            --skipPwaValidation \
-            --manifest ./twa-manifest.json
+          # Retry up to 5 times with exponential backoff
+          for attempt in 1 2 3 4 5; do
+            echo "no" | bubblewrap build \
+              --skipPwaValidation \
+              --manifest ./twa-manifest.json && break
+            if [ $attempt -lt 5 ]; then
+              WAIT=$((2 ** attempt))
+              echo "Attempt $attempt failed, retrying in ${WAIT}s..."
+              sleep $WAIT
+            else
+              echo "All attempts failed."
+              exit 1
+            fi
+          done
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
