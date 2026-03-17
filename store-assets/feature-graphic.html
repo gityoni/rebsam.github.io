@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1024px;
+    height: 500px;
+    overflow: hidden;
+    font-family: 'Outfit', system-ui, sans-serif;
+    background: linear-gradient(135deg, #0e1f3a 0%, #1a3a6b 50%, #0e2e5a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 60px;
+  }
+
+  /* Texture subtile */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 20% 50%, rgba(100,160,255,0.08) 0%, transparent 60%),
+                      radial-gradient(circle at 80% 30%, rgba(200,160,255,0.05) 0%, transparent 50%);
+  }
+
+  .left {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+  }
+
+  .badge {
+    display: inline-block;
+    background: rgba(100, 160, 255, 0.15);
+    border: 1px solid rgba(100, 160, 255, 0.4);
+    color: #8ab4f8;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+
+  .logo {
+    font-size: 72px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1;
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+  }
+
+  .logo span {
+    color: #6fa3ef;
+  }
+
+  .tagline {
+    font-size: 20px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.4;
+    margin-bottom: 32px;
+    max-width: 460px;
+  }
+
+  .features {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    color: rgba(255,255,255,0.85);
+  }
+
+  .feature .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #6fa3ef;
+    flex-shrink: 0;
+  }
+
+  .right {
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .avatar-wrap {
+    position: relative;
+  }
+
+  .avatar-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(111,163,239,0.2) 0%, transparent 70%);
+  }
+
+  .avatar-wrap img {
+    width: 280px;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid rgba(111,163,239,0.4);
+    filter: drop-shadow(0 0 30px rgba(111,163,239,0.4));
+  }
+
+  /* Étoile de David décorative */
+  .deco {
+    position: absolute;
+    opacity: 0.06;
+    font-size: 300px;
+    color: white;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    user-select: none;
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="deco">✡</div>
+
+  <div class="left">
+    <div class="badge">Assistant Halachique IA</div>
+    <div class="logo">Reb<span>Sam</span></div>
+    <div class="tagline">Un Rebbe dans votre poche. Réponses sourcées, fiables, issues uniquement de nos textes sacrés.</div>
+    <div class="features">
+      <div class="feature"><div class="dot"></div>Hébreu · Français · English</div>
+      <div class="feature"><div class="dot"></div>Sources vérifiables — Choulhan Aroukh, Talmud, Responsa</div>
+      <div class="feature"><div class="dot"></div>Aucune hallucination · 100% Halacha</div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="avatar-wrap">
+      <img src="../avatar.webp" alt="RebSam">
+    </div>
+  </div>
+</body>
+</html>
