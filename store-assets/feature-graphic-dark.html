@@ -93,19 +93,19 @@
   /* Pillules mots-clés */
   .pills {
     display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+    gap: 8px;
+    flex-wrap: nowrap;
   }
 
   .pill {
     display: flex;
     align-items: center;
-    gap: 7px;
-    padding: 8px 16px;
+    gap: 6px;
+    padding: 7px 13px;
     border-radius: 10px;
     background: rgba(26,37,64,0.90);
     border: 1px solid rgba(94,130,198,0.30);
-    font-size: 14px;
+    font-size: 12.5px;
     font-weight: 600;
     color: rgba(226,232,240,0.90);
     white-space: nowrap;
@@ -124,14 +124,16 @@
   /* ── AVATAR DROITE ── */
   .right {
     position: absolute;
-    right: 0;
+    right: 28px;
     bottom: 0;
     z-index: 2;
-    width: 430px;
+    width: 410px;
     height: 500px;
     display: flex;
     align-items: flex-end;
     justify-content: center;
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
   }
 
   .avatar-glow {
@@ -149,7 +151,7 @@
   .right img {
     position: relative;
     z-index: 1;
-    height: 480px;
+    height: 490px;
     width: auto;
     object-fit: contain;
     object-position: bottom;
