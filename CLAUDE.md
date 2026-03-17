@@ -28,9 +28,12 @@ Reb Sam est un expert rabbinique augmenté — système expert qui navigue dans 
 ```
 modifier fichiers
 → git add . && git commit -m "description" && git push
-→ Netlify auto-deploy déclenché sur branche main
+→ Netlify auto-deploy déclenché sur branche main  (frontend)
+→ Cloud Run auto-deploy déclenché sur branche main (proxy) [À CONFIGURER]
 → prod live sur rebsam.fr
 ```
+
+> **Cloud Run GitHub auto-deploy** : pas encore configuré. À faire : Cloud Run → Edit & Deploy New Revision → Continuously deploy from a repository → repo `gityoni/rebsam.github.io` → branch `^main$` → Dockerfile `/proxy/Dockerfile`.
 
 ## Règles importantes
 - Ne jamais committer de clés API ou secrets

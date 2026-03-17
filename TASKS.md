@@ -19,6 +19,7 @@
 
 ## 📋 À faire
 <!-- Ajouter ici les prochaines tâches -->
+- **[Cloud Run] Connecter GitHub auto-deploy** — Cloud Run → Edit & Deploy New Revision → Continuously deploy from a repository → repo `gityoni/rebsam.github.io` → branch `^main$` → Dockerfile `/proxy/Dockerfile` → les variables d'env persistent d'une révision à l'autre
 - Soumettre l'AAB sur Google Play Console (test interne d'abord)
 - Mesurer LCP réel post-déploiement via PageSpeed Insights (cible : <2500ms)
 - Invalider le cache og-image sur Facebook Sharing Debugger après merge → main
@@ -30,3 +31,4 @@
 
 ---
 *Dernière mise à jour : 2026-03-17*
+
