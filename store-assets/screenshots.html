@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>RebSam — Play Store Screenshots</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Outfit', system-ui, sans-serif;
+    background: #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    padding: 48px;
+  }
+
+  .instructions {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 20px 28px;
+    border-radius: 12px;
+    max-width: 900px;
+    width: 100%;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .instructions h2 { color: #5B8EF0; margin-bottom: 8px; font-size: 16px; }
+  .instructions code { background: rgba(255,255,255,.1); padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+
+  .screen-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 8px;
+  }
+
+  /* Each screen = 1080×1920 scaled to 360×640 for preview (÷3) */
+  .screen-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .screen {
+    width: 360px;
+    height: 640px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    box-shadow: 0 24px 60px rgba(0,0,0,.25);
+
+    /* IMPORTANT: actual export size hint */
+    /* Export at 3× = 1080×1920 */
+  }
+
+  /* ── SCREEN 1 — Accueil ─────────────────────────── */
+  .s1 {
+    background: linear-gradient(160deg, #0f1729 0%, #1a2d5a 55%, #0f2044 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 32px;
+    text-align: center;
+  }
+  .s1-stars {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 20% 15%, rgba(255,255,255,.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 25%, rgba(255,255,255,.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 40%, rgba(255,255,255,.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 55%, rgba(255,255,255,.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 10% 70%, rgba(255,255,255,.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 80%, rgba(255,255,255,.3) 0%, transparent 100%),
+      radial-gradient(2px 2px at 75% 45%, rgba(212,175,55,.6) 0%, transparent 100%),
+      radial-gradient(2px 2px at 25% 85%, rgba(212,175,55,.4) 0%, transparent 100%);
+  }
+  .s1-glow {
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(46,107,230,.35) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -55%);
+  }
+  .s1-content { position: relative; z-index: 1; }
+  .s1-badge {
+    display: inline-block;
+    background: rgba(212,175,55,.15);
+    border: 1px solid rgba(212,175,55,.4);
+    color: #e8c84a;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 99px;
+    margin-bottom: 24px;
+  }
+  .s1-logo {
+    font-size: 52px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .s1-logo .reb { color: #5B8EF0; }
+  .s1-logo .sam { color: #E2E8F0; }
+  .s1-hebrew {
+    font-size: 18px;
+    color: rgba(212,175,55,.8);
+    margin-bottom: 20px;
+    letter-spacing: .05em;
+  }
+  .s1-tagline {
+    font-size: 15px;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin-bottom: 32px;
+    padding: 0 8px;
+  }
+  .s1-tagline strong { color: #e2e8f0; }
+  .s1-cta {
+    display: inline-block;
+    background: linear-gradient(135deg, #4C7FE8 0%, #2E6BE6 100%);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 12px 28px;
+    border-radius: 99px;
+    box-shadow: 0 8px 24px rgba(46,107,230,.4);
+    margin-bottom: 40px;
+  }
+  .s1-pillars {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+  .s1-pillar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 12px;
+    padding: 10px 12px;
+    flex: 1;
+  }
+  .s1-pillar-icon { font-size: 18px; }
+  .s1-pillar-text { font-size: 9px; font-weight: 700; color: #94a3b8; text-align: center; line-height: 1.3; }
+
+  /* ── SCREEN 2 — Chat Question ───────────────────── */
+  .s2 {
+    background: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+  }
+  .s2-topbar {
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 14px 20px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .s2-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2E6BE6 0%, #7C6FCD 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .s2-topbar-info { flex: 1; }
+  .s2-topbar-name { font-size: 14px; font-weight: 700; color: #1E293B; }
+  .s2-topbar-status { font-size: 10px; color: #10b981; font-weight: 600; }
+  .s2-msgs {
+    flex: 1;
+    padding: 16px 16px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow: hidden;
+  }
+  .msg-date {
+    text-align: center;
+    font-size: 10px;
+    color: #94a3b8;
+    font-weight: 600;
+    margin: 4px 0;
+  }
+  .msg-row { display: flex; gap: 8px; align-items: flex-end; }
+  .msg-row.user { flex-direction: row-reverse; }
+  .msg-bubble {
+    max-width: 78%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+  .msg-bubble.sam {
+    background: #fff;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  }
+  .msg-bubble.user {
+    background: linear-gradient(135deg, #4C7FE8 0%, #2E6BE6 100%);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+  .msg-bubble .source-tag {
+    display: inline-block;
+    background: rgba(46,107,230,.08);
+    border: 1px solid rgba(46,107,230,.2);
+    color: #2E6BE6;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 6px;
+    margin-top: 6px;
+    margin-right: 4px;
+  }
+  .msg-mini-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2E6BE6 0%, #7C6FCD 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .s2-input-area {
+    background: #fff;
+    border-top: 1px solid #e2e8f0;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .s2-input {
+    flex: 1;
+    background: #F8FAFC;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 12px;
+    color: #334155;
+    font-family: inherit;
+  }
+  .s2-send {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #2E6BE6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .s2-send svg { width: 14px; height: 14px; fill: none; stroke: #fff; stroke-width: 2; }
+
+  /* ── SCREEN 3 — Chat Réponse complète ──────────── */
+  /* reuses s2 classes */
+
+  /* ── SCREEN 4 — 3 Piliers ───────────────────────── */
+  .s4 {
+    background: linear-gradient(160deg, #0f1729 0%, #1a2d5a 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 36px 24px;
+    text-align: center;
+    gap: 0;
+  }
+  .s4-eyebrow {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: #5B8EF0;
+    margin-bottom: 8px;
+  }
+  .s4-title {
+    font-size: 22px;
+    font-weight: 900;
+    color: #E2E8F0;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+  .s4-sub {
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+  .s4-cards { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+  .s4-card {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 16px;
+    padding: 18px 20px;
+    text-align: left;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .s4-card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .s4-card-icon.blue { background: rgba(46,107,230,.2); }
+  .s4-card-icon.amber { background: rgba(212,175,55,.15); }
+  .s4-card-icon.green { background: rgba(16,185,129,.15); }
+  .s4-card-body { flex: 1; }
+  .s4-card-title { font-size: 14px; font-weight: 800; color: #E2E8F0; margin-bottom: 5px; }
+  .s4-card-desc { font-size: 10.5px; color: #94a3b8; line-height: 1.55; }
+  .s4-logo {
+    margin-top: 28px;
+    font-size: 20px;
+    font-weight: 900;
+  }
+  .s4-logo .reb { color: #5B8EF0; }
+  .s4-logo .sam { color: #94a3b8; }
+
+  /* ── SCREEN 5 — RAG Technologie ─────────────────── */
+  .s5 {
+    background: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 36px 22px;
+    text-align: center;
+  }
+  .s5-eyebrow {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: #2E6BE6;
+    background: rgba(46,107,230,.08);
+    padding: 4px 12px;
+    border-radius: 99px;
+    margin-bottom: 12px;
+  }
+  .s5-title {
+    font-size: 20px;
+    font-weight: 900;
+    color: #1E293B;
+    margin-bottom: 6px;
+    line-height: 1.25;
+  }
+  .s5-sub {
+    font-size: 11px;
+    color: #64748b;
+    line-height: 1.55;
+    margin-bottom: 28px;
+    padding: 0 4px;
+  }
+  .s5-steps { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-bottom: 24px; }
+  .s5-step {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  }
+  .s5-step-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .s5-step-num {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .s5-step-label { font-size: 13px; font-weight: 700; color: #1E293B; }
+  .s5-step-desc { font-size: 10px; color: #64748b; line-height: 1.45; margin-top: 2px; }
+  .s5-insight {
+    background: linear-gradient(135deg, rgba(46,107,230,.07) 0%, rgba(124,111,205,.07) 100%);
+    border: 1px solid rgba(46,107,230,.18);
+    border-radius: 14px;
+    padding: 14px 16px;
+    text-align: left;
+    width: 100%;
+  }
+  .s5-insight-icon { font-size: 16px; margin-bottom: 6px; }
+  .s5-insight-text { font-size: 10.5px; color: #334155; line-height: 1.6; }
+  .s5-insight-text strong { color: #2E6BE6; }
+
+  /* ── SCREEN 6 — Sources Bibliothèque ────────────── */
+  .s6 {
+    background: linear-gradient(160deg, #0f1729 0%, #1a2d5a 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 36px 22px;
+    text-align: center;
+  }
+  .s6-eyebrow {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: #e8c84a;
+    margin-bottom: 8px;
+  }
+  .s6-title {
+    font-size: 19px;
+    font-weight: 900;
+    color: #E2E8F0;
+    line-height: 1.25;
+    margin-bottom: 6px;
+  }
+  .s6-title span { color: #e8c84a; }
+  .s6-sub {
+    font-size: 10.5px;
+    color: #64748b;
+    line-height: 1.55;
+    margin-bottom: 24px;
+    padding: 0 4px;
+  }
+  .s6-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 18px;
+  }
+  .s6-book {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 12px;
+    padding: 14px 12px;
+    text-align: left;
+    border-top: 3px solid;
+  }
+  .s6-book.blue { border-top-color: #2563eb; }
+  .s6-book.purple { border-top-color: #7c3aed; }
+  .s6-book.gold { border-top-color: #d4af37; }
+  .s6-book.cyan { border-top-color: #06b6d4; }
+  .s6-book-icon { font-size: 20px; margin-bottom: 6px; }
+  .s6-book-heb { font-size: 13px; font-weight: 700; color: #e2e8f0; direction: rtl; line-height: 1.3; margin-bottom: 2px; }
+  .s6-book-name { font-size: 10px; font-weight: 600; color: #94a3b8; }
+  .s6-book-desc { font-size: 9px; color: #64748b; line-height: 1.4; margin-top: 3px; }
+  .s6-more {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 11px;
+    color: #94a3b8;
+    width: 100%;
+    text-align: center;
+  }
+  .s6-more strong { color: #e8c84a; }
+
+  /* ── SCREEN 7 — Multilingue ─────────────────────── */
+  .s7 {
+    background: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 36px 22px;
+    text-align: center;
+  }
+  .s7-eyebrow {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: #2E6BE6;
+    background: rgba(46,107,230,.08);
+    padding: 4px 12px;
+    border-radius: 99px;
+    margin-bottom: 12px;
+  }
+  .s7-title {
+    font-size: 20px;
+    font-weight: 900;
+    color: #1E293B;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+  .s7-sub {
+    font-size: 11px;
+    color: #64748b;
+    line-height: 1.55;
+    margin-bottom: 24px;
+  }
+  .s7-langs { display: flex; gap: 10px; justify-content: center; margin-bottom: 24px; }
+  .s7-lang {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    flex: 1;
+  }
+  .s7-lang-flag { font-size: 24px; }
+  .s7-lang-name { font-size: 11px; font-weight: 700; color: #1E293B; }
+  .s7-chats { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+  .s7-chat-block {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 12px 14px;
+    text-align: left;
+    box-shadow: 0 2px 6px rgba(0,0,0,.04);
+  }
+  .s7-chat-lang { font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #2E6BE6; margin-bottom: 6px; }
+  .s7-chat-q {
+    font-size: 11px;
+    color: #1E293B;
+    font-weight: 600;
+    margin-bottom: 6px;
+    padding: 7px 10px;
+    background: linear-gradient(135deg, #4C7FE8 0%, #2E6BE6 100%);
+    color: #fff;
+    border-radius: 10px;
+    border-bottom-left-radius: 3px;
+    display: inline-block;
+    max-width: 90%;
+  }
+  .s7-chat-a {
+    font-size: 10px;
+    color: #334155;
+    line-height: 1.55;
+    padding: 7px 10px;
+    background: #F8FAFC;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    border-bottom-right-radius: 3px;
+  }
+  .s7-chat-a .src { color: #2E6BE6; font-weight: 700; }
+
+  /* Print / screenshot helpers */
+  @media screen {
+    .screen { cursor: pointer; }
+    .screen:hover { box-shadow: 0 32px 80px rgba(0,0,0,.35); transform: translateY(-4px); transition: all .3s; }
+  }
+</style>
+</head>
+<body>
+
+<div class="instructions">
+  <h2>📸 Comment exporter ces mockups en 1080×1920 px</h2>
+  <p><strong>Option rapide (Chrome) :</strong></p>
+  <ol style="padding-left:18px; margin-top:6px;">
+    <li>Ouvrir Chrome DevTools → <code>F12</code></li>
+    <li>Cliquer l'icône "Toggle device toolbar" (<code>Ctrl+Shift+M</code>)</li>
+    <li>Définir la taille à <code>360 × 640</code> avec <code>DPR = 3</code> (= 1080×1920 réel)</li>
+    <li>Clic droit sur chaque screen → <strong>Capture screenshot</strong></li>
+  </ol>
+  <p style="margin-top:10px;"><strong>Ou via Puppeteer/playwright :</strong> <code>page.screenshot({ clip: { x, y, width: 360, height: 640 }, deviceScaleFactor: 3 })</code></p>
+  <p style="margin-top:8px; color:#94a3b8;">Il y a <strong>7 écrans</strong> — en sélectionner 4 à 8 pour le Play Store.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 1 — Accueil / Hero
+════════════════════════════════════════════════════ -->
+<div class="screen-wrapper">
+  <div class="screen-label">Écran 1 — Accueil</div>
+  <div class="screen s1">
+    <div class="s1-stars"></div>
+    <div class="s1-glow"></div>
+    <div class="s1-content">
+      <div class="s1-badge">✡ Expert Rabbinique IA</div>
+      <div class="s1-logo"><span class="reb">Reb</span><span class="sam">Sam</span></div>
+      <div class="s1-hebrew">רַב־סַם</div>
+      <p class="s1-tagline">
+        <strong>L'assistant halachique intelligent.</strong><br>
+        Réponses fiables, issues uniquement<br>de nos sources sacrées.
+      </p>
+      <div class="s1-cta">Pose ta première question →</div>
+      <div class="s1-pillars">
+        <div class="s1-pillar">
+          <div class="s1-pillar-icon">✓</div>
+          <div class="s1-pillar-text">Sources<br>Validées</div>
+        </div>
+        <div class="s1-pillar">
+          <div class="s1-pillar-icon">🔒</div>
+          <div class="s1-pillar-text">Privé &<br>Sécurisé</div>
+        </div>
+        <div class="s1-pillar">
+          <div class="s1-pillar-icon">⚡</div>
+          <div class="s1-pillar-text">Rapide &<br>Fiable</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 2 — Chat (question + début de réponse)
+════════════════════════════════════════════════════ -->
+<div class="screen-wrapper">
+  <div class="screen-label">Écran 2 — Chat en cours</div>
+  <div class="screen s2">
+    <!-- Topbar -->
+    <div class="s2-topbar">
+      <div class="s2-avatar">✡</div>
+      <div class="s2-topbar-info">
+        <div class="s2-topbar-name">RebSam</div>
+        <div class="s2-topbar-status">● En ligne · Répond en &lt;1 sec</div>
+      </div>
+      <div style="font-size:11px; color:#64748b; font-weight:600; background:#f1f5f9; padding:4px 10px; border-radius:99px;">FR</div>
+    </div>
+
+    <!-- Messages -->
+    <div class="s2-msgs">
+      <div class="msg-date">Aujourd'hui</div>
+
+      <!-- Sam welcome -->
+      <div class="msg-row">
+        <div class="msg-mini-avatar">✡</div>
+        <div class="msg-bubble sam">
+          Chalom ! Je suis RebSam, votre expert en Halacha. Posez-moi n'importe quelle question — je réponds uniquement à partir de nos textes sacrés. 🙏
+        </div>
+      </div>
+
+      <!-- User question -->
+      <div class="msg-row user">
+        <div class="msg-bubble user">
+          Peut-on manger du poisson avec du fromage ?
+        </div>
+      </div>
+
+      <!-- Sam typing -->
+      <div class="msg-row">
+        <div class="msg-mini-avatar">✡</div>
+        <div class="msg-bubble sam" style="padding: 12px 16px;">
+          <div style="display:flex; gap:5px; align-items:center;">
+            <div style="width:7px;height:7px;border-radius:50%;background:#94a3b8;animation:pulse 1s infinite .0s;"></div>
+            <div style="width:7px;height:7px;border-radius:50%;background:#94a3b8;animation:pulse 1s infinite .2s;"></div>
+            <div style="width:7px;height:7px;border-radius:50%;background:#94a3b8;animation:pulse 1s infinite .4s;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="s2-input-area">
+      <div class="s2-input">Pose ta question...</div>
+      <div class="s2-send">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 3 — Réponse avec sources
+════════════════════════════════════════════════════ -->
+<div class="screen-wrapper">
+  <div class="screen-label">Écran 3 — Réponse sourcée</div>
+  <div class="screen s2">
+    <div class="s2-topbar">
+      <div class="s2-avatar">✡</div>
+      <div class="s2-topbar-info">
+        <div class="s2-topbar-name">RebSam</div>
+        <div class="s2-topbar-status">● En ligne · Répond en &lt;1 sec</div>
+      </div>
+    </div>
+    <div class="s2-msgs">
+      <div class="msg-row user">
+        <div class="msg-bubble user">Peut-on manger du poisson avec du fromage ?</div>
+      </div>
+      <div class="msg-row">
+        <div class="msg-mini-avatar">✡</div>
+        <div class="msg-bubble sam">
+          <strong style="color:#1E293B;">La consommation de poisson avec du fromage</strong><br><br>
+          Il est permis de manger du poisson avec du fromage ou du lait (מותר לאכול דג עם חלב). Cette autorisation est fondée sur la distinction halakhique entre viande et poisson.<br><br>
+          Cependant, certains décisionnaires séfarades recommandent d'éviter cette combinaison en raison de préoccupations de santé mentionnées dans le Talmud (Pessahim 76b).<br><br>
+          <span class="source-tag">📖 O.H. YD 116:2</span>
+          <span class="source-tag">📚 Michna Beroura</span>
+          <span class="source-tag">📜 Yalkut Yossef</span>
+        </div>
+      </div>
+    </div>
+    <div class="s2-input-area">
+      <div class="s2-input">Pose ta question...</div>
+      <div class="s2-send">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 4 — 3 Piliers de confiance
+════════════════════════════════════════════════════ -->
+<div class="screen-wrapper">
+  <div class="screen-label">Écran 4 — Nos 3 Piliers</div>
+  <div class="screen s4">
+    <div class="s4-eyebrow">Nos engagements</div>
+    <div class="s4-title">Nos 3 Piliers<br>de Confiance</div>
+    <div class="s4-sub">RebSam répond toujours selon ces 3 engagements — sans exception.</div>
+    <div class="s4-cards">
+      <div class="s4-card">
+        <div class="s4-card-icon blue">✓</div>
+        <div class="s4-card-body">
+          <div class="s4-card-title">Sources Validées</div>
+          <div class="s4-card-desc">Zéro invention, zéro "hallucination". Chaque réponse est fondée sur nos textes sacrés : Shulchan Aruch, Mishna Broura, Yalkut Yossef, Tossefot, Ari Zal...</div>
+        </div>
+      </div>
+      <div class="s4-card">
+        <div class="s4-card-icon amber">🔒</div>
+        <div class="s4-card-body">
+          <div class="s4-card-title">Privé & Sécurisé</div>
+          <div class="s4-card-desc">Circuit fermé. Vos questions les plus intimes restent strictement privées : zéro collecte, zéro revente, zéro entraînement externe.</div>
+        </div>
+      </div>
+      <div class="s4-card">
+        <div class="s4-card-icon green">⚡</div>
+        <div class="s4-card-body">
+          <div class="s4-card-title">Rapide & Fiable</div>
+          <div class="s4-card-desc">Réponses en moins d'une seconde. Technologie RAG qui scanne des milliers d'ouvrages de Halacha avec une irréfutable précision.</div>
+        </div>
+      </div>
+    </div>
+    <div class="s4-logo"><span class="reb">Reb</span><span class="sam">Sam</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 5 — Technologie RAG
+════════════════════════════════════════════════════ -->
+<div class="screen-wrapper">
+  <div class="screen-label">Écran 5 — Technologie RAG</div>
+  <div class="screen s5">
+    <div class="s5-eyebrow">Technologie</div>
+    <div class="s5-title">Comment RebSam<br>évite les erreurs ?</div>
+    <div class="s5-sub">La technologie RAG force l'IA à ne répondre qu'à partir de textes réels — jamais de mémoire inventée.</div>
+    <div class="s5-steps">
+      <div class="s5-step">
+        <div class="s5-step-icon" style="background:rgba(37,99,235,.1);">💬</div>
+        <div>
+          <div class="s5-step-num" style="color:#2563eb;">Étape 1</div>
+          <div class="s5-step-label">Ta question</div>
+          <div class="s5-step-desc">Posée en hébreu, français ou anglais</div>
+        </div>
+      </div>
+      <div class="s5-step">
+        <div class="s5-step-icon" style="background:rgba(99,102,241,.1);">🔍</div>
+        <div>
+          <div class="s5-step-num" style="color:#6366f1;">Étape 2</div>
+          <div class="s5-step-label">Recherche vectorielle</div>
+          <div class="s5-step-desc">Scan de milliers de sifrey kodesh</div>
+        </div>
+      </div>
+      <div class="s5-step">
+        <div class="s5-step-icon" style="background:rgba(124,58,237,.1);">📄</div>
+        <div>
+          <div class="s5-step-num" style="color:#7c3aed;">Étape 3</div>
+          <div class="s5-step-label">Passages extraits</div>
+          <div class="s5-step-desc">Uniquement depuis nos sources vérifiées</div>
+        </div>
+      </div>
+      <div class="s5-step">
+        <div class="s5-step-icon" style="background:rgba(16,185,129,.1);">🛡️</div>
+        <div>
+          <div class="s5-step-num" style="color:#10b981;">Étape 4</div>
+          <div class="s5-step-label">Réponse sourcée</div>
+          <div class="s5-step-desc">Avec Siman et Seif exacts</div>
+        </div>
+      </div>
+    </div>
+    <div class="s5-insight">
+      <div class="s5-insight-icon">💡</div>
+      <div class="s5-insight-text"><strong>Le secret :</strong> L'IA lit uniquement les passages transmis par le moteur RAG — tous extraits de nos sifrey kodesh. Impossible d'inventer ce qui n'y est pas.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 6 — Bibliothèque Sacrée
+════════════════════════════════════════════════════ -->
+<div class="screen-wrapper">
+  <div class="screen-label">Écran 6 — Bibliothèque Sacrée</div>
+  <div class="screen s6">
+    <div class="s6-eyebrow">Bibliothèque Sacrée</div>
+    <div class="s6-title">Des milliers de<br>Sifrey Kodesh.<br><span>Zéro Invention.</span></div>
+    <div class="s6-sub">Chaque réponse est ancrée dans nos textes fondamentaux — avec le Livre, le Siman et le Seif exacts.</div>
+    <div class="s6-grid">
+      <div class="s6-book blue">
+        <div class="s6-book-icon">📖</div>
+        <div class="s6-book-heb">שולחן ערוך</div>
+        <div class="s6-book-name">Choulhan Aroukh</div>
+        <div class="s6-book-desc">Code halakhique de référence</div>
+      </div>
+      <div class="s6-book purple">
+        <div class="s6-book-icon">📚</div>
+        <div class="s6-book-heb">משנה ברורה</div>
+        <div class="s6-book-name">Michna Beroura</div>
+        <div class="s6-book-desc">Hafets Haïm</div>
+      </div>
+      <div class="s6-book gold">
+        <div class="s6-book-icon">🏛️</div>
+        <div class="s6-book-heb">רמב"ם</div>
+        <div class="s6-book-name">Rambam</div>
+        <div class="s6-book-desc">Michné Torah, Maïmonide</div>
+      </div>
+      <div class="s6-book cyan">
+        <div class="s6-book-icon">✨</div>
+        <div class="s6-book-heb">ילקוט יוסף</div>
+        <div class="s6-book-name">Yalkut Yossef</div>
+        <div class="s6-book-desc">Rav Ovadia Yossef</div>
+      </div>
+    </div>
+    <div class="s6-more">
+      Et <strong>des milliers d'autres</strong> — Tossefot, livres du Ari Zal,<br>Igrot Moshé, Peninei Halakha, Chass...
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 7 — Multilingue (HE / FR / EN)
+════════════════════════════════════════════════════ -->
+<div class="screen-wrapper">
+  <div class="screen-label">Écran 7 — Multilingue</div>
+  <div class="screen s7">
+    <div class="s7-eyebrow">Multilingue</div>
+    <div class="s7-title">En hébreu, français<br>ou anglais</div>
+    <div class="s7-sub">Posez vos questions dans la langue de votre choix — RebSam vous répond dans la même langue.</div>
+    <div class="s7-langs">
+      <div class="s7-lang">
+        <div class="s7-lang-flag">🇮🇱</div>
+        <div class="s7-lang-name">עברית</div>
+      </div>
+      <div class="s7-lang">
+        <div class="s7-lang-flag">🇫🇷</div>
+        <div class="s7-lang-name">Français</div>
+      </div>
+      <div class="s7-lang">
+        <div class="s7-lang-flag">🇬🇧</div>
+        <div class="s7-lang-name">English</div>
+      </div>
+    </div>
+    <div class="s7-chats">
+      <div class="s7-chat-block">
+        <div class="s7-chat-lang">🇫🇷 Français</div>
+        <div class="s7-chat-q">Peut-on utiliser son téléphone Chabbat ?</div>
+        <div class="s7-chat-a">Il est interdit d'utiliser un téléphone le Chabbat. Cette interdiction découle de plusieurs melakhot... <span class="src">O.H. 328:2</span></div>
+      </div>
+      <div class="s7-chat-block" style="direction:rtl; text-align:right;">
+        <div class="s7-chat-lang" style="text-align:left; direction:ltr;">🇮🇱 עברית</div>
+        <div class="s7-chat-q" style="border-bottom-left-radius:10px; border-bottom-right-radius:3px;">?מה ברכת האורז</div>
+        <div class="s7-chat-a">ברכת האורז היא "בורא מיני מזונות" לפי רוב הפוסקים... <span class="src">או״ח רח:ז</span></div>
+      </div>
+      <div class="s7-chat-block">
+        <div class="s7-chat-lang">🇬🇧 English</div>
+        <div class="s7-chat-q">Is it permitted to eat fish with meat?</div>
+        <div class="s7-chat-a">It is prohibited (אסור) to cook or eat fish together with meat... <span class="src">YD 116:2</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes pulse {
+    0%, 100% { opacity: .3; transform: scale(.8); }
+    50% { opacity: 1; transform: scale(1); }
+  }
+</style>
+</body>
+</html>
