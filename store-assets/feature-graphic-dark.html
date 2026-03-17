@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1024px;
+    height: 500px;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: linear-gradient(155deg, #090f1e 0%, #0c1425 35%, #0e1a30 65%, #101e38 100%);
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  /* Glow arrière-plan */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 100% at 75% 55%, rgba(46,107,230,0.20) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 60% at 8%  50%, rgba(91,142,240,0.10) 0%, transparent 55%);
+    pointer-events: none;
+  }
+
+  /* ── CONTENU GAUCHE ── */
+  .left {
+    position: relative;
+    z-index: 2;
+    padding: 0 0 0 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 540px;
+    flex-shrink: 0;
+  }
+
+  /* Badge */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(91,142,240,0.12);
+    border: 1px solid rgba(91,142,240,0.35);
+    color: #7aabff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    padding: 6px 15px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+    width: fit-content;
+  }
+
+  /* Logo */
+  .logo {
+    font-family: 'Outfit', sans-serif;
+    font-size: 96px;
+    font-weight: 900;
+    letter-spacing: -3px;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .logo .reb { color: #ffffff; }
+  .logo .sam { color: #5B8EF0; }
+
+  /* Séparateur */
+  .sep {
+    width: 50px;
+    height: 4px;
+    background: linear-gradient(90deg, #5B8EF0, #a78bfa);
+    border-radius: 2px;
+    margin-bottom: 18px;
+  }
+
+  /* Tagline */
+  .tagline {
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: rgba(203,213,225,0.80);
+    line-height: 1.45;
+    margin-bottom: 32px;
+    max-width: 400px;
+  }
+
+  /* Pillules mots-clés */
+  .pills {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    background: rgba(26,37,64,0.90);
+    border: 1px solid rgba(94,130,198,0.30);
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(226,232,240,0.90);
+    white-space: nowrap;
+  }
+
+  .pill-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .pill-dot.y { background: #fabc32; }
+  .pill-dot.b { background: #5B8EF0; }
+  .pill-dot.p { background: #a78bfa; }
+
+  /* ── AVATAR DROITE ── */
+  .right {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    width: 430px;
+    height: 500px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .avatar-glow {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(46,107,230,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .right img {
+    position: relative;
+    z-index: 1;
+    height: 480px;
+    width: auto;
+    object-fit: contain;
+    object-position: bottom;
+    filter: drop-shadow(0 8px 40px rgba(91,142,240,0.45));
+  }
+</style>
+</head>
+<body>
+
+  <div class="left">
+    <div class="badge">Assistant Halachique IA</div>
+    <div class="logo"><span class="reb">Reb</span><span class="sam">Sam</span></div>
+    <div class="sep"></div>
+    <div class="tagline">Un Rebbe dans votre dose d'IA quotidienne.</div>
+    <div class="pills">
+      <div class="pill"><span class="pill-dot y"></span>Réponses sourcées</div>
+      <div class="pill"><span class="pill-dot b"></span>Zéro hallucination</div>
+      <div class="pill"><span class="pill-dot p"></span>+2000 Sifrey Kodesh</div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="avatar-glow"></div>
+    <img src="../avatar.webp" alt="RebSam">
+  </div>
+
+</body>
+</html>
