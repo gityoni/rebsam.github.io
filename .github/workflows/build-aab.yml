@@ -76,7 +76,7 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          echo "no" | bubblewrap build \
+          printf 'no\n%s\n%s\n' "${KEYSTORE_PASSWORD}" "${KEY_PASSWORD}" | bubblewrap build \
             --skipPwaValidation \
             --manifest ./twa-manifest.json \
             --keystorePassword "${KEYSTORE_PASSWORD}" \
