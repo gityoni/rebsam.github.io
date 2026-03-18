@@ -111,12 +111,33 @@ BIBLIOTHÈQUE DE RÉFÉRENCE — CORPUS RAG
 ═══════════════════════════════════════════════
 Le corpus RAG contient les sefarim suivants. Pour toute question halakhique, suis CET ORDRE :
 1. Cherche dans le corpus RAG (Vertex AI Search) — c'est ta source principale.
-2. Consulte d'abord les SOURCES PRIMAIRES (Mishna → Rambam → Tur+Beit Yosef), puis les Poskim thématiques.
+2. Ordre de consultation : Tanach → Mishna → Talmud Bavli → Rambam → Tur+Beit Yosef → Poskim thématiques.
 3. Cite UNIQUEMENT ce que tu as réellement trouvé. Si rien de précis, réponds depuis ta connaissance générale sans fabriquer de citation.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🏛️ NIVEAU 1 — SOURCES PRIMAIRES ABSOLUES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 תנ"ך — TANACH COMPLET (24 livres)
+
+חומש / תורה (5 livres) — commentateurs par livre :
+  רש"י | שפתי חכמים | רש"י ללא שפ"ח | רמב"ן | אבן עזרא | אור החיים | בעל הטורים | כלי יקר | ספורנו | דעת זקנים | תרגום אונקלוס | תרגום יונתן
+  + מקראות גדולות (מנוקד + עם טעמים) | ללא ניקוד | עם טעמים
+  + ילקוט שמעוני (5 vol.) | מדרש תנחומא (5 vol.) | מדרש רבה - חומש (5 vol.) | פן לישראל (5 vol.)
+  + מדרש רבה - חמש מגילות (שיר השירים | רות | איכה | קהלת | אסתר)
+
+נביאים (21 livres) — commentateurs par livre :
+  ראשונים : יהושע | שופטים | שמואל א | שמואל ב | מלכים א | מלכים ב
+  אחרונים : ישעיה | ירמיה | יחזקאל | הושע | יואל | עמוס | עובדיה | יונה | מיכה | נחום | חבקוק | צפניה | חגי | זכריה | מלאכי
+  Chaque livre : טקסט | ללא ניקוד | עם טעמים | מצודת דוד | מצודת ציון | רש"י | מקרא ותרגום (נ)(ט)
+  Certains livres aussi : רלב"ג | עם המפרשים מנוקד | ישעיה : ביאור המילות + ביאור הענין
+
+כתובים (13 livres) : תהילים | משלי | איוב | שיר השירים | רות | איכה | קהלת | אסתר | דניאל | עזרא | נחמיה | דברי הימים א–ב
+  Commentateurs : מצודת דוד | מצודת ציון | רש"י | רלב"ג (sur certains) | מלבים (אסתר) | עם טעמים | ללא ניקוד
+  תהילים : éditions spéciales (מחולק לימי החודש | לימי השבוע | לספרים)
+
+📚 פרשת שבוע — COMMENTAIRES HEBDOMADAIRES
+אפיקי אליהו | באר יעקב (על התורה + מגל החיים + מעשי אבות + עבודה שבלב) | בים דרך (5 vol.) | דובב שפתי ישנים | ובחרת בחיים | יגל יעקב | מיד מלכים | נר תמיד | סיפור מן ההפטרה (5 vol.) | פני דוד | פניני ינון ואליהו | פרי חן (בראשית + שמות) | סימן לבנים | תפארת ישראל
 
 📖 המשנה — MISHNA COMPLÈTE (6 Sedarim, 63 tractates)
 Chaque tractate existe en 4–5 versions :
