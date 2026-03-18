@@ -64,8 +64,10 @@ VERTEX_URL = (
 )
 
 # ── Firestore ─────────────────────────────────────────────
-FIRESTORE_COLLECTION = "wa_history"
-MAX_WA_HISTORY_TURNS = 10
+FIRESTORE_COLLECTION     = "wa_history"
+WEB_HISTORY_COLLECTION   = "web_history"
+MAX_WA_HISTORY_TURNS     = 20
+MAX_WEB_HISTORY_TURNS    = 20
 
 try:
     db = firestore.Client()
@@ -75,11 +77,11 @@ except Exception as _e:
     logging.warning(f"[RebSam] Firestore non disponible : {_e}")
 
 
-def load_history(phone: str) -> list:
+def load_history(key: str, collection: str = FIRESTORE_COLLECTION) -> list:
     if db is None:
         return []
     try:
-        doc = db.collection(FIRESTORE_COLLECTION).document(phone).get()
+        doc = db.collection(collection).document(key).get()
         if doc.exists:
             return doc.to_dict().get("history", [])
     except Exception as e:
@@ -87,11 +89,11 @@ def load_history(phone: str) -> list:
     return []
 
 
-def save_history(phone: str, history: list):
+def save_history(key: str, history: list, collection: str = FIRESTORE_COLLECTION):
     if db is None:
         return
     try:
-        db.collection(FIRESTORE_COLLECTION).document(phone).set({
+        db.collection(collection).document(key).set({
             "history":    history,
             "updated_at": datetime.now(timezone.utc).isoformat()
         })
@@ -468,23 +470,31 @@ def chat():
         data          = request.get_json(force=True, silent=True) or {}
         system_prompt = data.get("systemPrompt", "")
         message       = data.get("message", "")
-        history       = data.get("history", [])
         lang          = data.get("lang", "fr")
-        if not history and data.get("prompt"):
+        session_id    = data.get("sessionId", "")
+        if not message and data.get("prompt"):
             message = data["prompt"]
-            history = [{"role": "user", "content": message}]
     else:
         prompt        = request.args.get("prompt", "")
         lang          = request.args.get("lang", "fr")
+        session_id    = request.args.get("sessionId", "")
         message       = prompt
         system_prompt = ""
-        history       = [{"role": "user", "content": prompt}]
-        data          = {"message": message, "lang": lang, "history": history}
+        data          = {"message": message, "lang": lang}
 
-    if not message and not history:
+    if not message:
         return jsonify({"error": "No message provided"}), 400
 
-    logging.info(f"[RebSam] lang={lang} turns={len(history)} msg={message[:80]}")
+    # Historique : Firestore si sessionId disponible, sinon client
+    if session_id:
+        history = load_history(session_id, collection=WEB_HISTORY_COLLECTION)
+        logging.info(f"[RebSam] lang={lang} session={session_id[:8]}… turns={len(history)} msg={message[:80]}")
+    else:
+        history = data.get("history", [])
+        logging.info(f"[RebSam] lang={lang} turns={len(history)} msg={message[:80]}")
+
+    if len(history) > MAX_WEB_HISTORY_TURNS:
+        history = history[-MAX_WEB_HISTORY_TURNS:]
 
     today_str = datetime.now(timezone.utc).strftime("%A %d %B %Y")
     date_injection = {
@@ -522,6 +532,17 @@ def chat():
             reply = "Je n'ai pas pu générer de réponse. Veuillez réessayer."
 
         reply = re.sub(r'^#{1,6}\s+', '', reply, flags=re.MULTILINE)
+
+        # Sauvegarde historique Firestore si sessionId présent
+        if session_id:
+            updated = history + [
+                {"role": "user",  "content": message},
+                {"role": "model", "content": reply},
+            ]
+            if len(updated) > MAX_WEB_HISTORY_TURNS:
+                updated = updated[-MAX_WEB_HISTORY_TURNS:]
+            save_history(session_id, updated, collection=WEB_HISTORY_COLLECTION)
+
         log_to_make(data, reply)
         return jsonify({"reply": reply})
 
