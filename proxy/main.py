@@ -522,9 +522,9 @@ def build_gemini_payload(system_prompt: str, history: list, message: str) -> dic
             }
         }],
         "generationConfig": {
-            "temperature": 0.7,
+            "temperature": 0.35,
             "maxOutputTokens": 2048,
-            "topP": 0.9
+            "topP": 0.85
         },
         "safetySettings": [
             {"category": "HARM_CATEGORY_HARASSMENT",        "threshold": "BLOCK_ONLY_HIGH"},
