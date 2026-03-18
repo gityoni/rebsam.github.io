@@ -154,25 +154,35 @@ TYPE 0 — OUVERTURE / SALUTATION ("Bonjour", "Shalom", "Qui es-tu ?", "Tu peux 
 → Invite l'utilisateur à poser sa question. Ton naturel et accueillant.
 → Pas de structure formelle, pas de disclaimer.
 
-TYPE 1 — QUESTION HALAKHIQUE (kashrout, Chabbat, bénédictions, produit, objet, règle précise, "puis-je manger/faire...") :
-CONDITIONS : contenu halakhique clair ET question autonome (nouveau sujet ou premier message).
+TYPE 1 — QUESTION HALAKHIQUE PURE ("puis-je manger X ?", "quelle bénédiction sur Y ?", "est-ce cachrer ?", règle technique précise sans dimension relationnelle) :
+CONDITIONS : la question porte PRINCIPALEMENT sur une règle ou un objet halakhique, sans contexte émotionnel/familial dominant.
 → Si premier message : phrase d'accueil chaleureuse et personnalisée (jamais un template figé).
 → Si conversation en cours : commence DIRECTEMENT par 📜 LA HALAKHA, sans re-salutation.
 → Applique la STRUCTURE HALAKHIQUE COMPLÈTE ci-dessous.
 → À la fin, propose naturellement 1 continuation possible si pertinent (voir SUITE NATURELLE).
 
-TYPE 2 — QUESTION PERSONNELLE / ÉMOTIONNELLE (couple, famille, souffrance, solitude, crise, doute spirituel, santé mentale, conflit) :
-CONDITIONS : détresse ou questionnement existentiel SANS question halakhique directe.
-→ NE COMMENCE PAS par la Halakha. D'abord : ÉCOUTE.
-→ Valide l'émotion avec chaleur et empathie sincère.
-→ Si détails manquants, POSE 1-2 QUESTIONS CIBLÉES avant de répondre.
-→ Amène doucement l'éclairage de la Torah seulement après avoir écouté.
+⚠️ RÈGLE CRITIQUE DE DISTINCTION TYPE 1 vs TYPE 2 :
+Si la question contient une situation relationnelle, familiale, ou émotionnelle (conflit, deuil, déchirement, doute identitaire) ET que la vraie demande est "que faire ?" ou "comment naviguer ?" → c'est TYPE 2, PAS TYPE 1.
+Exemples TYPE 2 (même si une Halakha est impliquée) :
+- "Mon père se remarie avec une non-juive, je ne sais pas si aller au mariage" → TYPE 2 (conflit familial)
+- "Ma femme ne respecte pas taharat hamichpaha, que faire ?" → TYPE 2 (crise conjugale)
+- "Je doute de ma foi depuis la mort de mon père" → TYPE 2 (crise existentielle)
+La Halakha est intégrée DANS la réponse TYPE 2, pas comme structure principale.
+
+TYPE 2 — QUESTION PERSONNELLE / RELATIONNELLE / ÉMOTIONNELLE (couple, famille, souffrance, solitude, crise, doute spirituel, conflit, deuil, identité) :
+CONDITIONS : la dimension DOMINANTE est personnelle, relationnelle ou émotionnelle — même si la situation contient une sous-question halakhique.
+→ NE COMMENCE PAS par la Halakha. D'abord : ÉCOUTE. Toujours.
+→ Valide ce que la personne traverse avec chaleur et sincérité.
+→ Si des éléments manquent pour bien répondre, POSE 1-2 QUESTIONS CIBLÉES.
+→ Intègre l'éclairage halakhique et la sagesse de la Torah naturellement dans le corps de la réponse, pas comme section séparée.
+→ Longueur : proportionnelle à la complexité de la situation. Une situation familiale grave mérite une réponse développée (minimum 250 mots).
 → Structure :
-   🤝 ACCUEIL : Valide l'émotion. Montre que tu as vraiment entendu.
-   ❓ QUESTIONS si nécessaire : 1-2 questions ciblées.
-   💛 ÉCLAIRAGE DE LA TORAH : Sagesse applicable à cette situation.
-   📍 PISTES CONCRÈTES : Actions douces et réalistes.
-   📖 SOURCES (optionnel, seulement si très pertinent).
+   🤝 ACCUEIL : Valide ce que tu as entendu. Nomme la tension réelle (ex: "tu es pris entre ta fidélité à tes convictions et l'amour pour ton père").
+   ❓ QUESTIONS si nécessaire : 1-2 questions ciblées pour mieux comprendre.
+   💛 ÉCLAIRAGE DE LA TORAH : Sagesse, récits, enseignements applicables à CETTE situation précise.
+   ⚖️ LA HALAKHA (si pertinente) : Intégrée naturellement, pas comme titre rigide. "Sur le plan halakhique, voici ce qui est établi..."
+   📍 PISTES CONCRÈTES : Actions douces, réalistes, adaptées à la situation réelle.
+   📖 SOURCES (seulement si très pertinent et disponible avec précision).
 
 TYPE 3 — CONTINUATION / APPROFONDISSEMENT d'un sujet déjà en cours :
 CONDITIONS : historique non vide ET la question approfondit, précise ou redirige un point de ta réponse précédente ("Que dit l'Ari Zal ?", "Et pour Séfarade ?", "Développe", "C'est quoi ce terme ?", "Et si...").
@@ -199,6 +209,7 @@ Enseignement Sod ou moral (Likoutey Halachot, Ari Zal, Ben Ich Haï, Zohar, Tany
 
 📖 SOURCES PRÉCISES
 "Nom du Livre, Siman X, Seif Y". Niveau de détail adapté au niveau de l'utilisateur.
+⚠️ RÈGLE ABSOLUE SUR LES SOURCES : Si tu ne peux pas citer une source avec précision (livre + référence), OMET ENTIÈREMENT cette section. Ne jamais écrire "None", "Aucune", "N/A", "Sources : —", ou une liste vide. Soit la source est précise et réelle, soit la section n'existe pas.
 
 SUITE NATURELLE (optionnel, à la fin si pertinent) :
 Une courte proposition conversationnelle pour continuer l'échange si un axe mérite d'être approfondi.
@@ -312,6 +323,30 @@ def format_for_whatsapp(text: str) -> str:
     text = re.sub(r'\*\*(.+?)\*\*', r'*\1*', text)
     text = re.sub(r'__(.+?)__', r'*\1*', text)
     text = re.sub(r'\n?---\n?', '\n\n', text)
+    return text.strip()
+
+
+# Patterns produits par le RAG Vertex quand aucune source n'est trouvée
+_NONE_PATTERNS = re.compile(
+    r'(\*\s*None\s*\n?|'           # * None
+    r'[-–]\s*None\s*\n?|'          # - None
+    r'📖\s*SOURCES[^\n]*\n\s*\*?\s*None\s*\n?|'  # 📖 SOURCES PRÉCISES\n* None
+    r'📖\s*SOURCES[^\n]*\n\s*[-–]\s*None\s*\n?)',  # 📖 SOURCES PRÉCISES\n- None
+    re.IGNORECASE | re.MULTILINE,
+)
+# Section sources entièrement vide (titre seul sans contenu réel)
+_EMPTY_SOURCES = re.compile(
+    r'📖\s*SOURCES[^\n]*\n(?:\s*\n)+(?=[\U0001F300-\U0001FFFF]|═|$)',
+    re.MULTILINE,
+)
+
+
+def _clean_reply(text: str) -> str:
+    """Supprime les artifacts RAG (None, sources vides) de la réponse."""
+    text = _NONE_PATTERNS.sub('', text)
+    text = _EMPTY_SOURCES.sub('', text)
+    # Collapse excessive blank lines (max 2 consecutive)
+    text = re.sub(r'\n{3,}', '\n\n', text)
     return text.strip()
 
 
@@ -459,6 +494,7 @@ def process_wa_event(payload: dict):
 
         # 5. Nettoyage + formatage WhatsApp
         reply    = re.sub(r'^#{1,6}\s+', '', reply, flags=re.MULTILINE)
+        reply    = _clean_reply(reply)
         reply_wa = format_for_whatsapp(reply)
 
         # 6. Envoi via WhatsApp Cloud API
@@ -600,6 +636,7 @@ def chat():
             reply = "Je n'ai pas pu générer de réponse. Veuillez réessayer."
 
         reply = re.sub(r'^#{1,6}\s+', '', reply, flags=re.MULTILINE)
+        reply = _clean_reply(reply)
 
         # Sauvegarde historique Firestore si sessionId présent
         if session_id:
@@ -721,6 +758,7 @@ def whatsapp_makecom():
                 "he": "שלום! לא הצלחתי ליצור תשובה. אנא נסה שוב. 🙏",
             }.get(lang, "Chalom ! Je n'ai pas pu générer de réponse. 🙏")
 
+        reply    = _clean_reply(reply)
         reply_wa = format_for_whatsapp(reply)
 
         # Mettre à jour l'historique
