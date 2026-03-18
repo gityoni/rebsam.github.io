@@ -1655,7 +1655,7 @@
   const MAKE_WEBHOOK_URL = '/api';
   let chatSending = false;
   let conversationHistory = []; // Mémoire de la conversation en cours
-  const _sid = () => { if (!sessionStorage._rsid) sessionStorage._rsid = Date.now().toString(36) + Math.random().toString(36).slice(2); return sessionStorage._rsid; };
+  const _sid = () => { if (!localStorage._rsid) localStorage._rsid = Date.now().toString(36) + Math.random().toString(36).slice(2); return localStorage._rsid; };
 
   /* ── PALETTE DÉGRADÉS USER ── */
   const USER_GRADIENTS = [
