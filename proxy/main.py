@@ -65,7 +65,7 @@ VERTEX_URL = (
 
 # ── Firestore ─────────────────────────────────────────────
 FIRESTORE_COLLECTION = "wa_history"
-MAX_WA_HISTORY_TURNS = 10
+MAX_WA_HISTORY_TURNS = 20
 
 try:
     db = firestore.Client()
