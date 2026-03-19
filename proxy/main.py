@@ -37,7 +37,7 @@ def add_cors(resp):
 SECRET_TOKEN       = os.environ.get("SECRET_TOKEN", "rebsam-make-2026")
 PROJECT_ID         = os.environ.get("GCP_PROJECT", "rebbe-sam-agent")
 LOCATION           = os.environ.get("GCP_LOCATION", "europe-west1")
-MODEL              = os.environ.get("GEMINI_MODEL", "gemini-3-flash-preview")
+MODEL              = os.environ.get("GEMINI_MODEL", "gemini-3-flash")
 MAKE_LOG_WEBHOOK   = os.environ.get("MAKE_LOG_WEBHOOK", "")
 
 # ── Config WhatsApp Cloud API (Meta) ──────────────────────
