@@ -109,7 +109,7 @@ async function searchAndAnswer(prompt, preamble, token) {
         body: JSON.stringify({
           query: { text: prompt },
           answerGenerationSpec: {
-            modelSpec: { modelVersion: 'gemini-2.0-flash-001/answer_gen/v1' },
+            modelSpec: { modelVersion: 'gemini-1.5-pro-002/answer_gen/v1' },
             promptSpec: { preamble: preamble },
             includeCitations: true
           }
@@ -126,7 +126,7 @@ async function searchAndAnswer(prompt, preamble, token) {
 
 // FIX: preamble passé en paramètre (inclut SYSTEM_PROMPT + langue + historique)
 async function fallbackGemini(prompt, preamble, searchSnippets, token) {
-  const url = 'https://aiplatform.googleapis.com/v1/projects/' + PROJECT_ID + '/locations/global/publishers/google/models/gemini-2.0-flash-001:generateContent';
+  const url = 'https://europe-west1-aiplatform.googleapis.com/v1/projects/' + PROJECT_ID + '/locations/europe-west1/publishers/google/models/gemini-1.5-pro-002:generateContent';
   const snippetContext = searchSnippets.length > 0
     ? '\n\nEXTRAITS DES SOURCES (utilise-les pour ta réponse) :\n' + searchSnippets.join('\n---\n')
     : '';
