@@ -37,7 +37,7 @@ def add_cors(resp):
 SECRET_TOKEN       = os.environ.get("SECRET_TOKEN", "rebsam-make-2026")
 PROJECT_ID         = os.environ.get("GCP_PROJECT", "rebbe-sam-agent")
 LOCATION           = os.environ.get("GCP_LOCATION", "europe-west1")
-MODEL              = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash-001")
+MODEL              = os.environ.get("GEMINI_MODEL", "gemini-3-flash")
 MAKE_LOG_WEBHOOK   = os.environ.get("MAKE_LOG_WEBHOOK", "")
 
 # ── Config WhatsApp Cloud API (Meta) ──────────────────────
@@ -58,7 +58,14 @@ DATASTORE_PATH = (
 # ← Pour modifier le prompt sans rebuild : Cloud Console → Cloud Run → Variables d'env → SYSTEM_PROMPT
 SYSTEM_PROMPT_ENV  = os.environ.get("SYSTEM_PROMPT", "")
 
+# Gemini 3+ : endpoint global (aiplatform.googleapis.com, locations/global)
+# Gemini 2 et avant : endpoint régional ({LOCATION}-aiplatform.googleapis.com)
+_GLOBAL_MODELS = ("gemini-3",)
+_USE_GLOBAL = any(MODEL.startswith(m) for m in _GLOBAL_MODELS)
 VERTEX_URL = (
+    f"https://aiplatform.googleapis.com/v1/projects/{PROJECT_ID}"
+    f"/locations/global/publishers/google/models/{MODEL}:generateContent"
+    if _USE_GLOBAL else
     f"https://{LOCATION}-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}"
     f"/locations/{LOCATION}/publishers/google/models/{MODEL}:generateContent"
 )
