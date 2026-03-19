@@ -37,8 +37,13 @@ def add_cors(resp):
 SECRET_TOKEN       = os.environ.get("SECRET_TOKEN", "rebsam-make-2026")
 PROJECT_ID         = os.environ.get("GCP_PROJECT", "rebbe-sam-agent")
 LOCATION           = os.environ.get("GCP_LOCATION", "europe-west1")
-MODEL              = os.environ.get("GEMINI_MODEL", "gemini-1.5-pro-002")
+MODEL              = os.environ.get("GEMINI_MODEL", "claude-sonnet-4-6")
 MAKE_LOG_WEBHOOK   = os.environ.get("MAKE_LOG_WEBHOOK", "")
+# ── Détection du provider LLM ─────────────────────────────
+# claude-* → Claude via Vertex AI Model Garden (us-east5, Google auth)
+#           RAG découplé : Vertex Search → contexte → Claude
+# gemini-* → Gemini via Vertex AI (RAG natif intégré, europe-west1)
+USE_CLAUDE = MODEL.startswith("claude-")
 
 # ── Config WhatsApp Cloud API (Meta) ──────────────────────
 WHATSAPP_TOKEN     = os.environ.get("WHATSAPP_TOKEN", "")
@@ -55,6 +60,13 @@ DATASTORE_PATH = (
     f"/collections/default_collection/dataStores/{DATASTORE_ID}"
 )
 
+# URL Vertex AI Search standalone (pour Claude — RAG découplé)
+VERTEX_SEARCH_URL = (
+    f"https://discoveryengine.googleapis.com/v1/projects/{PROJECT_ID}"
+    f"/locations/global/collections/default_collection"
+    f"/dataStores/{DATASTORE_ID}/servingConfigs/default_search:search"
+)
+
 # ← Pour modifier le prompt sans rebuild : Cloud Console → Cloud Run → Variables d'env → SYSTEM_PROMPT
 SYSTEM_PROMPT_ENV  = os.environ.get("SYSTEM_PROMPT", "")
 
@@ -68,6 +80,13 @@ VERTEX_URL = (
     if _USE_GLOBAL else
     f"https://{LOCATION}-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}"
     f"/locations/{LOCATION}/publishers/google/models/{MODEL}:generateContent"
+)
+
+# Claude via Vertex AI Model Garden — toujours us-east5 (seule région supportée)
+# Aucune clé Anthropic nécessaire — authentification Google IAM
+CLAUDE_VERTEX_URL = (
+    f"https://us-east5-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}"
+    f"/locations/us-east5/publishers/anthropic/models/{MODEL}:rawPredict"
 )
 
 # ── Firestore ─────────────────────────────────────────────
@@ -542,7 +561,179 @@ def build_gemini_payload(system_prompt: str, history: list, message: str) -> dic
     }
 
 
-# ── Envoi de la réponse via WhatsApp Cloud API ────────────
+# ── RAG Vertex AI Search standalone (pour Claude) ─────────
+def search_rag(query: str, top_k: int = 5) -> str:
+    """
+    Appelle Vertex AI Search indépendamment pour récupérer
+    les passages RAG pertinents. Retourne un bloc texte
+    à injecter dans le prompt Claude.
+    """
+    try:
+        access_token = get_access_token()
+        resp = http_requests.post(
+            VERTEX_SEARCH_URL,
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type":  "application/json",
+            },
+            json={
+                "query": query,
+                "pageSize": top_k,
+                "queryExpansionSpec": {"condition": "AUTO"},
+                "spellCorrectionSpec": {"mode": "AUTO"},
+                "contentSearchSpec": {
+                    "snippetSpec": {"returnSnippet": True},
+                    "extractiveContentSpec": {"maxExtractiveAnswerCount": 3}
+                }
+            },
+            timeout=15,
+        )
+        resp.raise_for_status()
+        data    = resp.json()
+        results = data.get("results", [])
+        if not results:
+            logging.info("[RebSam/RAG] Aucun résultat Vertex Search")
+            return ""
+
+        passages = []
+        for r in results:
+            doc   = r.get("document", {})
+            title = doc.get("derivedStructData", {}).get("title", [""])[0] if isinstance(
+                doc.get("derivedStructData", {}).get("title"), list
+            ) else doc.get("derivedStructData", {}).get("title", "")
+            for snippet in doc.get("derivedStructData", {}).get("snippets", []):
+                text = snippet.get("snippet", "").strip()
+                if text:
+                    passages.append(f"[{title}]\n{text}")
+            for answer in doc.get("derivedStructData", {}).get("extractive_answers", []):
+                text = answer.get("content", "").strip()
+                if text:
+                    passages.append(f"[{title}]\n{text}")
+
+        if not passages:
+            return ""
+        rag_block = "\n\n---\n\n".join(passages[:top_k])
+        logging.info(f"[RebSam/RAG] {len(passages)} passages récupérés depuis Vertex Search")
+        return rag_block
+
+    except Exception as e:
+        logging.warning(f"[RebSam/RAG] Vertex Search échoué : {e}")
+        return ""
+
+
+# ── Appel Claude (Anthropic API) ──────────────────────────
+def call_claude(system_prompt: str, history: list, message: str) -> str:
+    """
+    Appelle Claude via Vertex AI Model Garden (us-east5).
+    Authentification Google IAM — aucune clé Anthropic nécessaire.
+    Effectue d'abord un appel RAG Vertex Search pour récupérer
+    le contexte, puis l'injecte dans le message utilisateur.
+    """
+    # 1. Récupérer le contexte RAG depuis Vertex AI Search
+    rag_context = search_rag(message)
+
+    # 2. Injecter le contexte RAG dans le message utilisateur
+    if rag_context:
+        augmented_message = (
+            f"CONTEXTE ISSU DU CORPUS RAG (séfarim numérisés) :\n\n"
+            f"{rag_context}\n\n"
+            f"---\n\n"
+            f"QUESTION : {message}"
+        )
+    else:
+        augmented_message = (
+            f"[Aucun passage pertinent trouvé dans le corpus RAG pour cette question.]\n\n"
+            f"QUESTION : {message}"
+        )
+
+    # 3. Construire l'historique au format Anthropic (role: user/assistant)
+    messages = []
+    for turn in history:
+        role = turn.get("role", "user")
+        if role == "model":
+            role = "assistant"   # Gemini dit "model", Anthropic dit "assistant"
+        if role not in ("user", "assistant"):
+            role = "user"
+        messages.append({"role": role, "content": turn.get("content", "")})
+    messages.append({"role": "user", "content": augmented_message})
+
+    # 4. Appel Claude via Vertex AI avec Prompt Caching
+    # Le system prompt (~23 000 chars) est identique à chaque requête →
+    # cache_control: ephemeral le met en cache 5 min → lecture 10x moins chère
+    access_token = get_access_token()
+    resp = http_requests.post(
+        CLAUDE_VERTEX_URL,
+        headers={
+            "Authorization":  f"Bearer {access_token}",
+            "Content-Type":   "application/json",
+            "anthropic-beta": "prompt-caching-2024-07-31",
+        },
+        json={
+            "anthropic_version": "vertex-2023-10-16",
+            "max_tokens": 2048,
+            "system": [
+                {
+                    "type":          "text",
+                    "text":          system_prompt,
+                    "cache_control": {"type": "ephemeral"},
+                }
+            ],
+            "messages": messages,
+        },
+        timeout=60,
+    )
+    resp.raise_for_status()
+    data  = resp.json()
+    reply = data.get("content", [{}])[0].get("text", "")
+    usage = data.get("usage", {})
+    logging.info(
+        f"[RebSam/Claude] Tokens — "
+        f"input:{usage.get('input_tokens','?')} "
+        f"output:{usage.get('output_tokens','?')} "
+        f"cache_write:{usage.get('cache_creation_input_tokens', 0)} "
+        f"cache_read:{usage.get('cache_read_input_tokens', 0)}"
+    )
+    return reply
+
+
+# ── Appel Gemini (Vertex AI — RAG natif intégré) ──────────
+def call_gemini(system_prompt: str, history: list, message: str) -> str:
+    """Appelle Gemini via Vertex AI avec le RAG natif intégré."""
+    payload      = build_gemini_payload(system_prompt, history, message)
+    access_token = get_access_token()
+    resp = http_requests.post(
+        VERTEX_URL,
+        headers={
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type":  "application/json",
+        },
+        json=payload,
+        timeout=60,
+    )
+    resp.raise_for_status()
+    data  = resp.json()
+    reply = (
+        data.get("candidates", [{}])[0]
+            .get("content", {})
+            .get("parts", [{}])[0]
+            .get("text", "")
+    )
+    return reply
+
+
+# ── Routeur LLM universel ─────────────────────────────────
+def call_llm(system_prompt: str, history: list, message: str) -> str:
+    """
+    Route vers Claude ou Gemini selon la variable MODEL.
+    claude-*  → Anthropic API + RAG Vertex Search découplé
+    gemini-*  → Vertex AI avec RAG natif intégré
+    """
+    if USE_CLAUDE:
+        logging.info(f"[RebSam] Provider: Anthropic Claude ({MODEL})")
+        return call_claude(system_prompt, history, message)
+    else:
+        logging.info(f"[RebSam] Provider: Gemini/Vertex ({MODEL})")
+        return call_gemini(system_prompt, history, message)
 def send_whatsapp_reply(to: str, text: str):
     if not WHATSAPP_TOKEN or not WHATSAPP_PHONE_ID:
         logging.warning("[RebSam/WA] WHATSAPP_TOKEN ou WHATSAPP_PHONE_ID manquant — réponse non envoyée")
@@ -617,32 +808,11 @@ def process_wa_event(payload: dict):
         }.get(lang, "\n\nTu réponds via WhatsApp. Utilise *gras* (un seul astérisque), _italique_, et des emojis. Évite les titres markdown (#).")
 
         effective_system = ACTIVE_PROMPT + date_injection + wa_note
-        gemini_payload   = build_gemini_payload(effective_system, history, text)
 
-        # 4. Appel Gemini
-        access_token = get_access_token()
-        resp = http_requests.post(
-            VERTEX_URL,
-            headers={
-                "Authorization": f"Bearer {access_token}",
-                "Content-Type":  "application/json",
-            },
-            json=gemini_payload,
-            timeout=60,
-        )
-        resp.raise_for_status()
-        gemini_data = resp.json()
-
-        reply = (
-            gemini_data
-            .get("candidates", [{}])[0]
-            .get("content", {})
-            .get("parts", [{}])[0]
-            .get("text", "")
-        )
+        # 4. Appel LLM (Gemini ou Claude selon MODEL)
+        reply = call_llm(effective_system, history, text)
 
         if not reply:
-            logging.warning(f"[RebSam/WA] Réponse vide de Gemini : {gemini_data}")
             reply = {
                 "fr": "Chalom ! Je n'ai pas pu générer de réponse. Veuillez réessayer. 🙏",
                 "en": "Shalom! I could not generate a response. Please try again. 🙏",
@@ -764,32 +934,12 @@ def chat():
     }.get(lang, f"\n\nDate d'aujourd'hui (UTC) : {today_str}. Utilise cette date pour tout calcul de calendrier juif ou horaires de prière.")
 
     effective_system = ACTIVE_PROMPT + date_injection
-    payload = build_gemini_payload(effective_system, history, message)
 
     try:
-        access_token = get_access_token()
-        resp = http_requests.post(
-            VERTEX_URL,
-            headers={
-                "Authorization": f"Bearer {access_token}",
-                "Content-Type":  "application/json",
-            },
-            json=payload,
-            timeout=60,
-        )
-        resp.raise_for_status()
-        gemini_data = resp.json()
-
-        reply = (
-            gemini_data
-            .get("candidates", [{}])[0]
-            .get("content", {})
-            .get("parts", [{}])[0]
-            .get("text", "")
-        )
+        reply = call_llm(effective_system, history, message)
 
         if not reply:
-            logging.warning(f"[RebSam] Réponse vide de Gemini : {gemini_data}")
+            logging.warning("[RebSam] Réponse vide du LLM")
             reply = "Je n'ai pas pu générer de réponse. Veuillez réessayer."
 
         reply = re.sub(r'^#{1,6}\s+', '', reply, flags=re.MULTILINE)
@@ -809,8 +959,8 @@ def chat():
         return jsonify({"reply": reply})
 
     except http_requests.HTTPError as e:
-        logging.error(f"[RebSam] Vertex AI HTTP error: {e} — {resp.text[:500]}")
-        return jsonify({"error": "Vertex AI error", "detail": str(e)}), 502
+        logging.error(f"[RebSam] LLM HTTP error: {e}")
+        return jsonify({"error": "LLM error", "detail": str(e)}), 502
     except Exception as e:
         logging.error(f"[RebSam] Unexpected error: {e}")
         return jsonify({"error": "Internal error", "detail": str(e)}), 500
@@ -883,32 +1033,12 @@ def whatsapp_makecom():
     }.get(lang, "\n\nTu réponds via WhatsApp. Utilise *gras* (un seul astérisque), _italique_, et des emojis. Évite les titres markdown (#).")
 
     effective_system = ACTIVE_PROMPT + date_injection + wa_note
-    gemini_payload   = build_gemini_payload(effective_system, history, message)
 
     try:
-        access_token = get_access_token()
-        resp = http_requests.post(
-            VERTEX_URL,
-            headers={
-                "Authorization": f"Bearer {access_token}",
-                "Content-Type":  "application/json",
-            },
-            json=gemini_payload,
-            timeout=60,
-        )
-        resp.raise_for_status()
-        gemini_data = resp.json()
-
-        reply = (
-            gemini_data
-            .get("candidates", [{}])[0]
-            .get("content", {})
-            .get("parts", [{}])[0]
-            .get("text", "")
-        )
+        reply = call_llm(effective_system, history, message)
 
         if not reply:
-            logging.warning(f"[RebSam/WA-Make] Réponse vide de Gemini : {gemini_data}")
+            logging.warning(f"[RebSam/WA-Make] Réponse vide du LLM")
             reply = {
                 "fr": "Chalom ! Je n'ai pas pu générer de réponse. Veuillez réessayer. 🙏",
                 "en": "Shalom! I could not generate a response. Please try again. 🙏",
