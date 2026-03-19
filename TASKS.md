@@ -12,14 +12,15 @@
 - **[2026-03-15] Refonte og-image.png** — Recomposition bannière OG : même logo/couleurs/avatar, layout propre colonne gauche texte / droite avatar, sans débordement → meilleur rendu thumbnail Telegram/Facebook/WhatsApp
 - **[2026-03-16] Fix build Android AAB — broken pipe sdkmanager** — `yes | sdkmanager --licenses` avec `set -euo pipefail` → broken pipe exit 141 → fix `(yes 2>/dev/null || true) | sdkmanager --licenses`
 - **[2026-03-17] Build AAB Android validé** — Pipeline GitHub Actions complet : fix minSdkVersion 19→21 (androidbrowserhelper:2.6.2), fix cache Gradle (hashFiles sur fichiers inexistants), fix prompts bubblewrap build/update, retries exponentiels 5 tentatives → build #17 Success 4m56s, 2 artifacts générés
+- **[2026-03-18] Cloud Run auto-deploy confirmé** — Cloud Build déclenché automatiquement sur push main, révision 00049-bnm déployée instantanément
+- **[2026-03-18] Prompt : règle FLUIDITÉ & HUMANITÉ** — Transitions naturelles entre sections, variété des formules d'entrée, interdiction de commencer par un titre en gras, utilisation du prénom utilisateur
 
 ## 🔄 En cours
 <!-- Mettre à jour à chaque session -->
-- Vérification LCP réel + og-image thumbnails
+- Vérification qualité des réponses RebSam (ton, fluidité, humanité)
 
 ## 📋 À faire
 <!-- Ajouter ici les prochaines tâches -->
-- **[Cloud Run] Connecter GitHub auto-deploy** — Cloud Run → Edit & Deploy New Revision → Continuously deploy from a repository → repo `gityoni/rebsam.github.io` → branch `^main$` → Dockerfile `/proxy/Dockerfile` → les variables d'env persistent d'une révision à l'autre
 - Soumettre l'AAB sur Google Play Console (test interne d'abord)
 - Mesurer LCP réel post-déploiement via PageSpeed Insights (cible : <2500ms)
 - Invalider le cache og-image sur Facebook Sharing Debugger après merge → main
@@ -30,5 +31,5 @@
 -
 
 ---
-*Dernière mise à jour : 2026-03-17*
+*Dernière mise à jour : 2026-03-18*
 
