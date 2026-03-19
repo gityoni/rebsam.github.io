@@ -1048,6 +1048,64 @@
     @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
       .msg-bubble, .chat-header-name, .logo { -webkit-font-smoothing: antialiased; }
     }
+
+    /* ══════════════════════════════════════════════════════
+       CHAT REDESIGN — Fullscreen mobile · Rounded · Contrast
+    ══════════════════════════════════════════════════════ */
+
+    /* 1. Masquer l'input prénom */
+    .chat-name-row { display: none; }
+
+    /* 2. Bulles plus arrondies */
+    .msg-bubble.sam  { border-radius: .3rem 1.5rem 1.5rem 1.5rem; }
+    .msg-bubble.user { border-radius: 1.5rem .3rem 1.5rem 1.5rem; }
+    [dir="rtl"] .msg-bubble.sam  { border-radius: 1.5rem .3rem 1.5rem 1.5rem; }
+    [dir="rtl"] .msg-bubble.user { border-radius: .3rem 1.5rem 1.5rem 1.5rem; }
+
+    /* 3. Bulles plus larges — collées aux bords */
+    #chat-box { padding: 1rem .75rem; }
+    .msg-bubble { max-width: 86%; }
+    .msg-bubble.sam  { max-width: 90%; }
+
+    /* 4. Contraste net input vs chat area */
+    .chat-input-area {
+      background: #e8edf8;
+      border-top: 2px solid rgba(46,107,230,.16);
+      padding: .875rem .875rem;
+    }
+    .chat-input-row {
+      background: #fff;
+      border-radius: 1.5rem;
+      border: 1.5px solid rgba(46,107,230,.2);
+    }
+    html.dark .chat-input-area {
+      background: #060d1c;
+      border-top-color: rgba(91,142,240,.2);
+    }
+    html.dark .chat-input-row {
+      background: #111c33;
+      border-color: rgba(91,142,240,.28);
+    }
+
+    /* 5. Plein écran sur mobile */
+    @media (max-width: 640px) {
+      #chat-overlay {
+        padding: 0;
+        background: transparent;
+        align-items: stretch;
+      }
+      #chat-modal {
+        height: 100svh;
+        height: 100dvh;
+        border-radius: 0;
+        max-width: 100%;
+      }
+      .chat-header { border-radius: 0; }
+      .chat-header::before { display: none; }
+      .chat-input-area { border-radius: 0; padding-bottom: max(.875rem, calc(env(safe-area-inset-bottom, 0px) + .875rem)); }
+      #chat-history-panel { border-radius: 0; }
+      .chat-hist-header { border-radius: 0; }
+    }
   </style>
 </head>
 <body>
@@ -2062,9 +2120,9 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
     const picked = shuffled.slice(0, 5 + Math.floor(Math.random() * 2)); // 5 ou 6
     const sourceList = picked.map(s => `• ${s}`).join('<br>');
     const msgs = {
-      fr: `Chalom ! 🌿 Je suis RebSam, ton compagnon d'étude halakhique.<br><br>Pose-moi n'importe quelle question : Kacherout, Chabbat, Niddah, Tefila, relations, business… Je réponds avec les sources exactes, sans jugement, 24h/24.<br><br>📚 <b>Sources consultées aujourd'hui :</b><br>${sourceList}<br><br>Par où veux-tu commencer ?`,
-      en: `Shalom! 🌿 I am RebSam, your halachic study companion.<br><br>Ask me any question: Kashrut, Shabbat, Niddah, Tefila, relationships, business… I answer with exact sources, without judgment, 24/7.<br><br>📚 <b>Sources consulted today:</b><br>${sourceList}<br><br>Where would you like to start?`,
-      he: `!שלום 🌿 אני רבסם, חבר הלימוד ההלכתי שלך.<br><br>שאל אותי כל שאלה: כשרות, שבת, נידה, תפילה, יחסים, עסקים… אני עונה עם המקורות המדויקים, ללא שיפוטיות, 24/7.<br><br>📚 <b>:מקורות שנבדקו היום</b><br>${sourceList}<br><br>?מאיפה רוצה להתחיל`
+      fr: `Chalom Aléikhem,<br>Comment puis-je t'aider aujourd'hui ?`,
+      en: `Shalom Aleichem,<br>How can I help you today?`,
+      he: `שלום עליכם,<br>?במה אוכל לעזור לך היום`
     };
     return msgs[currentLang] || msgs.fr;
   }
