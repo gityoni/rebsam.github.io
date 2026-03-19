@@ -2120,7 +2120,7 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
     const picked = shuffled.slice(0, 5 + Math.floor(Math.random() * 2)); // 5 ou 6
     const sourceList = picked.map(s => `• ${s}`).join('<br>');
     const msgs = {
-      fr: `Chalom Aléikhem,<br>Comment puis-je t'aider aujourd'hui ?`,
+      fr: `Chalom Aléikhem,<br>Comment puis-je t'aider aujourd'hui&nbsp;?`,
       en: `Shalom Aleichem,<br>How can I help you today?`,
       he: `שלום עליכם,<br>?במה אוכל לעזור לך היום`
     };
@@ -2173,7 +2173,9 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
   }
 
   function openChat() {
-    document.getElementById('chat-overlay').classList.add('open');
+    const overlay = document.getElementById('chat-overlay');
+    overlay.style.cssText = '';
+    overlay.classList.add('open');
     const chatBox = document.getElementById('chat-box');
     if (chatBox.children.length === 0) {
       appendMsg('sam', buildWelcome());
@@ -2182,7 +2184,24 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
   }
 
   function closeChat() {
-    document.getElementById('chat-overlay').classList.remove('open');
+    const overlay = document.getElementById('chat-overlay');
+    overlay.classList.remove('open');
+    overlay.style.cssText = '';
+  }
+
+  // Fix Android keyboard: reposition overlay to cover only the visual viewport
+  if (window.visualViewport) {
+    function _onVVResize() {
+      const overlay = document.getElementById('chat-overlay');
+      if (!overlay.classList.contains('open') || window.innerWidth > 640) return;
+      const vv = window.visualViewport;
+      overlay.style.top = vv.offsetTop + 'px';
+      overlay.style.left = vv.offsetLeft + 'px';
+      overlay.style.width = vv.width + 'px';
+      overlay.style.height = vv.height + 'px';
+    }
+    window.visualViewport.addEventListener('resize', _onVVResize);
+    window.visualViewport.addEventListener('scroll', _onVVResize);
   }
 
   async function sendMessage() {
