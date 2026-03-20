@@ -13,6 +13,7 @@
 - **[2026-03-16] Fix build Android AAB — broken pipe sdkmanager** — `yes | sdkmanager --licenses` avec `set -euo pipefail` → broken pipe exit 141 → fix `(yes 2>/dev/null || true) | sdkmanager --licenses`
 - **[2026-03-17] Build AAB Android validé** — Pipeline GitHub Actions complet : fix minSdkVersion 19→21 (androidbrowserhelper:2.6.2), fix cache Gradle (hashFiles sur fichiers inexistants), fix prompts bubblewrap build/update, retries exponentiels 5 tentatives → build #17 Success 4m56s, 2 artifacts générés
 - **[2026-03-18] Cloud Run auto-deploy confirmé** — Cloud Build déclenché automatiquement sur push main, révision 00049-bnm déployée instantanément
+- **[2026-03-20] Fix routing Claude + trafic Cloud Run** — Erreur 404 Vertex AI (endpoint Gemini appelé avec modèle Claude) → code `USE_CLAUDE` déployé sur révision 00063-j52 + trafic basculé vers dernière révision. Ancienne trigger Buildpack à supprimer (échoue sur GOOGLE_FUNCTION_SOURCE).
 - **[2026-03-18] Prompt : règle FLUIDITÉ & HUMANITÉ** — Transitions naturelles entre sections, variété des formules d'entrée, interdiction de commencer par un titre en gras, utilisation du prénom utilisateur
 
 ## 🔄 En cours
@@ -31,5 +32,5 @@
 -
 
 ---
-*Dernière mise à jour : 2026-03-18*
+*Dernière mise à jour : 2026-03-20*
 
