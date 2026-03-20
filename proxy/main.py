@@ -37,7 +37,7 @@ def add_cors(resp):
 SECRET_TOKEN       = os.environ.get("SECRET_TOKEN", "rebsam-make-2026")
 PROJECT_ID         = os.environ.get("GCP_PROJECT", "rebbe-sam-agent")
 LOCATION           = os.environ.get("GCP_LOCATION", "europe-west1")
-MODEL              = os.environ.get("GEMINI_MODEL", "claude-sonnet-4-6")
+MODEL              = os.environ.get("GEMINI_MODEL", "gemini-2.0-pro-exp")
 MAKE_LOG_WEBHOOK   = os.environ.get("MAKE_LOG_WEBHOOK", "")
 # ── Détection du provider LLM ─────────────────────────────
 # claude-* → Claude via Vertex AI Model Garden (us-east5, Google auth)
@@ -693,12 +693,14 @@ def call_claude(system_prompt: str, history: list, message: str) -> str:
         f"cache_write:{usage.get('cache_creation_input_tokens', 0)} "
         f"cache_read:{usage.get('cache_read_input_tokens', 0)}"
     )
-    return reply
+    return reply, []
 
 
 # ── Appel Gemini (Vertex AI — RAG natif intégré) ──────────
-def call_gemini(system_prompt: str, history: list, message: str) -> str:
-    """Appelle Gemini via Vertex AI avec le RAG natif intégré."""
+def call_gemini(system_prompt: str, history: list, message: str) -> tuple:
+    """Appelle Gemini via Vertex AI avec le RAG natif intégré.
+    Retourne (reply, sources) où sources = [{title, snippet}, ...]
+    """
     payload      = build_gemini_payload(system_prompt, history, message)
     access_token = get_access_token()
     resp = http_requests.post(
@@ -711,22 +713,50 @@ def call_gemini(system_prompt: str, history: list, message: str) -> str:
         timeout=60,
     )
     resp.raise_for_status()
-    data  = resp.json()
+    data      = resp.json()
+    candidate = data.get("candidates", [{}])[0]
     reply = (
-        data.get("candidates", [{}])[0]
+        candidate
             .get("content", {})
             .get("parts", [{}])[0]
             .get("text", "")
     )
-    return reply
+
+    # ── Extraire les sources depuis groundingMetadata (Vertex AI Search) ──
+    grounding      = candidate.get("groundingMetadata", {})
+    chunks         = grounding.get("groundingChunks", [])
+    seen, sources  = set(), []
+
+    for chunk in chunks:
+        ctx     = chunk.get("retrievedContext", {})
+        title   = ctx.get("title", "").strip()
+        snippet = ctx.get("text",  "").strip()
+        if title and title not in seen:
+            seen.add(title)
+            sources.append({"title": title, "snippet": snippet[:300]})
+
+    # Fallback : ancien format groundingAttributions
+    if not sources:
+        for attr in grounding.get("groundingAttributions", []):
+            ctx     = attr.get("retrievedContext", {})
+            title   = ctx.get("title", "").strip()
+            snippet = (attr.get("content", {})
+                           .get("parts", [{}])[0]
+                           .get("text",   "").strip())
+            if title and title not in seen:
+                seen.add(title)
+                sources.append({"title": title, "snippet": snippet[:300]})
+
+    logging.info(f"[RebSam/Gemini] {len(sources)} source(s) grounding récupérée(s)")
+    return reply, sources
 
 
 # ── Routeur LLM universel ─────────────────────────────────
-def call_llm(system_prompt: str, history: list, message: str) -> str:
+def call_llm(system_prompt: str, history: list, message: str) -> tuple:
     """
     Route vers Claude ou Gemini selon la variable MODEL.
-    claude-*  → Anthropic API + RAG Vertex Search découplé
-    gemini-*  → Vertex AI avec RAG natif intégré
+    claude-*  → Anthropic API + RAG Vertex Search découplé → (reply, [])
+    gemini-*  → Vertex AI avec RAG natif intégré           → (reply, sources)
     """
     if USE_CLAUDE:
         logging.info(f"[RebSam] Provider: Anthropic Claude ({MODEL})")
@@ -810,7 +840,7 @@ def process_wa_event(payload: dict):
         effective_system = ACTIVE_PROMPT + date_injection + wa_note
 
         # 4. Appel LLM (Gemini ou Claude selon MODEL)
-        reply = call_llm(effective_system, history, text)
+        reply, _ = call_llm(effective_system, history, text)
 
         if not reply:
             reply = {
@@ -936,7 +966,7 @@ def chat():
     effective_system = ACTIVE_PROMPT + date_injection
 
     try:
-        reply = call_llm(effective_system, history, message)
+        reply, sources = call_llm(effective_system, history, message)
 
         if not reply:
             logging.warning("[RebSam] Réponse vide du LLM")
@@ -956,7 +986,7 @@ def chat():
             save_history(session_id, updated, collection=WEB_HISTORY_COLLECTION)
 
         log_to_make(data, reply)
-        return jsonify({"reply": reply})
+        return jsonify({"reply": reply, "sources": sources})
 
     except http_requests.HTTPError as e:
         logging.error(f"[RebSam] LLM HTTP error: {e}")
@@ -1035,7 +1065,7 @@ def whatsapp_makecom():
     effective_system = ACTIVE_PROMPT + date_injection + wa_note
 
     try:
-        reply = call_llm(effective_system, history, message)
+        reply, _ = call_llm(effective_system, history, message)
 
         if not reply:
             logging.warning(f"[RebSam/WA-Make] Réponse vide du LLM")
