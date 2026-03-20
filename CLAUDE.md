@@ -35,6 +35,21 @@ modifier fichiers
 
 > **Cloud Run GitHub auto-deploy** : ✅ Configuré et actif. Chaque push sur `main` déclenche automatiquement un nouveau build/deploy via Cloud Build.
 
+## Cloud Build — Trigger proxy (Cloud Run)
+| Paramètre | Valeur |
+|---|---|
+| Projet GCP | `rebbe-sam-agent` |
+| Service Cloud Run | `rebsam-proxy` |
+| Région | `europe-west1` |
+| Artifact Registry | `europe-west1-docker.pkg.dev` |
+| Repository AR | `cloud-run-source-deploy` |
+| Branche déclencheur | `main` |
+| Config build | Inline YAML (Intégré — pas de cloudbuild.yaml dans le repo) |
+| Compte de service | `217121855341-compute@developer.gserviceaccount.com` |
+| Trigger ID | `f0a9130a-3562-435f-835c-a939c67c2f21` |
+
+> Le YAML de build est intégré directement dans le trigger GCP (emplacement "Intégré"). Aucun fichier `cloudbuild.yaml` n'est requis dans le repo.
+
 ## Règles importantes
 - Ne jamais committer de clés API ou secrets
 - Le service worker est network-first pour index.html (pas de cache agressif)
