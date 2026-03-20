@@ -551,6 +551,20 @@
     .msg-bubble.sam hr { border: none; border-top: 1px solid #e5e7eb; margin: .6rem 0; }
     .msg-bubble.sam p { margin: 0 0 .5rem; }
     .msg-bubble.sam p:last-child { margin-bottom: 0; }
+    /* ── Sources grounding (NotebookLM-style) ── */
+    .msg-sources { max-width: 78%; margin: .25rem 0 .75rem 2.75rem; }
+    .msg-sources-label { font-size: .68rem; font-weight: 700; color: var(--primary); letter-spacing: .06em; text-transform: uppercase; margin-bottom: .4rem; }
+    .msg-sources-list { display: flex; flex-wrap: wrap; gap: .35rem; }
+    .msg-source-chip { display: inline-flex; align-items: flex-start; gap: .3rem; background: rgba(46,107,230,.07); border: 1px solid rgba(46,107,230,.18); border-radius: .5rem; padding: .3rem .55rem; cursor: default; transition: background .18s; max-width: 100%; }
+    .msg-source-chip:hover { background: rgba(46,107,230,.14); }
+    .msg-source-icon { font-size: .8rem; flex-shrink: 0; margin-top: .05rem; }
+    .msg-source-body { min-width: 0; }
+    .msg-source-title { font-size: .7rem; font-weight: 600; color: var(--secondary-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 22ch; display: block; }
+    .msg-source-snippet { font-size: .62rem; color: var(--text-muted); line-height: 1.35; margin-top: .1rem; display: none; max-width: 36ch; }
+    .msg-source-chip:hover .msg-source-snippet { display: block; }
+    html.dark .msg-source-chip { background: rgba(91,142,240,.1); border-color: rgba(91,142,240,.25); }
+    html.dark .msg-source-title { color: #c8d7f5; }
+    @media (max-width: 640px) { .msg-sources { margin-left: 2.25rem; } .msg-source-title { max-width: 18ch; } }
     .msg-bubble.sam h1,.msg-bubble.sam h2,.msg-bubble.sam h3 { font-size: 1em; font-weight: 700; color: #0056D2; margin: .6rem 0 .2rem; }
     .loading-dots { display: flex; align-items: center; gap: .35rem; padding: .25rem 0; }
     .loading-dots span { width: .5rem; height: .5rem; border-radius: 50%; background: var(--primary); opacity: .6; animation: dotBounce 1.2s ease-in-out infinite; }
@@ -2172,6 +2186,25 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
     return row;
   }
 
+  function renderSources(sources) {
+    if (!sources || !sources.length) return null;
+    const wrap = document.createElement('div');
+    wrap.className = 'msg-sources';
+    const label = { fr: '📖 Sources', en: '📖 Sources', he: '📖 מקורות' }[currentLang] || '📖 Sources';
+    wrap.innerHTML = `<div class="msg-sources-label">${label}</div>`;
+    const list = document.createElement('div');
+    list.className = 'msg-sources-list';
+    sources.slice(0, 6).forEach(s => {
+      const chip = document.createElement('div');
+      chip.className = 'msg-source-chip';
+      const snippet = s.snippet ? `<span class="msg-source-snippet">${escapeHtml(s.snippet.slice(0, 180))}${s.snippet.length > 180 ? '…' : ''}</span>` : '';
+      chip.innerHTML = `<span class="msg-source-icon">📗</span><span class="msg-source-body"><span class="msg-source-title">${escapeHtml(s.title)}</span>${snippet}</span>`;
+      list.appendChild(chip);
+    });
+    wrap.appendChild(list);
+    return wrap;
+  }
+
   function openChat() {
     const overlay = document.getElementById('chat-overlay');
     overlay.style.cssText = '';
@@ -2247,10 +2280,11 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
         })
       });
       const rawText = await res.text();
-      let reply;
+      let reply, sources = [];
       try {
         const data = JSON.parse(rawText);
-        reply = data.reply || data.text || data.response || data.message || rawText;
+        reply   = data.reply || data.text || data.response || data.message || rawText;
+        sources = data.sources || [];
       } catch {
         reply = rawText;
       }
@@ -2258,6 +2292,12 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
       const bubble = loadingRow.querySelector('.msg-bubble');
       bubble.innerHTML = cleaned;
       bubble.setAttribute('dir', currentLang === 'he' ? 'rtl' : 'ltr');
+
+      // Afficher les sources grounding si disponibles
+      if (sources.length) {
+        const sourcesEl = renderSources(sources);
+        if (sourcesEl) loadingRow.after(sourcesEl);
+      }
 
       // Mémoriser la réponse de l'IA pour le prochain tour
       conversationHistory.push({ role: 'model', content: reply });
