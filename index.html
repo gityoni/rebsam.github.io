@@ -2,7 +2,7 @@
 <html lang="fr" dir="ltr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
   <title>RebSam — Un Rebbe dans votre dose d'IA quotidienne</title>
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -1109,8 +1109,7 @@
         align-items: stretch;
       }
       #chat-modal {
-        height: 100svh;
-        height: 100dvh;
+        height: 100%;
         border-radius: 0;
         max-width: 100%;
       }
@@ -2228,13 +2227,16 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
       const overlay = document.getElementById('chat-overlay');
       if (!overlay.classList.contains('open') || window.innerWidth > 640) return;
       const vv = window.visualViewport;
-      overlay.style.top = vv.offsetTop + 'px';
-      overlay.style.left = vv.offsetLeft + 'px';
-      overlay.style.width = vv.width + 'px';
-      overlay.style.height = vv.height + 'px';
+      overlay.style.top    = vv.offsetTop  + 'px';
+      overlay.style.left   = vv.offsetLeft + 'px';
+      overlay.style.width  = vv.width      + 'px';
+      overlay.style.height = vv.height     + 'px';
+      // Le modal hérite height:100% de l'overlay — force le recalcul
+      const modal = document.getElementById('chat-modal');
+      if (modal) modal.style.maxHeight = vv.height + 'px';
     }
-    window.visualViewport.addEventListener('resize', _onVVResize);
-    window.visualViewport.addEventListener('scroll', _onVVResize);
+    window.visualViewport.addEventListener('resize',  _onVVResize);
+    window.visualViewport.addEventListener('scroll',  _onVVResize);
   }
 
   async function sendMessage() {
