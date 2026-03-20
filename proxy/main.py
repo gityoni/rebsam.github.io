@@ -685,29 +685,37 @@ def call_claude(system_prompt: str, history: list, message: str) -> tuple:
     access_token = get_access_token()
 
     def _claude_call(msgs: list) -> dict:
-        resp = http_requests.post(
-            CLAUDE_VERTEX_URL,
-            headers={
-                "Authorization":  f"Bearer {access_token}",
-                "Content-Type":   "application/json",
-                "anthropic-beta": "prompt-caching-2024-07-31",
-            },
-            json={
-                "anthropic_version": "vertex-2023-10-16",
-                "max_tokens": 2048,
-                "system": [
-                    {
-                        "type":          "text",
-                        "text":          system_prompt,
-                        "cache_control": {"type": "ephemeral"},
-                    }
-                ],
-                "tools": [CLAUDE_AGENTIC_TOOL],
-                "messages": msgs,
-            },
-            timeout=60,
-        )
-        resp.raise_for_status()
+        import time
+        payload = {
+            "anthropic_version": "vertex-2023-10-16",
+            "max_tokens": 2048,
+            "system": [
+                {
+                    "type":          "text",
+                    "text":          system_prompt,
+                    "cache_control": {"type": "ephemeral"},
+                }
+            ],
+            "tools": [CLAUDE_AGENTIC_TOOL],
+            "messages": msgs,
+        }
+        headers = {
+            "Authorization":  f"Bearer {access_token}",
+            "Content-Type":   "application/json",
+            "anthropic-beta": "prompt-caching-2024-07-31",
+        }
+        for attempt in range(4):
+            resp = http_requests.post(
+                CLAUDE_VERTEX_URL, headers=headers, json=payload, timeout=60
+            )
+            if resp.status_code == 429:
+                wait = 2 ** attempt  # 1s, 2s, 4s, 8s
+                logging.warning(f"[RebSam/Claude] 429 rate-limit, retry {attempt+1}/4 dans {wait}s")
+                time.sleep(wait)
+                continue
+            resp.raise_for_status()
+            return resp.json()
+        resp.raise_for_status()  # lève l'exception après 4 tentatives
         return resp.json()
 
     # ── Tour 1 : Claude décide de chercher ou pas ────────────
