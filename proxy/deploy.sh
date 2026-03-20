@@ -8,8 +8,11 @@
 #    WHATSAPP_TOKEN        — Bearer token WhatsApp Cloud API (Meta)
 #    WHATSAPP_PHONE_ID     — Phone Number ID (Meta Business Manager)
 #    WEBHOOK_VERIFY_TOKEN  — token de vérification webhook Meta
+#    GEMINI_MODEL          — modèle LLM (défaut: claude-sonnet-4-6)
+#                            claude-* → Claude via Vertex AI Model Garden (us-east5) + RAG découplé
+#                            gemini-* → Gemini via Vertex AI (europe-west1) + RAG natif intégré
 #    GCP_PROJECT           — projet GCP (défaut: rebbe-sam-agent)
-#    GCP_LOCATION          — région Vertex AI (défaut: europe-west1)
+#    GCP_LOCATION          — région Vertex AI Gemini (défaut: europe-west1)
 #    MAKE_LOG_WEBHOOK      — (optionnel) webhook Make.com pour logs
 # ─────────────────────────────────────────────
 set -e
@@ -32,6 +35,7 @@ gcloud run deploy "$SERVICE" \
 echo "Déployé ! URL : https://rebsam-proxy-217121855341.europe-west1.run.app"
 echo ""
 echo "--- RAPPEL : variables à configurer dans Cloud Run ---"
+echo "GEMINI_MODEL          = claude-sonnet-4-6  (ou gemini-* pour basculer)"
 echo "WHATSAPP_TOKEN        = (token Meta permanent)"
 echo "WHATSAPP_PHONE_ID     = (Phone Number ID Meta)"
 echo "WEBHOOK_VERIFY_TOKEN  = rebsam-webhook-2026"
