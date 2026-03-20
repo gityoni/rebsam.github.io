@@ -561,12 +561,39 @@ def build_gemini_payload(system_prompt: str, history: list, message: str) -> dic
     }
 
 
-# ── RAG Vertex AI Search standalone (pour Claude) ─────────
-def search_rag(query: str, top_k: int = 5) -> str:
+# ── Outil Agentic RAG pour Claude ─────────────────────────
+CLAUDE_AGENTIC_TOOL = {
+    "name": "chercher_halakha",
+    "description": (
+        "Cherche dans le corpus de 2000+ sifrey kodesh (Choulhan Aroukh, Mishna Beroura, "
+        "Yalkout Yossef, Tanya, Zohar, responsa des Rishonim et Acharonim, etc.). "
+        "OBLIGATOIRE avant de répondre à toute question halakhique, kabbalistique ou "
+        "académique sur la Torah. Optionnel pour les simples salutations."
+    ),
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "queries": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": (
+                    "1 à 3 requêtes optimisées pour la recherche dans le corpus. "
+                    "Pour une question complexe (ex: kashrout + dimension kabbalistique), "
+                    "utilise 2-3 requêtes ciblées. Formule en hébreu translittéré ou français."
+                ),
+                "minItems": 1,
+                "maxItems": 3,
+            }
+        },
+        "required": ["queries"],
+    },
+}
+
+
+# ── RAG Vertex AI Search standalone ───────────────────────
+def search_rag(query: str, top_k: int = 5) -> dict:
     """
-    Appelle Vertex AI Search indépendamment pour récupérer
-    les passages RAG pertinents. Retourne un bloc texte
-    à injecter dans le prompt Claude.
+    Appelle Vertex AI Search et retourne {"text": str, "sources": list[dict]}.
     """
     try:
         access_token = get_access_token()
@@ -593,107 +620,166 @@ def search_rag(query: str, top_k: int = 5) -> str:
         results = data.get("results", [])
         if not results:
             logging.info("[RebSam/RAG] Aucun résultat Vertex Search")
-            return ""
+            return {"text": "", "sources": []}
 
         passages = []
+        sources  = []
+        seen     = set()
         for r in results:
-            doc   = r.get("document", {})
-            title = doc.get("derivedStructData", {}).get("title", [""])[0] if isinstance(
-                doc.get("derivedStructData", {}).get("title"), list
-            ) else doc.get("derivedStructData", {}).get("title", "")
-            for snippet in doc.get("derivedStructData", {}).get("snippets", []):
+            doc     = r.get("document", {})
+            derived = doc.get("derivedStructData", {})
+            t_raw   = derived.get("title", "")
+            title   = (t_raw[0] if isinstance(t_raw, list) else t_raw) or ""
+            first   = ""
+            for snippet in derived.get("snippets", []):
                 text = snippet.get("snippet", "").strip()
                 if text:
+                    if not first:
+                        first = text
                     passages.append(f"[{title}]\n{text}")
-            for answer in doc.get("derivedStructData", {}).get("extractive_answers", []):
+            for answer in derived.get("extractive_answers", []):
                 text = answer.get("content", "").strip()
                 if text:
+                    if not first:
+                        first = text
                     passages.append(f"[{title}]\n{text}")
+            if title and title not in seen:
+                seen.add(title)
+                sources.append({"title": title, "snippet": first[:250]})
 
         if not passages:
-            return ""
-        rag_block = "\n\n---\n\n".join(passages[:top_k])
-        logging.info(f"[RebSam/RAG] {len(passages)} passages récupérés depuis Vertex Search")
-        return rag_block
+            return {"text": "", "sources": []}
+
+        logging.info(f"[RebSam/RAG] {len(passages)} passages, {len(sources)} source(s) depuis Vertex Search")
+        return {"text": "\n\n---\n\n".join(passages[:top_k]), "sources": sources}
 
     except Exception as e:
         logging.warning(f"[RebSam/RAG] Vertex Search échoué : {e}")
-        return ""
+        return {"text": "", "sources": []}
 
 
 # ── Appel Claude (Anthropic API) ──────────────────────────
-def call_claude(system_prompt: str, history: list, message: str) -> str:
+def call_claude(system_prompt: str, history: list, message: str) -> tuple:
     """
-    Appelle Claude via Vertex AI Model Garden (us-east5).
-    Authentification Google IAM — aucune clé Anthropic nécessaire.
-    Effectue d'abord un appel RAG Vertex Search pour récupérer
-    le contexte, puis l'injecte dans le message utilisateur.
+    Agentic RAG — Claude Sonnet 4.6 via Vertex AI Model Garden (us-east5).
+
+    Flux en 2 tours :
+      Tour 1 — Claude reçoit la question + l'outil chercher_halakha.
+               S'il décide de chercher → stop_reason = "tool_use".
+      Tour 2 — Notre proxy exécute Vertex AI Search pour chaque requête,
+               renvoie les passages à Claude, qui génère la réponse finale.
+
+    Retourne (reply: str, sources: list[dict]).
     """
-    # 1. Récupérer le contexte RAG depuis Vertex AI Search
-    rag_context = search_rag(message)
-
-    # 2. Injecter le contexte RAG dans le message utilisateur
-    if rag_context:
-        augmented_message = (
-            f"CONTEXTE ISSU DU CORPUS RAG (séfarim numérisés) :\n\n"
-            f"{rag_context}\n\n"
-            f"---\n\n"
-            f"QUESTION : {message}"
-        )
-    else:
-        augmented_message = (
-            f"[Aucun passage pertinent trouvé dans le corpus RAG pour cette question.]\n\n"
-            f"QUESTION : {message}"
-        )
-
-    # 3. Construire l'historique au format Anthropic (role: user/assistant)
-    messages = []
+    # ── Construire l'historique au format Anthropic ──────────
+    messages: list = []
     for turn in history:
         role = turn.get("role", "user")
         if role == "model":
-            role = "assistant"   # Gemini dit "model", Anthropic dit "assistant"
+            role = "assistant"
         if role not in ("user", "assistant"):
             role = "user"
         messages.append({"role": role, "content": turn.get("content", "")})
-    messages.append({"role": "user", "content": augmented_message})
+    messages.append({"role": "user", "content": message})
 
-    # 4. Appel Claude via Vertex AI avec Prompt Caching
-    # Le system prompt (~23 000 chars) est identique à chaque requête →
-    # cache_control: ephemeral le met en cache 5 min → lecture 10x moins chère
     access_token = get_access_token()
-    resp = http_requests.post(
-        CLAUDE_VERTEX_URL,
-        headers={
-            "Authorization":  f"Bearer {access_token}",
-            "Content-Type":   "application/json",
-            "anthropic-beta": "prompt-caching-2024-07-31",
-        },
-        json={
-            "anthropic_version": "vertex-2023-10-16",
-            "max_tokens": 2048,
-            "system": [
-                {
-                    "type":          "text",
-                    "text":          system_prompt,
-                    "cache_control": {"type": "ephemeral"},
-                }
-            ],
-            "messages": messages,
-        },
-        timeout=60,
-    )
-    resp.raise_for_status()
-    data  = resp.json()
-    reply = data.get("content", [{}])[0].get("text", "")
-    usage = data.get("usage", {})
+
+    def _claude_call(msgs: list) -> dict:
+        resp = http_requests.post(
+            CLAUDE_VERTEX_URL,
+            headers={
+                "Authorization":  f"Bearer {access_token}",
+                "Content-Type":   "application/json",
+                "anthropic-beta": "prompt-caching-2024-07-31",
+            },
+            json={
+                "anthropic_version": "vertex-2023-10-16",
+                "max_tokens": 2048,
+                "system": [
+                    {
+                        "type":          "text",
+                        "text":          system_prompt,
+                        "cache_control": {"type": "ephemeral"},
+                    }
+                ],
+                "tools": [CLAUDE_AGENTIC_TOOL],
+                "messages": msgs,
+            },
+            timeout=60,
+        )
+        resp.raise_for_status()
+        return resp.json()
+
+    # ── Tour 1 : Claude décide de chercher ou pas ────────────
+    data1    = _claude_call(messages)
+    content1 = data1.get("content", [])
+    stop1    = data1.get("stop_reason", "")
+
+    u1 = data1.get("usage", {})
     logging.info(
-        f"[RebSam/Claude] Tokens — "
-        f"input:{usage.get('input_tokens','?')} "
-        f"output:{usage.get('output_tokens','?')} "
-        f"cache_write:{usage.get('cache_creation_input_tokens', 0)} "
-        f"cache_read:{usage.get('cache_read_input_tokens', 0)}"
+        f"[RebSam/Claude] Tour 1 — stop:{stop1} "
+        f"in:{u1.get('input_tokens','?')} "
+        f"cache_write:{u1.get('cache_creation_input_tokens', 0)} "
+        f"cache_read:{u1.get('cache_read_input_tokens', 0)}"
     )
-    return reply, []
+
+    # Pas d'appel outil (salutation, question hors-Torah, etc.)
+    if stop1 != "tool_use":
+        reply = next((b.get("text", "") for b in content1 if b.get("type") == "text"), "")
+        return reply, []
+
+    # ── Tour 2 : Exécuter la recherche, retourner à Claude ───
+    tool_block = next((b for b in content1 if b.get("type") == "tool_use"), None)
+    if not tool_block:
+        reply = next((b.get("text", "") for b in content1 if b.get("type") == "text"), "")
+        return reply, []
+
+    tool_id = tool_block.get("id", "")
+    queries = tool_block.get("input", {}).get("queries", [message])[:3]
+    logging.info(f"[RebSam/Claude] Agentic search — {len(queries)} requête(s) : {queries}")
+
+    # Vertex AI Search pour chaque requête (parallélisable — mais restons sync)
+    all_text:    list = []
+    all_sources: list = []
+    seen_titles: set  = set()
+    for q in queries:
+        result = search_rag(q, top_k=4)
+        if result["text"]:
+            all_text.append(result["text"])
+        for src in result["sources"]:
+            if src["title"] not in seen_titles:
+                seen_titles.add(src["title"])
+                all_sources.append(src)
+
+    combined = (
+        "\n\n═══\n\n".join(all_text)
+        if all_text
+        else "[Aucun passage pertinent trouvé dans le corpus pour ces requêtes.]"
+    )
+
+    messages_t2 = messages + [
+        {"role": "assistant", "content": content1},
+        {"role": "user", "content": [
+            {
+                "type":        "tool_result",
+                "tool_use_id": tool_id,
+                "content":     combined,
+            }
+        ]},
+    ]
+
+    data2    = _claude_call(messages_t2)
+    content2 = data2.get("content", [])
+    reply    = next((b.get("text", "") for b in content2 if b.get("type") == "text"), "")
+
+    u2 = data2.get("usage", {})
+    logging.info(
+        f"[RebSam/Claude] Tour 2 — "
+        f"in:{u2.get('input_tokens','?')} "
+        f"out:{u2.get('output_tokens','?')} "
+        f"sources:{len(all_sources)}"
+    )
+    return reply, all_sources
 
 
 # ── Appel Gemini (Vertex AI — RAG natif intégré) ──────────
