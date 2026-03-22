@@ -336,7 +336,7 @@ TYPE 0 — OUVERTURE / SALUTATION ("Bonjour", "Shalom", "Qui es-tu ?", "Tu peux 
 TYPE 1 — QUESTION HALAKHIQUE PURE ("puis-je manger X ?", "quelle bénédiction sur Y ?", "est-ce cachrer ?", règle technique précise sans dimension relationnelle) :
 CONDITIONS : la question porte PRINCIPALEMENT sur une règle ou un objet halakhique, sans contexte émotionnel/familial dominant.
 → Si premier message : phrase d'accueil chaleureuse et personnalisée (jamais un template figé).
-→ Si conversation en cours : commence DIRECTEMENT par 📜 LA HALAKHA, sans re-salutation.
+→ Si conversation en cours : commence DIRECTEMENT par ⚖️ LA HALAKHA, sans re-salutation.
 → Applique la STRUCTURE HALAKHIQUE COMPLÈTE ci-dessous.
 → À la fin, propose naturellement 1 continuation possible si pertinent (voir SUITE NATURELLE).
 
@@ -377,7 +377,7 @@ STRUCTURE HALAKHIQUE COMPLÈTE (TYPE 1 uniquement)
 ═══════════════════════════════════════════════
 INTRODUCTION : Phrase chaleureuse et adaptée au contexte. (Premier message uniquement — jamais en cours de conversation.)
 
-📜 LA HALAKHA
+⚖️ LA HALAKHA
 Règle claire. Priorité au nusach détecté de l'utilisateur. Si nusach inconnu : présente Ashkénaze (Rama / Mishna Beroura) ET Séfarade (Maran / Yalkout Yossef).
 
 ✨ LE SENS PROFOND (LA LUMIÈRE)
@@ -511,7 +511,7 @@ def format_for_whatsapp(text: str) -> str:
 _SECTION_LABELS: dict = {
     "en": (
         "\n\nSECTION LABELS — use these exact labels (in English) for all section headings:\n"
-        "📜 THE HALAKHA\n"
+        "⚖️ THE HALAKHA\n"
         "✨ THE DEEPER MEANING (THE LIGHT)\n"
         "📍 PRACTICAL CONCLUSION (LE-MA'ASEH)\n"
         "📖 PRECISE SOURCES\n"
@@ -519,7 +519,7 @@ _SECTION_LABELS: dict = {
     ),
     "he": (
         "\n\nתוויות סעיפים — השתמש בתוויות הבאות בדיוק (בעברית) לכל כותרות הסעיפים:\n"
-        "📜 ההלכה\n"
+        "⚖️ ההלכה\n"
         "✨ המשמעות העמוקה (האור)\n"
         "📍 מסקנה מעשית (למעשה)\n"
         "📖 מקורות מדויקים"
@@ -546,9 +546,24 @@ def _clean_reply(text: str) -> str:
     """Supprime les artifacts RAG (None, sources vides) de la réponse."""
     text = _NONE_PATTERNS.sub('', text)
     text = _EMPTY_SOURCES.sub('', text)
+    text = _fix_hebrew_first_sources(text)
     # Collapse excessive blank lines (max 2 consecutive)
     text = re.sub(r'\n{3,}', '\n\n', text)
     return text.strip()
+
+
+_HEBREW_FIRST_SOURCE = re.compile(
+    r'^([-•])\s+([\u05D0-\u05FF][^:\n]+?)\s+:\s+(.+)$',
+    re.MULTILINE,
+)
+
+
+def _fix_hebrew_first_sources(text: str) -> str:
+    """Si une ligne de source commence par de l'hébreu, met la description française en premier."""
+    def _swap(m):
+        bullet, hebrew_ref, french_desc = m.group(1), m.group(2).strip(), m.group(3).strip()
+        return f"{bullet} {french_desc} ({hebrew_ref})"
+    return _HEBREW_FIRST_SOURCE.sub(_swap, text)
 
 
 # ── Construction payload Gemini multi-tour ────────────────
