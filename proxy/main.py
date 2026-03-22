@@ -995,7 +995,7 @@ def call_llm(system_prompt: str, history: list, message: str, session_id: str = 
     """
     Route vers Claude ou Gemini selon la variable MODEL.
     claude-*  → Anthropic API + RAG Vertex Search découplé → (reply, sources)
-              → Fallback automatique sur Gemini si 429 épuisé
+              → Fallback automatique sur Gemini si erreur (429, 5xx, timeout…)
     gemini-*  → Vertex AI avec RAG natif intégré           → (reply, sources)
     """
     if USE_CLAUDE:
@@ -1006,18 +1006,21 @@ def call_llm(system_prompt: str, history: list, message: str, session_id: str = 
             logging.warning(
                 f"[RebSam] Claude rate-limit épuisé → fallback Gemini ({GEMINI_FALLBACK_MODEL}). {e}"
             )
-            # Basculer temporairement sur le modèle Gemini de fallback
-            global VERTEX_URL
-            _prev_url = VERTEX_URL
-            _prev_model = MODEL
-            VERTEX_URL = (
-                f"https://{LOCATION}-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}"
-                f"/locations/{LOCATION}/publishers/google/models/{GEMINI_FALLBACK_MODEL}:generateContent"
+        except Exception as e:
+            logging.warning(
+                f"[RebSam] Claude erreur ({type(e).__name__}) → fallback Gemini. {e}"
             )
-            try:
-                return call_gemini(system_prompt, history, message)
-            finally:
-                VERTEX_URL = _prev_url
+        # Fallback Gemini (rate-limit ou toute autre erreur Claude)
+        global VERTEX_URL
+        _prev_url = VERTEX_URL
+        VERTEX_URL = (
+            f"https://{LOCATION}-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}"
+            f"/locations/{LOCATION}/publishers/google/models/{GEMINI_FALLBACK_MODEL}:generateContent"
+        )
+        try:
+            return call_gemini(system_prompt, history, message)
+        finally:
+            VERTEX_URL = _prev_url
     else:
         logging.info(f"[RebSam] Provider: Gemini/Vertex ({MODEL})")
         return call_gemini(system_prompt, history, message)
