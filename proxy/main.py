@@ -759,12 +759,14 @@ def call_claude(system_prompt: str, history: list, message: str) -> tuple:
     queries = tool_block.get("input", {}).get("queries", [message])[:3]
     logging.info(f"[RebSam/Claude] Agentic search — {len(queries)} requête(s) : {queries}")
 
-    # Vertex AI Search pour chaque requête (parallélisable — mais restons sync)
+    # Vertex AI Search — requêtes parallèles via ThreadPoolExecutor
+    from concurrent.futures import ThreadPoolExecutor
     all_text:    list = []
     all_sources: list = []
     seen_titles: set  = set()
-    for q in queries:
-        result = search_rag(q, top_k=4)
+    with ThreadPoolExecutor(max_workers=len(queries)) as ex:
+        results = list(ex.map(lambda q: search_rag(q, top_k=4), queries))
+    for result in results:
         if result["text"]:
             all_text.append(result["text"])
         for src in result["sources"]:
