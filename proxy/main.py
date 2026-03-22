@@ -607,15 +607,17 @@ CLAUDE_AGENTIC_TOOL = {
                 "type": "array",
                 "items": {"type": "string"},
                 "description": (
-                    "1 à 3 requêtes optimisées pour la recherche dans le corpus hébraïque. "
-                    "OBLIGATOIRE : formule TOUJOURS en hébreu script (כתב עברי), jamais en "
-                    "translittération ni en français. Le corpus est indexé en hébreu — une "
-                    "requête en translittération ou en français ne trouvera rien. "
-                    "Exemples : 'ביצה תוספות רש\"י', 'ברכה על מיץ עגבניות', "
-                    "'מוקצה יום טוב'. "
-                    "Pour une question complexe, utilise 2-3 requêtes ciblées en hébreu."
+                    "OBLIGATOIRE : effectue TOUJOURS 3 requêtes distinctes (sauf salutations TYPE 0) : "
+                    "1) La Halakha générale (ex: שולחן ערוך + sujet). "
+                    "2) Les divergences : cherche explicitement 'אשכנז', 'רמ\"א', 'משנה ברורה' vs "
+                    "'ספרד', 'ילקוט יוסף', 'בן איש חי'. "
+                    "3) La profondeur spirituelle : concepts moraux ou kabbalistiques liés (ex: ליקוטי הלכות). "
+                    "TOUTES les requêtes en hébreu script (כתב עברי) — jamais en translittération ni français. "
+                    "Exemples requête 1: 'ברכה על מיץ עגבניות שולחן ערוך', "
+                    "requête 2: 'ברכה על מיץ עגבניות אשכנז ספרד', "
+                    "requête 3: 'מיץ עגבניות ליקוטי הלכות'."
                 ),
-                "minItems": 1,
+                "minItems": 3,
                 "maxItems": 3,
             }
         },
