@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "widgets-ui": {
+      "source": "inferen-sh/skills",
+      "sourceType": "github",
+      "computedHash": "9d1c4d81afefbca4b2e06e1a8deef4aa85b5ab3819b027775d1ecc712601c52d"
+    }
+  }
+}
