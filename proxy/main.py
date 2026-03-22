@@ -685,7 +685,9 @@ def call_claude(system_prompt: str, history: list, message: str) -> tuple:
             role = "assistant"
         if role not in ("user", "assistant"):
             role = "user"
-        messages.append({"role": role, "content": turn.get("content", "")})
+        content = turn.get("content", "")
+        if content:  # Anthropic rejette les messages à contenu vide
+            messages.append({"role": role, "content": content})
     messages.append({"role": "user", "content": message})
 
     def _claude_call(msgs: list, force_tool: bool = False) -> dict:
@@ -719,6 +721,8 @@ def call_claude(system_prompt: str, history: list, message: str) -> tuple:
                 logging.warning(f"[RebSam/Claude] 429 rate-limit, retry {attempt+1}/5 dans {wait}s")
                 time.sleep(wait)
                 continue
+            if not resp.ok:
+                logging.error(f"[RebSam/Claude] {resp.status_code} — body: {resp.text[:500]}")
             resp.raise_for_status()
             return resp.json()
         raise ClaudeRateLimitError("Claude 429 après 5 tentatives")
