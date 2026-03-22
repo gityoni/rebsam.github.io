@@ -571,8 +571,12 @@ CLAUDE_AGENTIC_TOOL = {
     "description": (
         "Cherche dans le corpus de 2000+ sifrey kodesh (Choulhan Aroukh, Mishna Beroura, "
         "Yalkout Yossef, Tanya, Zohar, responsa des Rishonim et Acharonim, etc.). "
-        "OBLIGATOIRE avant de répondre à toute question halakhique, kabbalistique ou "
-        "académique sur la Torah. Optionnel pour les simples salutations."
+        "RÈGLE ABSOLUE : toute réponse sur une question de Torah, de Halakha, de Kabbalah "
+        "ou de pratique religieuse DOIT être fondée EXCLUSIVEMENT sur les passages retournés "
+        "par cet outil. Si l'outil ne retourne rien de pertinent, Claude doit l'indiquer "
+        "explicitement et NE DOIT PAS compléter avec sa connaissance paramétrique — "
+        "une réponse halakhique inexacte a des répercussions sur l'âme de la personne. "
+        "Utiliser pour tout sauf les simples salutations (TYPE 0)."
     ),
     "input_schema": {
         "type": "object",
@@ -641,7 +645,8 @@ def search_rag(query: str, top_k: int = 5) -> dict:
                     if not first:
                         first = text
                     passages.append(f"[{title}]\n{text}")
-            for answer in derived.get("extractive_answers", []):
+            # Vertex AI Search peut renvoyer camelCase ou snake_case selon la version
+            for answer in (derived.get("extractiveAnswers") or derived.get("extractive_answers") or []):
                 text = answer.get("content", "").strip()
                 if text:
                     if not first:
@@ -688,11 +693,11 @@ def call_claude(system_prompt: str, history: list, message: str) -> tuple:
 
     access_token = get_access_token()
 
-    def _claude_call(msgs: list) -> dict:
+    def _claude_call(msgs: list, force_tool: bool = False) -> dict:
         import time
         payload = {
             "anthropic_version": "vertex-2023-10-16",
-            "max_tokens": 2048,
+            "max_tokens": 4096,
             "system": [
                 {
                     "type":          "text",
@@ -701,6 +706,9 @@ def call_claude(system_prompt: str, history: list, message: str) -> tuple:
                 }
             ],
             "tools": [CLAUDE_AGENTIC_TOOL],
+            # Tour 1 : force la recherche sauf si Claude décide explicitement
+            # que c'est une salutation (type {"type":"any"} oblige à appeler UN outil)
+            "tool_choice": {"type": "any"} if force_tool else {"type": "auto"},
             "messages": msgs,
         }
         headers = {
@@ -722,8 +730,9 @@ def call_claude(system_prompt: str, history: list, message: str) -> tuple:
         # Toutes les tentatives épuisées — signaler pour fallback Gemini
         raise ClaudeRateLimitError(f"Claude 429 après 5 tentatives")
 
-    # ── Tour 1 : Claude décide de chercher ou pas ────────────
-    data1    = _claude_call(messages)
+    # ── Tour 1 : Claude DOIT chercher (aucune réponse sans corpus) ──
+    # force_tool=True → tool_choice "any" → garantie zéro hallucination para
+    data1    = _claude_call(messages, force_tool=True)
     content1 = data1.get("content", [])
     stop1    = data1.get("stop_reason", "")
 
