@@ -86,12 +86,9 @@ VERTEX_URL = (
     f"/locations/{LOCATION}/publishers/google/models/{MODEL}:generateContent"
 )
 
-# Claude via Vertex AI Model Garden — toujours us-east5 (seule région supportée)
-# Aucune clé Anthropic nécessaire — authentification Google IAM
-CLAUDE_VERTEX_URL = (
-    f"https://us-east5-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}"
-    f"/locations/us-east5/publishers/anthropic/models/{MODEL}:rawPredict"
-)
+# Claude via API Anthropic directe — 4000 RPM, même tarif que Vertex
+ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+CLAUDE_API_URL    = "https://api.anthropic.com/v1/messages"
 
 # ── Firestore ─────────────────────────────────────────────
 FIRESTORE_COLLECTION     = "wa_history"
@@ -691,12 +688,10 @@ def call_claude(system_prompt: str, history: list, message: str) -> tuple:
         messages.append({"role": role, "content": turn.get("content", "")})
     messages.append({"role": "user", "content": message})
 
-    access_token = get_access_token()
-
     def _claude_call(msgs: list, force_tool: bool = False) -> dict:
         import time
         payload = {
-            "anthropic_version": "vertex-2023-10-16",
+            "model":      MODEL,
             "max_tokens": 4096,
             "system": [
                 {
@@ -706,19 +701,18 @@ def call_claude(system_prompt: str, history: list, message: str) -> tuple:
                 }
             ],
             "tools": [CLAUDE_AGENTIC_TOOL],
-            # Tour 1 : force la recherche sauf si Claude décide explicitement
-            # que c'est une salutation (type {"type":"any"} oblige à appeler UN outil)
             "tool_choice": {"type": "any"} if force_tool else {"type": "auto"},
             "messages": msgs,
         }
         headers = {
-            "Authorization":  f"Bearer {access_token}",
-            "Content-Type":   "application/json",
-            "anthropic-beta": "prompt-caching-2024-07-31",
+            "x-api-key":         ANTHROPIC_API_KEY,
+            "anthropic-version": "2023-06-01",
+            "anthropic-beta":    "prompt-caching-2024-07-31",
+            "Content-Type":      "application/json",
         }
         for attempt in range(5):
             resp = http_requests.post(
-                CLAUDE_VERTEX_URL, headers=headers, json=payload, timeout=60
+                CLAUDE_API_URL, headers=headers, json=payload, timeout=60
             )
             if resp.status_code == 429:
                 wait = 2 ** (attempt + 1)  # 2s, 4s, 8s, 16s, 32s
@@ -727,8 +721,7 @@ def call_claude(system_prompt: str, history: list, message: str) -> tuple:
                 continue
             resp.raise_for_status()
             return resp.json()
-        # Toutes les tentatives épuisées — signaler pour fallback Gemini
-        raise ClaudeRateLimitError(f"Claude 429 après 5 tentatives")
+        raise ClaudeRateLimitError("Claude 429 après 5 tentatives")
 
     # ── Tour 1 : Claude DOIT chercher (aucune réponse sans corpus) ──
     # force_tool=True → tool_choice "any" → garantie zéro hallucination para
