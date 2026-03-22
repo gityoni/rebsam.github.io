@@ -103,6 +103,8 @@ except Exception as _e:
     db = None
     logging.warning(f"[RebSam] Firestore non disponible : {_e}")
 
+logging.info("[RebSam] Application prête — Listening on port 8080")
+
 
 def load_history(key: str, collection: str = FIRESTORE_COLLECTION) -> list:
     if db is None:
