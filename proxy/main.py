@@ -505,6 +505,28 @@ def format_for_whatsapp(text: str) -> str:
     return text.strip()
 
 
+# ── Labels de section traduits (injectés selon la langue détectée) ────────────
+# Le prompt a des labels hardcodés en français. On injecte les équivalents
+# pour EN et HE afin que Claude utilise les bons titres de section.
+_SECTION_LABELS: dict = {
+    "en": (
+        "\n\nSECTION LABELS — use these exact labels (in English) for all section headings:\n"
+        "📜 THE HALAKHA\n"
+        "✨ THE DEEPER MEANING (THE LIGHT)\n"
+        "📍 PRACTICAL CONCLUSION (LE-MA'ASEH)\n"
+        "📖 PRECISE SOURCES\n"
+        "Use 'THE HALAKHA' instead of 'LA HALAKHA', 'SOURCES' instead of 'SOURCES PRÉCISES', etc."
+    ),
+    "he": (
+        "\n\nתוויות סעיפים — השתמש בתוויות הבאות בדיוק (בעברית) לכל כותרות הסעיפים:\n"
+        "📜 ההלכה\n"
+        "✨ המשמעות העמוקה (האור)\n"
+        "📍 מסקנה מעשית (למעשה)\n"
+        "📖 מקורות מדויקים"
+    ),
+}
+
+
 # Patterns produits par le RAG Vertex quand aucune source n'est trouvée
 _NONE_PATTERNS = re.compile(
     r'(\*\s*None\s*\n?|'           # * None
@@ -967,7 +989,7 @@ def process_wa_event(payload: dict):
             "en": "\n\nYou are responding via WhatsApp. Use *bold* (single asterisk), _italic_, and emojis. Avoid markdown headers (#).",
         }.get(lang, "\n\nTu réponds via WhatsApp. Utilise *gras* (un seul astérisque), _italique_, et des emojis. Évite les titres markdown (#).")
 
-        effective_system = ACTIVE_PROMPT + date_injection + wa_note
+        effective_system = ACTIVE_PROMPT + date_injection + wa_note + _SECTION_LABELS.get(lang, "")
 
         # 4. Appel LLM (Gemini ou Claude selon MODEL)
         reply, _ = call_llm(effective_system, history, text)
@@ -1093,7 +1115,7 @@ def chat():
         "en": f"\n\nToday's date (UTC): {today_str}. Use this date for any Jewish calendar or prayer time calculations.",
     }.get(lang, f"\n\nDate d'aujourd'hui (UTC) : {today_str}. Utilise cette date pour tout calcul de calendrier juif ou horaires de prière.")
 
-    effective_system = ACTIVE_PROMPT + date_injection
+    effective_system = ACTIVE_PROMPT + date_injection + _SECTION_LABELS.get(lang, "")
 
     try:
         reply, sources = call_llm(effective_system, history, message)
@@ -1170,7 +1192,7 @@ def chat_stream():
         "he": f"\n\nהתאריך של היום (UTC): {today_str}. השתמש בתאריך זה לכל חישוב לוח שנה יהודי או זמני תפילה.",
         "en": f"\n\nToday's date (UTC): {today_str}. Use this date for any Jewish calendar or prayer time calculations.",
     }.get(lang, f"\n\nDate d'aujourd'hui (UTC) : {today_str}. Utilise cette date pour tout calcul de calendrier juif ou horaires de prière.")
-    effective_system = ACTIVE_PROMPT + date_injection
+    effective_system = ACTIVE_PROMPT + date_injection + _SECTION_LABELS.get(lang, "")
 
     def generate():
         try:
@@ -1395,7 +1417,7 @@ def whatsapp_makecom():
         "en": "\n\nYou are responding via WhatsApp. Use *bold* (single asterisk), _italic_, and emojis. Avoid markdown headers (#).",
     }.get(lang, "\n\nTu réponds via WhatsApp. Utilise *gras* (un seul astérisque), _italique_, et des emojis. Évite les titres markdown (#).")
 
-    effective_system = ACTIVE_PROMPT + date_injection + wa_note
+    effective_system = ACTIVE_PROMPT + date_injection + wa_note + _SECTION_LABELS.get(lang, "")
 
     try:
         reply, _ = call_llm(effective_system, history, message)
