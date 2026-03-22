@@ -874,7 +874,15 @@ def call_claude(system_prompt: str, history: list, message: str, session_id: str
     combined = (
         "\n\n═══\n\n".join(all_text)
         if all_text
-        else "Aucun passage pertinent trouvé. Si applicable, réponds uniquement : 'Les sources disponibles ne précisent pas ce point — consultez votre Rav.'"
+        else (
+            "Aucun passage retourné pour ces requêtes. "
+            "IMPORTANT : si la question porte sur le Choulhan Aroukh, le Rama, la Mishna Beroura, "
+            "le Talmud Bavli, le Rambam, le Tur, le Yalkout Yossef, le Ben Ich Haï ou toute autre "
+            "source GARANTIE du corpus — ces sources EXISTENT dans la bibliothèque. "
+            "Les requêtes de recherche étaient mal formulées, pas les sources absentes. "
+            "Indique honnêtement que tu n'as pas pu retrouver le passage précis lors de cette recherche, "
+            "sans prétendre que la source ne traite pas du sujet."
+        )
     )
 
     messages_t2 = messages + [
