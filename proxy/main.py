@@ -606,9 +606,13 @@ CLAUDE_AGENTIC_TOOL = {
                 "type": "array",
                 "items": {"type": "string"},
                 "description": (
-                    "1 à 3 requêtes optimisées pour la recherche dans le corpus. "
-                    "Pour une question complexe (ex: kashrout + dimension kabbalistique), "
-                    "utilise 2-3 requêtes ciblées. Formule en hébreu translittéré ou français."
+                    "1 à 3 requêtes optimisées pour la recherche dans le corpus hébraïque. "
+                    "OBLIGATOIRE : formule TOUJOURS en hébreu script (כתב עברי), jamais en "
+                    "translittération ni en français. Le corpus est indexé en hébreu — une "
+                    "requête en translittération ou en français ne trouvera rien. "
+                    "Exemples : 'ביצה תוספות רש\"י', 'ברכה על מיץ עגבניות', "
+                    "'מוקצה יום טוב'. "
+                    "Pour une question complexe, utilise 2-3 requêtes ciblées en hébreu."
                 ),
                 "minItems": 1,
                 "maxItems": 3,
