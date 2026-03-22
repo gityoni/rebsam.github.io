@@ -545,11 +545,11 @@
     .msg-row { display: flex; align-items: flex-end; gap: .6rem; }
     .msg-row.user { flex-direction: row-reverse; }
     .msg-avatar { width: 2.25rem; height: 2.25rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .7rem; color: #fff; flex-shrink: 0; }
-    .msg-avatar.sam { background: var(--primary); }
+    .msg-avatar.sam { background: linear-gradient(135deg, #5B8EF0 0%, #7C6FCD 60%, #E07B5A 100%); }
     .msg-avatar.user { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); font-size: .65rem; }
     .msg-bubble { max-width: 80%; padding: 1rem 1.25rem; border-radius: 1.25rem; font-size: .9375rem; line-height: 1.65; box-shadow: 0 2px 8px rgba(0,0,0,.07); word-break: break-word; animation: bubbleIn .32s ease-out; }
     @keyframes bubbleIn { from { opacity: 0; transform: translateY(10px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    .msg-bubble.sam { background: #fff; border: 1.5px solid rgba(46,107,230,.22); border-bottom-left-radius: .3rem; color: var(--secondary-dark); box-shadow: 0 2px 12px rgba(46,107,230,.09); }
+    .msg-bubble.sam { background: #fff; border: 1.5px solid rgba(46,107,230,.18); border-bottom-left-radius: .3rem; color: var(--secondary-dark); box-shadow: 0 2px 12px rgba(46,107,230,.09); font-family: 'Outfit', 'Inter', sans-serif; }
     .msg-bubble.user { background: linear-gradient(135deg, #2a5ce0, #1a3caa); color: #fff; border-top-right-radius: .3rem; white-space: pre-line; position: relative; cursor: pointer; box-shadow: 0 2px 12px rgba(26,60,170,.25); }
     .msg-bubble.user:hover::after { content: '✏️'; position: absolute; top: .3rem; right: .3rem; font-size: .75rem; opacity: .8; }
     .msg-bubble.user[contenteditable="true"] { outline: 2px solid rgba(255,255,255,.6); cursor: text; white-space: pre-wrap; }
@@ -558,37 +558,40 @@
     .msg-bubble.sam code { background: rgba(0,86,210,.08); padding: 1px 5px; border-radius: 4px; font-size: .85em; }
     .msg-bubble.sam ul,.msg-bubble.sam ol { padding-left: 1.25rem; margin: .3rem 0; }
     .msg-bubble.sam li { margin-bottom: .2rem; }
-    .msg-bubble.sam hr { border: none; border-top: 1px solid #e5e7eb; margin: .6rem 0; }
+    .msg-bubble.sam hr { border: none; height: 2px; background: linear-gradient(90deg, #5B8EF0 0%, #7C6FCD 55%, #E07B5A 100%); border-radius: 2px; margin: 1rem 0; opacity: .55; }
     .msg-bubble.sam p { margin: 0 0 .5rem; }
     .msg-bubble.sam p:last-child { margin-bottom: 0; }
     /* ── Sources grounding (NotebookLM-style) ── */
     .msg-sources { max-width: 78%; margin: .25rem 0 .75rem 2.75rem; }
-    .msg-sources-label { font-size: .67rem; font-weight: 700; color: #9a6a00; letter-spacing: .08em; text-transform: uppercase; margin-bottom: .45rem; }
+    .msg-sources-label { font-size: .67rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; margin-bottom: .45rem; background: linear-gradient(135deg, #5B8EF0 0%, #7C6FCD 60%, #E07B5A 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .msg-sources-list { display: flex; flex-wrap: wrap; gap: .4rem; }
     /* Book-spine chip */
     .msg-source-chip {
-      display: inline-flex; align-items: flex-start; gap: .3rem;
-      background: linear-gradient(135deg, rgba(201,168,76,.07), rgba(46,107,230,.04));
-      border: 1px solid rgba(46,107,230,.16);
-      border-left: 2.5px solid rgba(201,168,76,.55);
-      border-radius: .3rem .5rem .5rem .3rem;
-      padding: .32rem .6rem .32rem .5rem;
+      display: inline-flex; align-items: flex-start; gap: .35rem;
+      background: linear-gradient(135deg, rgba(91,142,240,.07) 0%, rgba(124,111,205,.05) 100%);
+      border: 1px solid rgba(91,142,240,.2);
+      border-left: 2.5px solid #7C6FCD;
+      border-radius: .4rem .6rem .6rem .4rem;
+      padding: .35rem .65rem .35rem .5rem;
       cursor: default;
-      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+      box-shadow: 0 1px 5px rgba(91,142,240,.1);
       transition: all .18s;
       max-width: 100%;
     }
     .msg-source-chip:hover {
-      background: linear-gradient(135deg, rgba(201,168,76,.13), rgba(46,107,230,.08));
-      box-shadow: 0 2px 8px rgba(46,107,230,.12);
+      background: linear-gradient(135deg, rgba(91,142,240,.13) 0%, rgba(124,111,205,.1) 100%);
+      box-shadow: 0 3px 10px rgba(124,111,205,.2);
       transform: translateY(-1px);
+      border-left-color: #5B8EF0;
     }
-    .msg-source-icon { font-size: .8rem; flex-shrink: 0; margin-top: .05rem; }
+    .msg-source-icon { display: flex; align-items: center; flex-shrink: 0; margin-top: .1rem; color: #7C6FCD; }
+    .msg-source-icon svg { width: .85rem; height: .85rem; }
     .msg-source-body { min-width: 0; }
     .msg-source-title { font-size: .7rem; font-weight: 600; color: #374151; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 22ch; display: block; }
     .msg-source-snippet { font-size: .62rem; color: #6b7280; line-height: 1.4; margin-top: .12rem; display: none; max-width: 36ch; white-space: normal; }
     .msg-source-chip:hover .msg-source-snippet { display: block; }
-    html.dark .msg-source-chip { background: rgba(201,168,76,.07); border-color: rgba(201,168,76,.2); border-left-color: rgba(201,168,76,.4); }
+    html.dark .msg-source-chip { background: linear-gradient(135deg, rgba(91,142,240,.1) 0%, rgba(124,111,205,.08) 100%); border-color: rgba(124,111,205,.3); border-left-color: #9d8fe0; }
+    html.dark .msg-source-icon { color: #b4a8f0; }
     html.dark .msg-source-title { color: #c8d7f5; }
     html.dark .msg-source-snippet { color: #94a3b8; }
     @media (max-width: 640px) { .msg-sources { margin-left: 2.25rem; } .msg-source-title { max-width: 18ch; } }
@@ -947,23 +950,32 @@
     .msg-bubble.sam a { color: #1a3caa; font-weight: 600; text-decoration: none; border-bottom: 1px solid rgba(26,60,170,.3); transition: border-color .2s; }
     .msg-bubble.sam a:hover { border-bottom-color: #c9a84c; color: #9a6a00; }
     .msg-bubble.sam code { background: rgba(46,107,230,.09); padding: 1px 6px; border-radius: 4px; font-size: .85em; }
-    /* HR → séparateur ornemental or */
+    /* HR → séparateur dégradé moderne */
     .msg-bubble.sam hr {
-      border: none; margin: .9rem 0; height: 1px;
-      background: linear-gradient(90deg, transparent 0%, rgba(201,168,76,.55) 25%, rgba(201,168,76,.55) 75%, transparent 100%);
+      border: none; margin: 1rem 0; height: 2px;
+      background: linear-gradient(90deg, #5B8EF0 0%, #7C6FCD 55%, #E07B5A 100%);
+      border-radius: 2px; opacity: .55;
     }
     .msg-bubble.sam blockquote {
-      border-left: 3px solid rgba(201,168,76,.6);
+      border-left: 3px solid #7C6FCD;
       margin: .5rem 0; padding: .4rem .85rem;
-      background: rgba(201,168,76,.05); border-radius: 0 .5rem .5rem 0;
+      background: rgba(124,111,205,.06); border-radius: 0 .5rem .5rem 0;
       font-style: italic; color: #374151;
     }
-    html.dark .msg-bubble.sam blockquote { background: rgba(201,168,76,.06); color: #c8d7f5; }
+    html.dark .msg-bubble.sam blockquote { background: rgba(124,111,205,.1); color: #c8d7f5; }
     .msg-bubble.sam h1, .msg-bubble.sam h2, .msg-bubble.sam h3 {
-      font-size: 1em; font-weight: 800; color: #1a3caa;
-      margin: .75rem 0 .25rem; letter-spacing: -.01em;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05em; font-weight: 800;
+      background: linear-gradient(135deg, #2a5ce0 0%, #7C6FCD 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: .85rem 0 .3rem; letter-spacing: -.01em;
     }
-    html.dark .msg-bubble.sam h1, html.dark .msg-bubble.sam h2, html.dark .msg-bubble.sam h3 { color: #7aaaf5; }
+    html.dark .msg-bubble.sam h1, html.dark .msg-bubble.sam h2, html.dark .msg-bubble.sam h3 {
+      background: linear-gradient(135deg, #7aaaf5 0%, #b4a8f0 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
     .msg-bubble.sam ul, .msg-bubble.sam ol { padding-left: 1.4rem; margin: .4rem 0; }
     .msg-bubble.sam li { margin-bottom: .3rem; }
     .msg-bubble.sam p { margin: 0 0 .55rem; }
@@ -2228,8 +2240,10 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
     }
     // Fallback si marked pas encore chargé
     return raw
+      .replace(/^---+$/gm, '<hr>')
       .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
-      .replace(/\*(.+?)\*/g, '<b>$1</b>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/^#{1,3}\s+(.+)$/gm, '<strong>$1</strong>')
       .replace(/\n\n/g, '<br><br>')
       .replace(/\n/g, '<br>');
   }
@@ -2273,7 +2287,7 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
     if (!sources || !sources.length) return null;
     const wrap = document.createElement('div');
     wrap.className = 'msg-sources';
-    const label = { fr: '📖 Sources', en: '📖 Sources', he: '📖 מקורות' }[currentLang] || '📖 Sources';
+    const label = { fr: 'Séfarim consultés', en: 'Sources', he: 'מקורות' }[currentLang] || 'Séfarim consultés';
     wrap.innerHTML = `<div class="msg-sources-label">${label}</div>`;
     const list = document.createElement('div');
     list.className = 'msg-sources-list';
@@ -2284,7 +2298,8 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
       const _snipRaw = stripHtmlToText(s.snippet || '');
       const _snipOk = _snipRaw && !_snipRaw.toLowerCase().includes('no snippet');
       const snippet = _snipOk ? `<span class="msg-source-snippet">${escapeHtml(_snipRaw.slice(0, 200))}${_snipRaw.length > 200 ? '…' : ''}</span>` : '';
-      chip.innerHTML = `<span class="msg-source-icon">📗</span><span class="msg-source-body"><span class="msg-source-title">${escapeHtml(s.title)}</span>${snippet}</span>`;
+      const bookIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`;
+      chip.innerHTML = `<span class="msg-source-icon">${bookIcon}</span><span class="msg-source-body"><span class="msg-source-title">${escapeHtml(s.title)}</span>${snippet}</span>`;
       list.appendChild(chip);
     });
     wrap.appendChild(list);

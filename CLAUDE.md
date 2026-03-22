@@ -56,6 +56,32 @@ modifier fichiers
 - Les icônes PNG réelles sont dans icon-192.png et icon-512.png
 - Le proxy tourne sur Cloud Run, séparé du frontend
 
+## Design system — Chat UI
+
+### Dégradé identitaire (à utiliser partout en remplacement de l'or)
+```
+linear-gradient(135deg, #5B8EF0 0%, #7C6FCD 50%, #E07B5A 100%)
+```
+Ce dégradé bleu→violet→corail est le fil conducteur visuel :
+- Bouton CTA hero "Pose ta première question à RebSam"
+- `<hr>` séparateurs dans les bulles Sam
+- Titres h1/h2/h3 dans les bulles Sam
+- Label "Séfarim consultés" (gradient text)
+- Bordure gauche des source chips
+- Avatar Sam
+
+### Icônes
+- Source chips : SVG Feather book (inline), PAS d'emoji
+- Éviter les emoji décoratifs dans l'UI chrome (réservés au contenu IA)
+
+### Typographie chat
+- Corps bulles Sam : `font-family: 'Outfit', 'Inter', sans-serif`
+- Titres (h1/h2/h3 markdown) : `Outfit` + gradient text
+
+### Markdown dans les bulles
+- `marked.js` (cdn.jsdelivr.net/npm/marked) — `gfm: true, breaks: true`
+- Fallback JS si marked non chargé : gère `---` → `<hr>`, `**` → `<b>`, `*` → `<em>`, `#` → `<strong>`
+- `---` du prompt → `<hr>` stylé avec le dégradé identitaire (hauteur 2px)
+
 ## État actuel / En cours
-<!-- Mettre à jour cette section à chaque session avant de fermer -->
 - Voir TASKS.md
