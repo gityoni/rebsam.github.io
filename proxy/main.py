@@ -690,6 +690,13 @@ def search_rag(query: str, top_k: int = 5, session_id: str = "") -> dict:
             logging.info("[RebSam/RAG] Aucun résultat Vertex Search")
             return {"text": "", "sources": []}
 
+        # Snippets Vertex placeholders à ignorer (retournés quand la page n'est pas indexable)
+        _SNIPPET_JUNK = frozenset({
+            "no snippet is available for this page",
+            "no snippet is available",
+            "aucun extrait disponible",
+        })
+
         passages  = []
         sources   = []
         doc_names = []  # noms complets pour userEvents:write
@@ -703,20 +710,29 @@ def search_rag(query: str, top_k: int = 5, session_id: str = "") -> dict:
             doc_name = doc.get("name", "")
             if doc_name:
                 doc_names.append(doc_name)
-            first   = ""
+
+            snippet_display = ""   # aperçu affiché dans le chip (préférence : EA > snippet)
+            ea_display      = ""   # meilleur extractive answer pour l'aperçu
+
             for snippet in derived.get("snippets", []):
                 text = snippet.get("snippet", "").strip()
-                if text:
-                    if not first:
-                        first = text
+                # Ignorer les placeholders Vertex
+                if text and text.lower() not in _SNIPPET_JUNK:
+                    if not snippet_display:
+                        snippet_display = text
                     passages.append(f"[{title}]\n{text}")
+
             # Vertex AI Search peut renvoyer camelCase ou snake_case selon la version
             for answer in (derived.get("extractiveAnswers") or derived.get("extractive_answers") or []):
                 text = answer.get("content", "").strip()
                 if text:
-                    if not first:
-                        first = text
+                    if not ea_display:
+                        ea_display = text
                     passages.append(f"[{title}]\n{text}")
+
+            # Préférer l'extractive answer (plus riche) pour l'aperçu du chip
+            first = ea_display or snippet_display
+
             if title and title not in seen:
                 seen.add(title)
                 sources.append({"title": title, "snippet": first[:250]})
