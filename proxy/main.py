@@ -698,7 +698,7 @@ def call_claude(system_prompt: str, history: list, message: str) -> tuple:
             "system": [
                 {
                     "type":          "text",
-                    "text":          system_prompt or SYSTEM_FALLBACK,
+                    "text":          system_prompt,
                     "cache_control": {"type": "ephemeral"},
                 }
             ],
