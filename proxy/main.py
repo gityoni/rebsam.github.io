@@ -41,7 +41,7 @@ class ClaudeRateLimitError(Exception):
 SECRET_TOKEN       = os.environ.get("SECRET_TOKEN", "rebsam-make-2026")
 PROJECT_ID         = os.environ.get("GCP_PROJECT", "rebbe-sam-agent")
 LOCATION           = os.environ.get("GCP_LOCATION", "europe-west1")
-MODEL              = os.environ.get("GEMINI_MODEL", "gemini-2.0-pro-exp")
+MODEL              = os.environ.get("GEMINI_MODEL", "claude-sonnet-4-6-20251001")
 MAKE_LOG_WEBHOOK   = os.environ.get("MAKE_LOG_WEBHOOK", "")
 # ── Détection du provider LLM ─────────────────────────────
 # claude-* → Claude via Vertex AI Model Garden (us-east5, Google auth)
