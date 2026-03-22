@@ -1981,7 +1981,8 @@
   /* ═══════════════════════════════════════════════
      CHAT — STATE & HELPERS
   ═══════════════════════════════════════════════ */
-  const MAKE_WEBHOOK_URL = '/api';
+  const MAKE_WEBHOOK_URL = '/api'; // fallback (non utilisé)
+  const PROXY_STREAM_URL = 'https://rebsam-proxy-217121855341.europe-west1.run.app/stream';
   let chatSending = false;
   let conversationHistory = []; // Mémoire de la conversation en cours
   const _sid = () => { if (!localStorage._rsid) localStorage._rsid = Date.now().toString(36) + Math.random().toString(36).slice(2); return localStorage._rsid; };
@@ -2255,6 +2256,7 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
     sendBtn.disabled = true;
 
     const loadingRow = appendMsg('sam', '<div class="loading-dots"><span></span><span></span><span></span></div>');
+    const bubble = loadingRow.querySelector('.msg-bubble');
 
     try {
       const langInstruction = LANG_INSTRUCTIONS[currentLang] || LANG_INSTRUCTIONS.fr;
@@ -2262,51 +2264,73 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
       const namePrefix = name ? ({ fr:`L'utilisateur s'appelle ${name}. `, en:`The user's name is ${name}. `, he:`שם המשתמש הוא ${name}. `}[currentLang] || `The user's name is ${name}. `) : '';
       const systemPrompt = namePrefix + langInstruction + getJewishDateInfo();
 
-      // Ajout du message courant à l'historique AVANT l'envoi
       conversationHistory.push({ role: 'user', content: message });
 
-      const res = await fetch(MAKE_WEBHOOK_URL, {
+      const res = await fetch(PROXY_STREAM_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-secret-token': 'rebsam-make-2026' },
         body: JSON.stringify({
-          // Champ rétrocompatible (Make.com peut encore lire "prompt")
           prompt: systemPrompt + message,
-          // Nouveaux champs pour la mémoire conversationnelle
-          systemPrompt,
-          message,
-          history: conversationHistory.slice(-20), // 10 derniers échanges max
+          systemPrompt, message,
+          history: conversationHistory.slice(-20),
           lang: currentLang,
           name: name || 'Anonyme',
           timestamp: new Date().toISOString(),
           sessionId: _sid()
         })
       });
-      const rawText = await res.text();
-      let reply, sources = [];
-      try {
-        const data = JSON.parse(rawText);
-        reply   = data.reply || data.text || data.response || data.message || rawText;
-        sources = data.sources || [];
-      } catch {
-        reply = rawText;
+
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      const chatBox = document.getElementById('chat-box');
+      let sseBuffer = '';
+      let fullReply = '';
+      let sources = [];
+      let firstChunk = true;
+
+      outer: while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        sseBuffer += decoder.decode(value, { stream: true });
+        const lines = sseBuffer.split('\n');
+        sseBuffer = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const raw = line.slice(6);
+          if (raw === '[DONE]') break outer;
+          let evt;
+          try { evt = JSON.parse(raw); } catch { continue; }
+          if (evt.type === 'text') {
+            if (firstChunk) { bubble.innerHTML = ''; firstChunk = false; }
+            fullReply += evt.text;
+            bubble.textContent = fullReply;
+            bubble.setAttribute('dir', currentLang === 'he' ? 'rtl' : 'ltr');
+            chatBox.scrollTop = chatBox.scrollHeight;
+          } else if (evt.type === 'sources') {
+            sources = evt.sources || [];
+          } else if (evt.type === 'error') {
+            throw new Error(evt.error);
+          }
+        }
       }
-      const cleaned = cleanMarkdown(reply);
-      const bubble = loadingRow.querySelector('.msg-bubble');
-      bubble.innerHTML = cleaned;
+
+      // Rendu markdown final
+      bubble.innerHTML = cleanMarkdown(fullReply);
       bubble.setAttribute('dir', currentLang === 'he' ? 'rtl' : 'ltr');
 
-      // Afficher les sources grounding si disponibles
       if (sources.length) {
         const sourcesEl = renderSources(sources);
         if (sourcesEl) loadingRow.after(sourcesEl);
       }
 
-      // Mémoriser la réponse de l'IA pour le prochain tour
-      conversationHistory.push({ role: 'model', content: reply });
-      saveToHistory(message, reply);
+      conversationHistory.push({ role: 'model', content: fullReply });
+      saveToHistory(message, fullReply);
+
     } catch (err) {
       console.error('[RebSam chat error]', err);
-      loadingRow.querySelector('.msg-bubble').textContent =
+      bubble.textContent =
         currentLang === 'he' ? 'שגיאה. נסה שוב.' :
         currentLang === 'en' ? 'Error. Please try again.' :
         'Erreur. Veuillez réessayer.';
