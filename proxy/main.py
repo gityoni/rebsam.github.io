@@ -33,6 +33,10 @@ def add_cors(resp):
         resp.headers[k] = v
     return resp
 
+# ── Exceptions custom ─────────────────────────────────────
+class ClaudeRateLimitError(Exception):
+    """Levée quand Claude Vertex AI 429 après tous les retries → déclenche fallback Gemini."""
+
 # ── Config ────────────────────────────────────────────────
 SECRET_TOKEN       = os.environ.get("SECRET_TOKEN", "rebsam-make-2026")
 PROJECT_ID         = os.environ.get("GCP_PROJECT", "rebbe-sam-agent")
@@ -82,12 +86,9 @@ VERTEX_URL = (
     f"/locations/{LOCATION}/publishers/google/models/{MODEL}:generateContent"
 )
 
-# Claude via Vertex AI Model Garden — toujours us-east5 (seule région supportée)
-# Aucune clé Anthropic nécessaire — authentification Google IAM
-CLAUDE_VERTEX_URL = (
-    f"https://us-east5-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}"
-    f"/locations/us-east5/publishers/anthropic/models/{MODEL}:rawPredict"
-)
+# Claude via API Anthropic directe — 4000 RPM, même tarif que Vertex
+ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+CLAUDE_API_URL    = "https://api.anthropic.com/v1/messages"
 
 # ── Firestore ─────────────────────────────────────────────
 FIRESTORE_COLLECTION     = "wa_history"
@@ -567,8 +568,12 @@ CLAUDE_AGENTIC_TOOL = {
     "description": (
         "Cherche dans le corpus de 2000+ sifrey kodesh (Choulhan Aroukh, Mishna Beroura, "
         "Yalkout Yossef, Tanya, Zohar, responsa des Rishonim et Acharonim, etc.). "
-        "OBLIGATOIRE avant de répondre à toute question halakhique, kabbalistique ou "
-        "académique sur la Torah. Optionnel pour les simples salutations."
+        "RÈGLE ABSOLUE : toute réponse sur une question de Torah, de Halakha, de Kabbalah "
+        "ou de pratique religieuse DOIT être fondée EXCLUSIVEMENT sur les passages retournés "
+        "par cet outil. Si l'outil ne retourne rien de pertinent, Claude doit l'indiquer "
+        "explicitement et NE DOIT PAS compléter avec sa connaissance paramétrique — "
+        "une réponse halakhique inexacte a des répercussions sur l'âme de la personne. "
+        "Utiliser pour tout sauf les simples salutations (TYPE 0)."
     ),
     "input_schema": {
         "type": "object",
@@ -637,7 +642,8 @@ def search_rag(query: str, top_k: int = 5) -> dict:
                     if not first:
                         first = text
                     passages.append(f"[{title}]\n{text}")
-            for answer in derived.get("extractive_answers", []):
+            # Vertex AI Search peut renvoyer camelCase ou snake_case selon la version
+            for answer in (derived.get("extractiveAnswers") or derived.get("extractive_answers") or []):
                 text = answer.get("content", "").strip()
                 if text:
                     if not first:
@@ -682,36 +688,44 @@ def call_claude(system_prompt: str, history: list, message: str) -> tuple:
         messages.append({"role": role, "content": turn.get("content", "")})
     messages.append({"role": "user", "content": message})
 
-    access_token = get_access_token()
+    def _claude_call(msgs: list, force_tool: bool = False) -> dict:
+        import time
+        payload = {
+            "model":      MODEL,
+            "max_tokens": 4096,
+            "system": [
+                {
+                    "type":          "text",
+                    "text":          system_prompt,
+                    "cache_control": {"type": "ephemeral"},
+                }
+            ],
+            "tools": [CLAUDE_AGENTIC_TOOL],
+            "tool_choice": {"type": "any"} if force_tool else {"type": "auto"},
+            "messages": msgs,
+        }
+        headers = {
+            "x-api-key":         ANTHROPIC_API_KEY,
+            "anthropic-version": "2023-06-01",
+            "anthropic-beta":    "prompt-caching-2024-07-31",
+            "Content-Type":      "application/json",
+        }
+        for attempt in range(5):
+            resp = http_requests.post(
+                CLAUDE_API_URL, headers=headers, json=payload, timeout=60
+            )
+            if resp.status_code == 429:
+                wait = 2 ** (attempt + 1)  # 2s, 4s, 8s, 16s, 32s
+                logging.warning(f"[RebSam/Claude] 429 rate-limit, retry {attempt+1}/5 dans {wait}s")
+                time.sleep(wait)
+                continue
+            resp.raise_for_status()
+            return resp.json()
+        raise ClaudeRateLimitError("Claude 429 après 5 tentatives")
 
-    def _claude_call(msgs: list) -> dict:
-        resp = http_requests.post(
-            CLAUDE_VERTEX_URL,
-            headers={
-                "Authorization":  f"Bearer {access_token}",
-                "Content-Type":   "application/json",
-                "anthropic-beta": "prompt-caching-2024-07-31",
-            },
-            json={
-                "anthropic_version": "vertex-2023-10-16",
-                "max_tokens": 2048,
-                "system": [
-                    {
-                        "type":          "text",
-                        "text":          system_prompt,
-                        "cache_control": {"type": "ephemeral"},
-                    }
-                ],
-                "tools": [CLAUDE_AGENTIC_TOOL],
-                "messages": msgs,
-            },
-            timeout=60,
-        )
-        resp.raise_for_status()
-        return resp.json()
-
-    # ── Tour 1 : Claude décide de chercher ou pas ────────────
-    data1    = _claude_call(messages)
+    # ── Tour 1 : Claude DOIT chercher (aucune réponse sans corpus) ──
+    # force_tool=True → tool_choice "any" → garantie zéro hallucination para
+    data1    = _claude_call(messages, force_tool=True)
     content1 = data1.get("content", [])
     stop1    = data1.get("stop_reason", "")
 
@@ -838,15 +852,36 @@ def call_gemini(system_prompt: str, history: list, message: str) -> tuple:
 
 
 # ── Routeur LLM universel ─────────────────────────────────
+GEMINI_FALLBACK_MODEL = os.environ.get("GEMINI_FALLBACK_MODEL", "gemini-2.0-pro-exp")
+
+
 def call_llm(system_prompt: str, history: list, message: str) -> tuple:
     """
     Route vers Claude ou Gemini selon la variable MODEL.
-    claude-*  → Anthropic API + RAG Vertex Search découplé → (reply, [])
+    claude-*  → Anthropic API + RAG Vertex Search découplé → (reply, sources)
+              → Fallback automatique sur Gemini si 429 épuisé
     gemini-*  → Vertex AI avec RAG natif intégré           → (reply, sources)
     """
     if USE_CLAUDE:
         logging.info(f"[RebSam] Provider: Anthropic Claude ({MODEL})")
-        return call_claude(system_prompt, history, message)
+        try:
+            return call_claude(system_prompt, history, message)
+        except ClaudeRateLimitError as e:
+            logging.warning(
+                f"[RebSam] Claude rate-limit épuisé → fallback Gemini ({GEMINI_FALLBACK_MODEL}). {e}"
+            )
+            # Basculer temporairement sur le modèle Gemini de fallback
+            global VERTEX_URL
+            _prev_url = VERTEX_URL
+            _prev_model = MODEL
+            VERTEX_URL = (
+                f"https://{LOCATION}-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}"
+                f"/locations/{LOCATION}/publishers/google/models/{GEMINI_FALLBACK_MODEL}:generateContent"
+            )
+            try:
+                return call_gemini(system_prompt, history, message)
+            finally:
+                VERTEX_URL = _prev_url
     else:
         logging.info(f"[RebSam] Provider: Gemini/Vertex ({MODEL})")
         return call_gemini(system_prompt, history, message)
