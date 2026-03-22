@@ -872,10 +872,31 @@ def call_claude(system_prompt: str, history: list, message: str, session_id: str
     u2 = data2.get("usage", {})
     logging.info(
         f"[RebSam/Claude] Tour 2 — "
+        f"stop:{data2.get('stop_reason','?')} "
         f"in:{u2.get('input_tokens','?')} "
         f"out:{u2.get('output_tokens','?')} "
         f"sources:{len(all_sources)}"
     )
+
+    # Tour 2 vide — log diagnostic + retry unique
+    if not reply:
+        block_types = [b.get("type") for b in content2]
+        logging.warning(
+            f"[RebSam/Claude] Tour 2 réponse vide — "
+            f"stop_reason:{data2.get('stop_reason','?')} "
+            f"content_types:{block_types} — retry en cours..."
+        )
+        data2r    = _claude_call(messages_t2, no_tool=True)
+        content2r = data2r.get("content", [])
+        reply     = next((b.get("text", "") for b in content2r if b.get("type") == "text"), "")
+        if reply:
+            logging.info("[RebSam/Claude] Tour 2 retry OK")
+        else:
+            logging.error(
+                f"[RebSam/Claude] Tour 2 retry aussi vide — "
+                f"stop:{data2r.get('stop_reason','?')} types:{[b.get('type') for b in content2r]}"
+            )
+
     return reply, all_sources
 
 
