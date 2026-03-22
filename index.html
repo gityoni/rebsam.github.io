@@ -2197,7 +2197,9 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
     sources.slice(0, 6).forEach(s => {
       const chip = document.createElement('div');
       chip.className = 'msg-source-chip';
-      const snippet = s.snippet ? `<span class="msg-source-snippet">${escapeHtml(s.snippet.slice(0, 180))}${s.snippet.length > 180 ? '…' : ''}</span>` : '';
+      const _snip = (s.snippet || '').trim();
+      const _snipOk = _snip && !_snip.toLowerCase().includes('no snippet');
+      const snippet = _snipOk ? `<span class="msg-source-snippet">${escapeHtml(_snip.slice(0, 180))}${_snip.length > 180 ? '…' : ''}</span>` : '';
       chip.innerHTML = `<span class="msg-source-icon">📗</span><span class="msg-source-body"><span class="msg-source-title">${escapeHtml(s.title)}</span>${snippet}</span>`;
       list.appendChild(chip);
     });
