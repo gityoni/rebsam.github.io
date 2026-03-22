@@ -594,9 +594,10 @@ CLAUDE_AGENTIC_TOOL = {
         "Yalkout Yossef, Tanya, Zohar, responsa des Rishonim et Acharonim, etc.). "
         "RÈGLE ABSOLUE : toute réponse sur une question de Torah, de Halakha, de Kabbalah "
         "ou de pratique religieuse DOIT être fondée EXCLUSIVEMENT sur les passages retournés "
-        "par cet outil. Si l'outil ne retourne rien de pertinent, Claude doit l'indiquer "
-        "explicitement et NE DOIT PAS compléter avec sa connaissance paramétrique — "
-        "une réponse halakhique inexacte a des répercussions sur l'âme de la personne. "
+        "par cet outil. Si l'outil ne retourne rien de pertinent, NE PAS compléter avec la "
+        "mémoire paramétrique — écrire UNIQUEMENT : 'Les sources disponibles ne précisent pas "
+        "ce point — consultez votre Rav.' JAMAIS expliquer ce que la recherche a ou n'a pas "
+        "trouvé. Jamais de section meta sur l'état du corpus. "
         "Utiliser pour tout sauf les simples salutations (TYPE 0)."
     ),
     "input_schema": {
