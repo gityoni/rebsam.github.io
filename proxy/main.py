@@ -33,6 +33,10 @@ def add_cors(resp):
         resp.headers[k] = v
     return resp
 
+# ── Exceptions custom ─────────────────────────────────────
+class ClaudeRateLimitError(Exception):
+    """Levée quand Claude Vertex AI 429 après tous les retries → déclenche fallback Gemini."""
+
 # ── Config ────────────────────────────────────────────────
 SECRET_TOKEN       = os.environ.get("SECRET_TOKEN", "rebsam-make-2026")
 PROJECT_ID         = os.environ.get("GCP_PROJECT", "rebbe-sam-agent")
@@ -704,19 +708,19 @@ def call_claude(system_prompt: str, history: list, message: str) -> tuple:
             "Content-Type":   "application/json",
             "anthropic-beta": "prompt-caching-2024-07-31",
         }
-        for attempt in range(4):
+        for attempt in range(5):
             resp = http_requests.post(
                 CLAUDE_VERTEX_URL, headers=headers, json=payload, timeout=60
             )
             if resp.status_code == 429:
-                wait = 2 ** attempt  # 1s, 2s, 4s, 8s
-                logging.warning(f"[RebSam/Claude] 429 rate-limit, retry {attempt+1}/4 dans {wait}s")
+                wait = 2 ** (attempt + 1)  # 2s, 4s, 8s, 16s, 32s
+                logging.warning(f"[RebSam/Claude] 429 rate-limit, retry {attempt+1}/5 dans {wait}s")
                 time.sleep(wait)
                 continue
             resp.raise_for_status()
             return resp.json()
-        resp.raise_for_status()  # lève l'exception après 4 tentatives
-        return resp.json()
+        # Toutes les tentatives épuisées — signaler pour fallback Gemini
+        raise ClaudeRateLimitError(f"Claude 429 après 5 tentatives")
 
     # ── Tour 1 : Claude décide de chercher ou pas ────────────
     data1    = _claude_call(messages)
@@ -846,15 +850,36 @@ def call_gemini(system_prompt: str, history: list, message: str) -> tuple:
 
 
 # ── Routeur LLM universel ─────────────────────────────────
+GEMINI_FALLBACK_MODEL = os.environ.get("GEMINI_FALLBACK_MODEL", "gemini-2.0-pro-exp")
+
+
 def call_llm(system_prompt: str, history: list, message: str) -> tuple:
     """
     Route vers Claude ou Gemini selon la variable MODEL.
-    claude-*  → Anthropic API + RAG Vertex Search découplé → (reply, [])
+    claude-*  → Anthropic API + RAG Vertex Search découplé → (reply, sources)
+              → Fallback automatique sur Gemini si 429 épuisé
     gemini-*  → Vertex AI avec RAG natif intégré           → (reply, sources)
     """
     if USE_CLAUDE:
         logging.info(f"[RebSam] Provider: Anthropic Claude ({MODEL})")
-        return call_claude(system_prompt, history, message)
+        try:
+            return call_claude(system_prompt, history, message)
+        except ClaudeRateLimitError as e:
+            logging.warning(
+                f"[RebSam] Claude rate-limit épuisé → fallback Gemini ({GEMINI_FALLBACK_MODEL}). {e}"
+            )
+            # Basculer temporairement sur le modèle Gemini de fallback
+            global VERTEX_URL
+            _prev_url = VERTEX_URL
+            _prev_model = MODEL
+            VERTEX_URL = (
+                f"https://{LOCATION}-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}"
+                f"/locations/{LOCATION}/publishers/google/models/{GEMINI_FALLBACK_MODEL}:generateContent"
+            )
+            try:
+                return call_gemini(system_prompt, history, message)
+            finally:
+                VERTEX_URL = _prev_url
     else:
         logging.info(f"[RebSam] Provider: Gemini/Vertex ({MODEL})")
         return call_gemini(system_prompt, history, message)
