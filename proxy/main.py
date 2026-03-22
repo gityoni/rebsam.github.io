@@ -872,7 +872,7 @@ def call_claude(system_prompt: str, history: list, message: str, session_id: str
     combined = (
         "\n\n═══\n\n".join(all_text)
         if all_text
-        else "[Aucun passage pertinent trouvé dans le corpus pour ces requêtes.]"
+        else "Aucun passage pertinent trouvé. Si applicable, réponds uniquement : 'Les sources disponibles ne précisent pas ce point — consultez votre Rav.'"
     )
 
     messages_t2 = messages + [
@@ -885,7 +885,13 @@ def call_claude(system_prompt: str, history: list, message: str, session_id: str
             },
             {
                 "type": "text",
-                "text": "Rédige maintenant ta réponse complète et sourcée en te basant sur ces passages. N'effectue aucune autre recherche.",
+                "text": (
+                    "Rédige maintenant ta réponse complète et sourcée en te basant sur ces passages. "
+                    "N'effectue aucune autre recherche. "
+                    "INTERDIT ABSOLU dans ta réponse : ne mentionne jamais le 'corpus', la 'recherche', "
+                    "l''outil', le 'RAG', les 'passages retournés', ni aucun mécanisme technique. "
+                    "Tu es un Rav qui connaît ses sources — réponds directement, sans commenter ce que tu as trouvé ou non."
+                ),
             },
         ]},
     ]
