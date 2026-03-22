@@ -12,7 +12,7 @@ import json
 import logging
 import threading
 from datetime import datetime, timezone
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, Response, stream_with_context
 import google.auth
 import google.auth.transport.requests
 import requests as http_requests
@@ -1124,6 +1124,209 @@ def chat():
     except Exception as e:
         logging.error(f"[RebSam] Unexpected error: {e}")
         return jsonify({"error": "Internal error", "detail": str(e)}), 500
+
+
+# ── POST /stream — chat web avec SSE streaming ────────────
+@app.route("/stream", methods=["POST", "OPTIONS"])
+def chat_stream():
+    """
+    Même logique que POST / mais streame la réponse Tour 2 via SSE.
+    Envoie des événements : {"type":"text","text":"..."} puis {"type":"sources","sources":[...]}
+    puis data: [DONE]
+    """
+    if request.method == "OPTIONS":
+        return make_response("", 204, CORS_HEADERS)
+
+    token = request.headers.get("x-secret-token", "")
+    if token != SECRET_TOKEN:
+        def _unauth():
+            yield f"data: {json.dumps({'type':'error','error':'Unauthorized'})}\n\n"
+        return Response(stream_with_context(_unauth()), mimetype="text/event-stream",
+                        headers={**CORS_HEADERS, "Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+    data       = request.get_json(force=True, silent=True) or {}
+    message    = data.get("message", "") or data.get("prompt", "")
+    lang       = data.get("lang", "fr")
+    session_id = data.get("sessionId", "")
+
+    if not message:
+        def _nomsg():
+            yield f"data: {json.dumps({'type':'error','error':'No message'})}\n\n"
+        return Response(stream_with_context(_nomsg()), mimetype="text/event-stream",
+                        headers={**CORS_HEADERS, "Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+    if session_id:
+        history = load_history(session_id, collection=WEB_HISTORY_COLLECTION)
+        logging.info(f"[RebSam/Stream] lang={lang} session={session_id[:8]}… turns={len(history)} msg={message[:80]}")
+    else:
+        history = data.get("history", [])
+        logging.info(f"[RebSam/Stream] lang={lang} turns={len(history)} msg={message[:80]}")
+
+    if len(history) > MAX_WEB_HISTORY_TURNS:
+        history = history[-MAX_WEB_HISTORY_TURNS:]
+
+    today_str      = datetime.now(timezone.utc).strftime("%A %d %B %Y")
+    date_injection = {
+        "he": f"\n\nהתאריך של היום (UTC): {today_str}. השתמש בתאריך זה לכל חישוב לוח שנה יהודי או זמני תפילה.",
+        "en": f"\n\nToday's date (UTC): {today_str}. Use this date for any Jewish calendar or prayer time calculations.",
+    }.get(lang, f"\n\nDate d'aujourd'hui (UTC) : {today_str}. Utilise cette date pour tout calcul de calendrier juif ou horaires de prière.")
+    effective_system = ACTIVE_PROMPT + date_injection
+
+    def generate():
+        try:
+            # ── Construire l'historique Anthropic ──────────────
+            msgs = []
+            for turn in history:
+                role = turn.get("role", "user")
+                if role == "model":
+                    role = "assistant"
+                if role not in ("user", "assistant"):
+                    role = "user"
+                content = turn.get("content", "")
+                if content:
+                    msgs.append({"role": role, "content": content})
+            msgs.append({"role": "user", "content": message})
+
+            api_headers = {
+                "x-api-key":         ANTHROPIC_API_KEY,
+                "anthropic-version": "2023-06-01",
+                "anthropic-beta":    "prompt-caching-2024-07-31",
+                "Content-Type":      "application/json",
+            }
+            system_block = [{"type": "text", "text": effective_system, "cache_control": {"type": "ephemeral"}}]
+
+            # ── Tour 1 : force tool use (sync) ─────────────────
+            payload1 = {
+                "model": MODEL, "max_tokens": 4096,
+                "system": system_block, "messages": msgs,
+                "tools": [CLAUDE_AGENTIC_TOOL], "tool_choice": {"type": "any"},
+            }
+            resp1 = http_requests.post(CLAUDE_API_URL, headers=api_headers, json=payload1, timeout=60)
+            resp1.raise_for_status()
+            data1    = resp1.json()
+            content1 = data1.get("content", [])
+            stop1    = data1.get("stop_reason", "")
+            u1       = data1.get("usage", {})
+            logging.info(
+                f"[RebSam/Claude/Stream] Tour 1 — stop:{stop1} "
+                f"in:{u1.get('input_tokens','?')} "
+                f"cache_write:{u1.get('cache_creation_input_tokens', 0)} "
+                f"cache_read:{u1.get('cache_read_input_tokens', 0)}"
+            )
+
+            # Pas de tool_use → envoyer la réponse directement
+            if stop1 != "tool_use":
+                reply_t1 = next((b.get("text", "") for b in content1 if b.get("type") == "text"), "")
+                reply_t1 = re.sub(r'^#{1,6}\s+', '', reply_t1, flags=re.MULTILINE)
+                reply_t1 = _clean_reply(reply_t1)
+                yield f"data: {json.dumps({'type': 'text', 'text': reply_t1})}\n\n"
+                yield f"data: {json.dumps({'type': 'sources', 'sources': []})}\n\n"
+                yield "data: [DONE]\n\n"
+                if session_id:
+                    updated = history + [{"role": "user", "content": message}, {"role": "model", "content": reply_t1}]
+                    if len(updated) > MAX_WEB_HISTORY_TURNS:
+                        updated = updated[-MAX_WEB_HISTORY_TURNS:]
+                    save_history(session_id, updated, collection=WEB_HISTORY_COLLECTION)
+                return
+
+            # ── RAG parallèle ──────────────────────────────────
+            tool_block = next((b for b in content1 if b.get("type") == "tool_use"), None)
+            if not tool_block:
+                reply_t1 = next((b.get("text", "") for b in content1 if b.get("type") == "text"), "")
+                yield f"data: {json.dumps({'type': 'text', 'text': reply_t1})}\n\n"
+                yield "data: [DONE]\n\n"
+                return
+
+            tool_id = tool_block.get("id", "")
+            queries = tool_block.get("input", {}).get("queries", [message])[:3]
+            logging.info(f"[RebSam/Claude/Stream] Agentic search — {len(queries)} requête(s) : {queries}")
+
+            from concurrent.futures import ThreadPoolExecutor
+            with ThreadPoolExecutor(max_workers=len(queries)) as ex:
+                rag_results = list(ex.map(lambda q: search_rag(q, top_k=4), queries))
+
+            all_text, all_sources, seen_titles = [], [], set()
+            for result in rag_results:
+                if result["text"]:
+                    all_text.append(result["text"])
+                for src in result["sources"]:
+                    if src["title"] not in seen_titles:
+                        seen_titles.add(src["title"])
+                        all_sources.append(src)
+
+            combined = (
+                "\n\n═══\n\n".join(all_text)
+                if all_text
+                else "[Aucun passage pertinent trouvé dans le corpus pour ces requêtes.]"
+            )
+
+            msgs_t2 = msgs + [
+                {"role": "assistant", "content": content1},
+                {"role": "user", "content": [
+                    {"type": "tool_result", "tool_use_id": tool_id, "content": combined},
+                    {"type": "text", "text": "Rédige maintenant ta réponse complète et sourcée en te basant sur ces passages. N'effectue aucune autre recherche."},
+                ]},
+            ]
+
+            # ── Tour 2 : STREAMING ─────────────────────────────
+            payload2 = {
+                "model": MODEL, "max_tokens": 4096,
+                "system": system_block, "messages": msgs_t2,
+                "stream": True,
+            }
+            resp2 = http_requests.post(
+                CLAUDE_API_URL, headers=api_headers, json=payload2,
+                timeout=120, stream=True
+            )
+            resp2.raise_for_status()
+
+            full_reply = ""
+            out_tokens = 0
+            for line in resp2.iter_lines():
+                if not line:
+                    continue
+                if isinstance(line, bytes):
+                    line = line.decode("utf-8")
+                if not line.startswith("data: "):
+                    continue
+                event_str = line[6:]
+                if event_str == "[DONE]":
+                    break
+                try:
+                    event = json.loads(event_str)
+                except json.JSONDecodeError:
+                    continue
+                etype = event.get("type", "")
+                if etype == "content_block_delta":
+                    text = event.get("delta", {}).get("text", "")
+                    if text:
+                        full_reply += text
+                        yield f"data: {json.dumps({'type': 'text', 'text': text})}\n\n"
+                elif etype == "message_delta":
+                    out_tokens = event.get("usage", {}).get("output_tokens", 0)
+
+            logging.info(f"[RebSam/Claude/Stream] Tour 2 done — out:{out_tokens} sources:{len(all_sources)}")
+            yield f"data: {json.dumps({'type': 'sources', 'sources': all_sources})}\n\n"
+            yield "data: [DONE]\n\n"
+
+            full_reply = re.sub(r'^#{1,6}\s+', '', full_reply, flags=re.MULTILINE)
+            full_reply = _clean_reply(full_reply)
+            if session_id:
+                updated = history + [{"role": "user", "content": message}, {"role": "model", "content": full_reply}]
+                if len(updated) > MAX_WEB_HISTORY_TURNS:
+                    updated = updated[-MAX_WEB_HISTORY_TURNS:]
+                save_history(session_id, updated, collection=WEB_HISTORY_COLLECTION)
+            log_to_make(data, full_reply)
+
+        except Exception as e:
+            logging.error(f"[RebSam/Stream] Error: {e}", exc_info=True)
+            yield f"data: {json.dumps({'type': 'error', 'error': str(e)})}\n\n"
+
+    return Response(
+        stream_with_context(generate()),
+        mimetype="text/event-stream",
+        headers={**CORS_HEADERS, "Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 
 # ── POST /whatsapp — orchestration Make.com ───────────────
