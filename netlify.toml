@@ -11,6 +11,10 @@
 [context.production]
   publish = "."
 
+  # Lighthouse uniquement en production (évite les échecs sur deploy-preview)
+  [[context.production.plugins]]
+    package = "@netlify/plugin-lighthouse"
+
 [context.deploy-preview]
   publish = "."
 
@@ -152,6 +156,4 @@
     # Pas de X-Frame-Options ici (override du bloc /* ci-dessus)
     X-Frame-Options = ""
 
-# ── Plugins Netlify ────────────────────────────────────────
-[[plugins]]
-  package = "@netlify/plugin-lighthouse"
+# (Lighthouse déclaré dans [context.production] ci-dessus)
