@@ -692,7 +692,7 @@ def call_claude(system_prompt: str, history: list, message: str) -> tuple:
             messages.append({"role": role, "content": content})
     messages.append({"role": "user", "content": message})
 
-    def _claude_call(msgs: list, force_tool: bool = False) -> dict:
+    def _claude_call(msgs: list, force_tool: bool = False, no_tool: bool = False) -> dict:
         import time
         payload = {
             "model":      MODEL,
@@ -704,10 +704,11 @@ def call_claude(system_prompt: str, history: list, message: str) -> tuple:
                     "cache_control": {"type": "ephemeral"},
                 }
             ],
-            "tools": [CLAUDE_AGENTIC_TOOL],
-            "tool_choice": {"type": "any"} if force_tool else {"type": "auto"},
             "messages": msgs,
         }
+        if not no_tool:
+            payload["tools"] = [CLAUDE_AGENTIC_TOOL]
+            payload["tool_choice"] = {"type": "any"} if force_tool else {"type": "auto"}
         headers = {
             "x-api-key":         ANTHROPIC_API_KEY,
             "anthropic-version": "2023-06-01",
@@ -788,7 +789,7 @@ def call_claude(system_prompt: str, history: list, message: str) -> tuple:
         ]},
     ]
 
-    data2    = _claude_call(messages_t2)
+    data2    = _claude_call(messages_t2, no_tool=True)
     content2 = data2.get("content", [])
     reply    = next((b.get("text", "") for b in content2 if b.get("type") == "text"), "")
 
