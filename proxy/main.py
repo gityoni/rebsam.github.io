@@ -619,10 +619,49 @@ CLAUDE_AGENTIC_TOOL = {
 }
 
 
+# ── Collecte d'événements Vertex AI Search ────────────────
+_USER_EVENTS_URL = (
+    f"https://discoveryengine.googleapis.com/v1"
+    f"/projects/{PROJECT_ID}/locations/global"
+    f"/collections/default_collection/dataStores/{DATASTORE_ID}"
+    f"/userEvents:write"
+)
+
+
+def _write_user_event(session_id: str, query: str, doc_names: list) -> None:
+    """
+    Envoie un événement 'search' à Vertex AI Search (fire & forget).
+    Permet au moteur d'apprendre les popularités et d'améliorer le ranking.
+    Appelé dans un daemon thread — toute exception est silencieuse.
+    """
+    try:
+        token = get_access_token()
+        payload = {
+            "eventType":  "search",
+            "userPseudoId": session_id or "anonymous",
+            "eventTime":  datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "searchInfo": {"searchQuery": query},
+            "documents":  [{"name": n} for n in doc_names if n],
+        }
+        resp = http_requests.post(
+            _USER_EVENTS_URL,
+            headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
+            json=payload,
+            timeout=8,
+        )
+        if resp.ok:
+            logging.info(f"[RebSam/Events] event search écrit ({len(doc_names)} docs)")
+        else:
+            logging.warning(f"[RebSam/Events] userEvents:write {resp.status_code} — {resp.text[:200]}")
+    except Exception as e:
+        logging.debug(f"[RebSam/Events] erreur silencieuse : {e}")
+
+
 # ── RAG Vertex AI Search standalone ───────────────────────
-def search_rag(query: str, top_k: int = 5) -> dict:
+def search_rag(query: str, top_k: int = 5, session_id: str = "") -> dict:
     """
     Appelle Vertex AI Search et retourne {"text": str, "sources": list[dict]}.
+    Si session_id fourni, envoie l'événement search à Vertex en daemon thread.
     """
     try:
         access_token = get_access_token()
@@ -651,14 +690,19 @@ def search_rag(query: str, top_k: int = 5) -> dict:
             logging.info("[RebSam/RAG] Aucun résultat Vertex Search")
             return {"text": "", "sources": []}
 
-        passages = []
-        sources  = []
-        seen     = set()
+        passages  = []
+        sources   = []
+        doc_names = []  # noms complets pour userEvents:write
+        seen      = set()
         for r in results:
             doc     = r.get("document", {})
             derived = doc.get("derivedStructData", {})
             t_raw   = derived.get("title", "")
             title   = (t_raw[0] if isinstance(t_raw, list) else t_raw) or ""
+            # Capturer le nom complet du document pour les user events
+            doc_name = doc.get("name", "")
+            if doc_name:
+                doc_names.append(doc_name)
             first   = ""
             for snippet in derived.get("snippets", []):
                 text = snippet.get("snippet", "").strip()
@@ -680,6 +724,14 @@ def search_rag(query: str, top_k: int = 5) -> dict:
         if not passages:
             return {"text": "", "sources": []}
 
+        # Envoyer l'event search à Vertex AI Search (daemon thread, fire & forget)
+        if session_id and doc_names:
+            threading.Thread(
+                target=_write_user_event,
+                args=(session_id, query, doc_names),
+                daemon=True,
+            ).start()
+
         logging.info(f"[RebSam/RAG] {len(passages)} passages, {len(sources)} source(s) depuis Vertex Search")
         return {"text": "\n\n---\n\n".join(passages[:top_k]), "sources": sources}
 
@@ -689,7 +741,7 @@ def search_rag(query: str, top_k: int = 5) -> dict:
 
 
 # ── Appel Claude (Anthropic API) ──────────────────────────
-def call_claude(system_prompt: str, history: list, message: str) -> tuple:
+def call_claude(system_prompt: str, history: list, message: str, session_id: str = "") -> tuple:
     """
     Agentic RAG — Claude Sonnet 4.6 via Vertex AI Model Garden (us-east5).
 
@@ -787,7 +839,7 @@ def call_claude(system_prompt: str, history: list, message: str) -> tuple:
     all_sources: list = []
     seen_titles: set  = set()
     with ThreadPoolExecutor(max_workers=len(queries)) as ex:
-        results = list(ex.map(lambda q: search_rag(q, top_k=4), queries))
+        results = list(ex.map(lambda q: search_rag(q, top_k=4, session_id=session_id), queries))
     for result in results:
         if result["text"]:
             all_text.append(result["text"])
@@ -886,7 +938,7 @@ def call_gemini(system_prompt: str, history: list, message: str) -> tuple:
 GEMINI_FALLBACK_MODEL = os.environ.get("GEMINI_FALLBACK_MODEL", "gemini-2.0-pro-exp")
 
 
-def call_llm(system_prompt: str, history: list, message: str) -> tuple:
+def call_llm(system_prompt: str, history: list, message: str, session_id: str = "") -> tuple:
     """
     Route vers Claude ou Gemini selon la variable MODEL.
     claude-*  → Anthropic API + RAG Vertex Search découplé → (reply, sources)
@@ -896,7 +948,7 @@ def call_llm(system_prompt: str, history: list, message: str) -> tuple:
     if USE_CLAUDE:
         logging.info(f"[RebSam] Provider: Anthropic Claude ({MODEL})")
         try:
-            return call_claude(system_prompt, history, message)
+            return call_claude(system_prompt, history, message, session_id=session_id)
         except ClaudeRateLimitError as e:
             logging.warning(
                 f"[RebSam] Claude rate-limit épuisé → fallback Gemini ({GEMINI_FALLBACK_MODEL}). {e}"
@@ -992,7 +1044,7 @@ def process_wa_event(payload: dict):
         effective_system = ACTIVE_PROMPT + date_injection + wa_note + _SECTION_LABELS.get(lang, "")
 
         # 4. Appel LLM (Gemini ou Claude selon MODEL)
-        reply, _ = call_llm(effective_system, history, text)
+        reply, _ = call_llm(effective_system, history, text, session_id=phone)
 
         if not reply:
             reply = {
@@ -1118,7 +1170,7 @@ def chat():
     effective_system = ACTIVE_PROMPT + date_injection + _SECTION_LABELS.get(lang, "")
 
     try:
-        reply, sources = call_llm(effective_system, history, message)
+        reply, sources = call_llm(effective_system, history, message, session_id=session_id)
 
         if not reply:
             logging.warning("[RebSam] Réponse vide du LLM")
@@ -1265,7 +1317,7 @@ def chat_stream():
 
             from concurrent.futures import ThreadPoolExecutor
             with ThreadPoolExecutor(max_workers=len(queries)) as ex:
-                rag_results = list(ex.map(lambda q: search_rag(q, top_k=4), queries))
+                rag_results = list(ex.map(lambda q: search_rag(q, top_k=4, session_id=session_id), queries))
 
             all_text, all_sources, seen_titles = [], [], set()
             for result in rag_results:
@@ -1420,7 +1472,7 @@ def whatsapp_makecom():
     effective_system = ACTIVE_PROMPT + date_injection + wa_note + _SECTION_LABELS.get(lang, "")
 
     try:
-        reply, _ = call_llm(effective_system, history, message)
+        reply, _ = call_llm(effective_system, history, message, session_id=phone)
 
         if not reply:
             logging.warning(f"[RebSam/WA-Make] Réponse vide du LLM")
