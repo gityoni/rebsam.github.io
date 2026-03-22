@@ -877,7 +877,11 @@ def call_claude(system_prompt: str, history: list, message: str, session_id: str
                 "type":        "tool_result",
                 "tool_use_id": tool_id,
                 "content":     combined,
-            }
+            },
+            {
+                "type": "text",
+                "text": "Rédige maintenant ta réponse complète et sourcée en te basant sur ces passages. N'effectue aucune autre recherche.",
+            },
         ]},
     ]
 
@@ -894,7 +898,7 @@ def call_claude(system_prompt: str, history: list, message: str, session_id: str
         f"sources:{len(all_sources)}"
     )
 
-    # Tour 2 vide — log diagnostic + retry unique
+    # Tour 2 vide — retry unique puis fallback Gemini
     if not reply:
         block_types = [b.get("type") for b in content2]
         logging.warning(
@@ -908,10 +912,17 @@ def call_claude(system_prompt: str, history: list, message: str, session_id: str
         if reply:
             logging.info("[RebSam/Claude] Tour 2 retry OK")
         else:
-            logging.error(
+            logging.warning(
                 f"[RebSam/Claude] Tour 2 retry aussi vide — "
-                f"stop:{data2r.get('stop_reason','?')} types:{[b.get('type') for b in content2r]}"
+                f"stop:{data2r.get('stop_reason','?')} types:{[b.get('type') for b in content2r]} "
+                "→ fallback Gemini"
             )
+            try:
+                reply, _ = call_gemini(system_prompt, history, message)
+                if reply:
+                    logging.info("[RebSam/Claude] Fallback Gemini Tour 2 OK")
+            except Exception as gemini_err:
+                logging.error(f"[RebSam/Claude] Fallback Gemini aussi échoué : {gemini_err}")
 
     return reply, all_sources
 
