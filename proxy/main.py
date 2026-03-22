@@ -785,21 +785,32 @@ def call_claude(system_prompt: str, history: list, message: str) -> tuple:
                 "type":        "tool_result",
                 "tool_use_id": tool_id,
                 "content":     combined,
-            }
+            },
+            {
+                "type": "text",
+                "text": "Rédige maintenant ta réponse complète et sourcée en te basant sur ces passages. N'effectue aucune autre recherche.",
+            },
         ]},
     ]
 
-    data2    = _claude_call(messages_t2, no_tool=True)
+    # force_tool=False + tool_choice auto, mais l'instruction texte guide Claude à répondre
+    data2    = _claude_call(messages_t2)
     content2 = data2.get("content", [])
+    stop2    = data2.get("stop_reason", "?")
     reply    = next((b.get("text", "") for b in content2 if b.get("type") == "text"), "")
 
     u2 = data2.get("usage", {})
     logging.info(
         f"[RebSam/Claude] Tour 2 — "
+        f"stop:{stop2} "
         f"in:{u2.get('input_tokens','?')} "
         f"out:{u2.get('output_tokens','?')} "
-        f"sources:{len(all_sources)}"
+        f"sources:{len(all_sources)} "
+        f"content_types:{[b.get('type') for b in content2]}"
     )
+
+    # Si Claude insiste pour relancer l'outil, on ignore et on retourne vide
+    # (le fallback du route handler gère ce cas)
     return reply, all_sources
 
 
