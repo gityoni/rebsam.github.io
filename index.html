@@ -490,7 +490,7 @@
     .rag-chips li { display: flex; align-items: baseline; gap: .65rem; font-size: 1rem; font-weight: 600; color: var(--secondary-dark); line-height: 1.5; }
     .rag-chips li span { color: var(--text-secondary); font-weight: 400; font-style: italic; }
     .rag-explainer { max-width: 680px; margin: 0 auto; }
-    .rag-explainer-text { font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-size: 1rem; color: var(--text); line-height: 1.85; text-align: center; font-weight: 600; }
+    .rag-explainer-text { font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-size: 1rem; color: var(--text); line-height: 1.8; text-align: center; font-weight: 400; }
     .rag-explainer-text strong { color: var(--secondary-dark); }
     .rag-section-title { font-weight: 700; color: var(--secondary-dark); font-size: 1.05rem; letter-spacing: -.01em; }
     [dir="rtl"] .rag-explainer-text { text-align: right; }
@@ -525,7 +525,7 @@
     #faq { padding: 7rem 0 6rem; background: var(--faq-bg); position: relative; overflow: hidden; content-visibility: auto; contain-intrinsic-size: 0 800px; }
     #faq::before { content:''; position:absolute; top:-200px; right:-150px; width:600px; height:600px; border-radius:50%; background: radial-gradient(circle, rgba(186,210,255,.35) 0%, transparent 65%); opacity: .7; }
     #faq::after { content:''; position:absolute; bottom:-150px; left:-100px; width:500px; height:500px; border-radius:50%; background: radial-gradient(circle, rgba(210,225,255,.25) 0%, transparent 65%); opacity: .6; }
-    #faq .section-eyebrow { background: none; color: var(--primary); box-shadow: none; font-size: .75rem; letter-spacing: .12em; font-weight: 700; padding: 0; display: block; text-align: center; margin-bottom: 1rem; }
+    #faq .section-eyebrow { font-size: .85rem; padding: .45rem 1.4rem; letter-spacing: .12em; box-shadow: 0 6px 24px rgba(91,142,240,.4); margin-bottom: 1.5rem; }
     #faq .section-heading h2 { font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-size: clamp(2rem,5vw,3rem); font-weight: 900; color: var(--secondary-dark); margin-bottom: .75rem; letter-spacing: -.02em; }
     #faq .section-heading p { color: var(--text-secondary); font-size: 1.05rem; }
     .faq-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: .85rem; position: relative; z-index: 1; }
@@ -1490,7 +1490,7 @@
       <li>🔗 <span data-i18n="rag_chip3">"La réponse est construite depuis les passages réels trouvés — jamais inventée"</span></li>
     </ul>
     <div class="rag-explainer" data-reveal data-reveal-delay="200">
-      <p class="rag-explainer-text" data-i18n-html="rag_explainer"><span class="rag-section-title">RebSam : La Garantie Zéro Hallucination</span><br><br>Contrairement à une IA classique qui s'appuie sur une mémoire vaste (et peut inventer des faits, appelés « hallucinations »), RebSam opère différemment.<br><br>Avant de générer une réponse, RebSam effectue une recherche stricte dans sa bibliothèque de <em>séfarim</em> (ouvrages) vérifiés et ne cite que les passages réels trouvés. S'il n'y a aucune information écrite sur le sujet, il s'abstient de répondre.<br><br><strong>Le résultat ?</strong> Aucune invention, aucune information fausse. Chaque réponse fournit la référence exacte (<em>Siman</em> et <em>Seif</em>), vous permettant de vérifier la source vous-même.</p>
+      <p class="rag-explainer-text" data-i18n-html="rag_explainer"><span class="rag-section-title">RebSam : Garantie Zéro Hallucination</span><br><br>Contrairement à une IA classique qui peut inventer des faits, RebSam effectue une recherche stricte dans sa bibliothèque de <em>séfarim</em> vérifiés.<br><br>Il ne génère une réponse qu'en citant des passages réels trouvés. S'il n'y a pas d'information écrite, il s'abstient.<br><br><strong>Résultat ?</strong> Aucune invention ni information fausse. Chaque réponse inclut la référence exacte (<em>Siman</em> et <em>Seif</em>) pour vérification.</p>
     </div>
   </div>
 </section>
@@ -1855,7 +1855,7 @@
       footer_privacy: 'Confidentialité', footer_legal: 'Mentions Légales',
       rag_eyebrow: 'Technologie', rag_title: 'Comment le RAG élimine les hallucinations ?',
       rag_sub: 'RebSam utilise une technologie appelée RAG (Retrieval-Augmented Generation) pour garantir des réponses 100% ancrées dans les textes sacrés.',
-      rag_explainer: '<span class="rag-section-title">RebSam : La Garantie Zéro Hallucination</span><br><br>Contrairement à une IA classique qui s\'appuie sur une mémoire vaste (et peut inventer des faits, appelés « hallucinations »), RebSam opère différemment.<br><br>Avant de générer une réponse, RebSam effectue une recherche stricte dans sa bibliothèque de <em>séfarim</em> (ouvrages) vérifiés et ne cite que les passages réels trouvés. S\'il n\'y a aucune information écrite sur le sujet, il s\'abstient de répondre.<br><br><strong>Le résultat ?</strong> Aucune invention, aucune information fausse. Chaque réponse fournit la référence exacte (<em>Siman</em> et <em>Seif</em>), vous permettant de vérifier la source vous-même.',
+      rag_explainer: '<span class="rag-section-title">RebSam : Garantie Zéro Hallucination</span><br><br>Contrairement à une IA classique qui peut inventer des faits, RebSam effectue une recherche stricte dans sa bibliothèque de <em>séfarim</em> vérifiés.<br><br>Il ne génère une réponse qu\'en citant des passages réels trouvés. S\'il n\'y a pas d\'information écrite, il s\'abstient.<br><br><strong>Résultat ?</strong> Aucune invention ni information fausse. Chaque réponse inclut la référence exacte (<em>Siman</em> et <em>Seif</em>) pour vérification.',
       sources_eyebrow: 'Les livres de RebSam',
       sources_title: 'Des milliers de Sifrey Kodesh. Zéro Invention.',
       sources_sub: 'Chaque réponse de RebSam est ancrée dans l\'un de ces textes fondamentaux — avec le Livre, le Siman et le Seif exacts.',
