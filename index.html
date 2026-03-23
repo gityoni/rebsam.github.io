@@ -315,7 +315,7 @@
     .hero-content { position: relative; z-index: 10; text-align: center; max-width: 780px; margin: 0 auto; }
     [dir="rtl"] .hero-content { text-align: center; }
 
-    .hero-badge { display: inline-flex; align-items: center; padding: .6rem 1.5rem; border-radius: var(--radius-full); background: rgba(46,107,230,.09); color: var(--primary); font-size: .875rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 1.75rem; }
+    .hero-badge { display: inline-flex; align-items: center; justify-content: center; padding: .6rem 1.5rem; border-radius: var(--radius-full); background: rgba(46,107,230,.09); color: var(--primary); font-size: .875rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 1.75rem; min-width: clamp(220px, 28vw, 300px); }
 
     .hero-h1 { margin-bottom: 1rem; animation: fadeUp .6s .08s ease both; line-height: 1; }
     .hero-h1 .rebsam-logo { display: block; font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-weight: 900; font-size: clamp(2.8rem,7vw,4.5rem); letter-spacing: -.04em; line-height: 1; margin-bottom: .4rem; }
@@ -342,9 +342,12 @@
     .hero-point span { font-size: clamp(.82rem,1.3vw,.92rem); font-weight: 600; color: var(--secondary-dark); line-height: 1.4; }
     [dir="rtl"] .hero-point { text-align: right; }
 
-    .hero-btns { display: flex; flex-wrap: wrap; gap: .75rem; justify-content: center; margin-bottom: 1.25rem; animation: fadeUp .6s .2s ease both; }
-    [dir="rtl"] .hero-btns { justify-content: center; }
-    @media (max-width: 639px) { .hero-btns { flex-direction: column; align-items: stretch; } .hero-btns .btn { justify-content: center; } }
+    .hero-btns { display: flex; flex-direction: column; align-items: center; gap: .75rem; margin-bottom: 1.25rem; animation: fadeUp .6s .2s ease both; }
+    [dir="rtl"] .hero-btns { align-items: center; }
+    .hero-btns .btn { justify-content: center; width: fit-content; min-width: clamp(240px, 50vw, 380px); }
+    .hero-wa-btn { display: inline-flex; align-items: center; gap: .6rem; background: #25D366; color: #fff !important; border: none; padding: .75rem 1.75rem; border-radius: var(--radius-full); font-weight: 700; font-size: .95rem; text-decoration: none; box-shadow: 0 4px 16px rgba(37,211,102,.35); transition: all .25s; }
+    .hero-wa-btn:hover { background: #1ebe5d; box-shadow: 0 6px 22px rgba(37,211,102,.45); transform: translateY(-2px); }
+    @media (max-width: 639px) { .hero-btns .btn { min-width: 0; width: 100%; } .hero-wa-btn { width: 100%; } }
 
     .hero-sources { font-size: .68rem; color: rgba(100,116,139,.5); letter-spacing: .03em; animation: fadeUp .6s .25s ease both; line-height: 1.6; max-width: 540px; margin: 0 auto .5rem; }
 
@@ -477,7 +480,7 @@
     .rag-step-desc { font-size: .75rem; color: var(--text-muted); line-height: 1.55; }
     .rag-step-num { font-size: .65rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
     .rag-explainer { max-width: 680px; margin: 0 auto; }
-    .rag-explainer-text { font-size: 1rem; color: var(--text); line-height: 1.85; text-align: center; }
+    .rag-explainer-text { font-size: 1rem; color: var(--text); line-height: 1.85; text-align: center; font-weight: 600; }
     .rag-explainer-text strong { color: var(--secondary-dark); }
     [dir="rtl"] .rag-explainer-text { text-align: right; }
     @media (max-width: 640px) { .rag-explainer-text { text-align: left; font-size: .9375rem; } }
@@ -1370,10 +1373,22 @@
       <div class="hero-points">
         <div class="hero-point">
           <i class="arr">⚡</i>
-          <span data-i18n="hero_pt1">Rendre la consultation halakhique instantanée pour la communauté mondiale.</span>
+          <span data-i18n="hero_pt1">Réponse halakhique en quelques secondes</span>
+        </div>
+        <div class="hero-point">
+          <i class="arr">🛡️</i>
+          <span data-i18n="hero_pt2">Zéro hallucination — sources vérifiables uniquement</span>
+        </div>
+        <div class="hero-point">
+          <i class="arr">📚</i>
+          <span data-i18n="hero_pt3">Des milliers de sifrey kodesh accessibles instantanément</span>
         </div>
       </div>
       <div class="hero-btns">
+        <a class="hero-wa-btn" href="https://wa.me/972555005493" target="_blank" rel="noopener noreferrer" onclick="trackWAClick()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.556 4.112 1.524 5.842L.057 23.882a.5.5 0 0 0 .61.61l6.04-1.467A11.946 11.946 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.944 9.944 0 0 1-5.072-1.382l-.363-.216-3.748.91.928-3.748-.236-.374A9.944 9.944 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+          RebSam sur ton WhatsApp
+        </a>
         <button class="btn btn-primary hero-avatar-btn" onclick="openChat()">
           💬 <span data-i18n="hero_cta">Pose ta première question à RebSam</span>
         </button>
@@ -1408,7 +1423,7 @@
       <p data-i18n="rag_sub">Contrairement aux IA classiques qui "inventent" leurs réponses, RebSam utilise la Retrieval-Augmented Generation — une méthode qui force l'IA à ne répondre qu'à partir de textes réels et vérifiés.</p>
     </div>
     <div class="rag-explainer" data-reveal data-reveal-delay="100">
-      <p class="rag-explainer-text" data-i18n="rag_explainer">Une IA classique génère ses réponses depuis tout ce qu'elle a mémorisé — et peut inventer des informations fausses qui sonnent vraies. C'est ce qu'on appelle une «hallucination».<br><br>RebSam fonctionne autrement : avant chaque réponse, il cherche dans sa bibliothèque de séfarim vérifiés et ne s'appuie que sur les passages réels qu'il y trouve. S'il ne trouve rien d'écrit sur le sujet, il ne répond pas.<br><br><strong>Résultat : zéro invention, zéro hallucination.</strong> Chaque réponse cite le Siman et le Seif exacts — tu peux vérifier toi-même.</p>
+      <p class="rag-explainer-text" data-i18n-html="rag_explainer">Une IA classique génère ses réponses depuis tout ce qu'elle a mémorisé — et peut inventer des informations fausses qui sonnent vraies. C'est ce qu'on appelle une «hallucination».<br><br>RebSam fonctionne autrement : avant chaque réponse, il cherche dans sa bibliothèque de séfarim vérifiés et ne s'appuie que sur les passages réels qu'il y trouve. S'il ne trouve rien d'écrit sur le sujet, il ne répond pas.<br><br><strong>Résultat : zéro invention, zéro hallucination.</strong> Chaque réponse cite le Siman et le Seif exacts — tu peux vérifier toi-même.</p>
     </div>
   </div>
 </section>
@@ -1707,9 +1722,9 @@
       nav_cta: 'Essayer RebSam',
       hero_badge: 'Assistant halachique IA',
       hero_tagline: 'Un Rebbe dans votre dose d\'IA quotidienne.',
-      hero_pt1: 'Répond aux multitudes de questions qui émanent de chaque aspect de la vie juive, avec précision et clarté.',
-      hero_pt2: 'Aucune "hallucination" — uniquement des réponses sourcées et vérifiables, issues de nos textes sacrés.',
-      hero_pt3: 'Digitalise et rend interactive une bibliothèque immense qui serait autrement difficile à consulter rapidement.',
+      hero_pt1: 'Réponse halakhique en quelques secondes',
+      hero_pt2: 'Zéro hallucination — sources vérifiables uniquement',
+      hero_pt3: 'Des milliers de sifrey kodesh accessibles instantanément',
       hero_cta2: 'Découvrir le Projet', hero_cta: 'Pose ta première question à RebSam',
       pillars_eyebrow: 'Nos engagements', pillars_title: 'Nos 3 Piliers de Confiance',
       pillars_sub: 'RebSam répond toujours selon ces 3 engagements — sans exception.',
@@ -1753,9 +1768,9 @@
       nav_cta: 'Try RebSam',
       hero_badge: 'AI Halachic Assistant',
       hero_tagline: 'A Rebbe in your daily AI dose.',
-      hero_pt1: 'Instant Halachic consultation for the global Jewish community.',
-      hero_pt2: 'Eliminates hallucinations by answering only from verified sacred sources.',
-      hero_pt3: 'Digitizes an immense library of texts, making them instantly searchable.',
+      hero_pt1: 'Halachic answer in seconds',
+      hero_pt2: 'Zero hallucination — verified sources only',
+      hero_pt3: 'Thousands of sifrey kodesh instantly accessible',
       hero_cta2: 'Discover the Project', hero_cta: 'Ask your first question to RebSam',
       pillars_eyebrow: 'Our commitments', pillars_title: 'Our 3 Pillars of Trust',
       pillars_sub: 'RebSam always answers according to these 3 commitments — no exceptions.',
@@ -1799,9 +1814,9 @@
       nav_cta: 'נסה את רב-סמי',
       hero_badge: 'עוזר הלכתי מבוסס בינה מלאכותית',
       hero_tagline: '.רב בכיסך — כל היום, כל הלילה',
-      hero_pt1: '.שאלות הלכתיות מיידיות לקהילה היהודית העולמית',
-      hero_pt2: '.ללא הזיות — ענה רק ממקורות מאומתים של חכמינו',
-      hero_pt3: '.מאגר ענק של ספרי קודש — נגיש ומיידי',
+      hero_pt1: '.תשובה הלכתית תוך שניות',
+      hero_pt2: '.אפס הזיות — מקורות מאומתים בלבד',
+      hero_pt3: '.אלפי ספרי קודש נגישים מיידית',
       hero_cta2: 'גלה את הפרויקט', hero_cta: 'שאל את השאלה הראשונה שלך ל-RebSam',
       pillars_eyebrow: 'ההתחייבויות שלנו', pillars_title: '3 עמודי האמון שלנו',
       pillars_sub: '.רב-סמי תמיד עונה לפי 3 ההתחייבויות האלה — ללא יוצא מן הכלל',
@@ -1861,6 +1876,10 @@
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
       if (t[key] !== undefined) el.textContent = t[key];
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const key = el.getAttribute('data-i18n-html');
+      if (t[key] !== undefined) el.innerHTML = t[key];
     });
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
       const key = el.getAttribute('data-i18n-placeholder');
