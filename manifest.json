@@ -41,14 +41,14 @@
   "screenshots": [
     {
       "src": "/screenshot-mobile.png",
-      "sizes": "1080x1920",
+      "sizes": "1170x2526",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "RebSam — Chat Halakha"
     },
     {
       "src": "/screenshot-wide.png",
-      "sizes": "1280x720",
+      "sizes": "997x900",
       "type": "image/png",
       "form_factor": "wide",
       "label": "RebSam — Interface complète"
