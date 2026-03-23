@@ -1,6 +1,7 @@
 {
   "name": "RebSam — Expert Halakha IA",
   "short_name": "RebSam",
+  "id": "fr.rebsam.app",
   "description": "Votre expert en Halacha alimenté par l'IA. 1 972 ouvrages, disponible 24h/24.",
   "start_url": "/",
   "scope": "/",
@@ -35,6 +36,22 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "RebSam — Chat Halakha"
+    },
+    {
+      "src": "/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "RebSam — Interface complète"
     }
   ],
   "shortcuts": [
