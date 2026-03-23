@@ -85,3 +85,5 @@ Ce dégradé bleu→violet→corail est le fil conducteur visuel :
 
 ## État actuel / En cours
 - Voir TASKS.md
+- Branche active : `claude/update-claude-docs-WytQh` — fixes sources/emoji en attente de merge sur main
+- Problème sources non résolu en prod : hébreu avant français + ouvrages secondaires avant primaires (voir TASKS.md section PRIORITÉ)
