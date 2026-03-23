@@ -112,6 +112,8 @@
     [dir="rtl"] .chat-header, [dir="rtl"] .section-heading,
     [dir="rtl"] .step-title, [dir="rtl"] .pillar-title, [dir="rtl"] .faq-question span,
     [dir="rtl"] #chat-input, [dir="rtl"] .float-chat, [dir="rtl"] .float-wa { font-family: 'Heebo', sans-serif; }
+    /* Forcer Outfit pour le logo RebSam même en RTL */
+    [dir="rtl"] .font-logo, [dir="rtl"] .rebsam-logo, [dir="rtl"] .logo.font-logo { font-family: 'Outfit', 'Outfit-fallback', sans-serif !important; letter-spacing: -.04em; }
     :root {
       --primary: #2E6BE6; --primary-dark: #1A4DB3; --primary-light: #5B8EF0;
       --primary-pastel: #4C7FE8; --primary-pastel-dark: #2557C8;
@@ -342,6 +344,7 @@
     .hero-point span { font-size: clamp(.82rem,1.3vw,.92rem); font-weight: 600; color: var(--secondary-dark); line-height: 1.4; }
     [dir="rtl"] .hero-point { text-align: right; }
 
+    .hero-trust { font-size: .82rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; letter-spacing: .01em; animation: fadeUp .6s .14s ease both; }
     .hero-btns { display: flex; flex-direction: column; align-items: center; gap: .75rem; margin-bottom: 1.25rem; animation: fadeUp .6s .2s ease both; }
     [dir="rtl"] .hero-btns { align-items: center; }
     .hero-btns .btn { justify-content: center; width: fit-content; min-width: clamp(240px, 50vw, 380px); }
@@ -397,12 +400,15 @@
 
     /* SECTIONS */
     .section-heading { text-align: center; margin-bottom: 3rem; }
-    [dir="rtl"] .section-heading { text-align: right; }
+    [dir="rtl"] .section-heading { text-align: center; direction: rtl; }
     .section-heading h2 { font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-size: clamp(1.75rem,4vw,2.5rem); font-weight: 900; color: var(--secondary-dark); margin-bottom: .75rem; letter-spacing: -.02em; }
     .section-heading p { font-size: 1.0625rem; color: var(--text-secondary); max-width: 560px; margin: 0 auto; line-height: 1.65; }
     .section-eyebrow { display: inline-block; padding: .28rem .95rem; border-radius: var(--radius-full); background: linear-gradient(135deg, #5B8EF0 0%, #7C6FCD 50%, #E07B5A 100%); color: #fff; font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; box-shadow: 0 4px 15px rgba(91,142,240,.3); }
     #how-it-works .section-eyebrow { font-size: .85rem; padding: .45rem 1.4rem; letter-spacing: .12em; box-shadow: 0 6px 24px rgba(91,142,240,.4); margin-bottom: 1.5rem; }
     #how-it-works .section-heading { margin-bottom: 4rem; }
+    #rag-tech .section-eyebrow { font-size: .85rem; padding: .45rem 1.4rem; letter-spacing: .12em; box-shadow: 0 6px 24px rgba(91,142,240,.4); margin-bottom: 1.5rem; }
+    #rag-tech .section-heading { margin-bottom: 3.5rem; }
+    #rag-tech .section-heading h2 { margin-top: .75rem; margin-bottom: 1rem; }
     #how-it-works .section-heading h2 { margin-top: .75rem; margin-bottom: 1rem; }
     #pillars .section-eyebrow { font-size: .85rem; padding: .45rem 1.4rem; letter-spacing: .12em; box-shadow: 0 6px 24px rgba(91,142,240,.4); margin-bottom: 1.5rem; }
     #pillars .section-heading { margin-bottom: 4rem; }
@@ -667,6 +673,15 @@
     #chat-send:hover:not(:disabled){ background: linear-gradient(135deg, #1a3caa, #0e2575); transform: scale(1.08); box-shadow: 0 4px 14px rgba(26,60,170,.4); }
     #chat-send:disabled{opacity:.4;cursor:not-allowed;}
     .chat-hint { text-align: center; font-size: .72rem; color: #a0a8c0; margin-top: .6rem; letter-spacing: .01em; }
+    .chat-suggestions { display: flex; flex-direction: column; gap: .45rem; margin-top: .9rem; }
+    .chat-suggestion { background: rgba(46,107,230,.07); border: 1px solid rgba(46,107,230,.18); border-radius: .75rem; padding: .55rem .9rem; font-size: .82rem; font-weight: 500; color: var(--primary); text-align: left; cursor: pointer; transition: all .2s; font-family: 'Inter', sans-serif; line-height: 1.4; }
+    .chat-suggestion:hover { background: rgba(46,107,230,.13); border-color: rgba(46,107,230,.32); transform: translateX(2px); }
+    [dir="rtl"] .chat-suggestion { text-align: right; }
+    [dir="rtl"] .chat-suggestion:hover { transform: translateX(-2px); }
+    html.dark .chat-suggestion { background: rgba(91,142,240,.1); border-color: rgba(91,142,240,.25); color: #93b4ff; }
+    html.dark .chat-suggestion:hover { background: rgba(91,142,240,.18); }
+    .send-spinner { width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .chat-name-row { padding: .6rem 1rem .2rem; }
     #chat-name { width: auto; max-width: 180px; border: 1.5px solid #e5e7eb; border-radius: .6rem; padding: .4rem .75rem; font-size: .8rem; font-family: 'Inter', sans-serif; color: var(--secondary-dark); background: #f4f6fa; outline: none; transition: border-color .25s; }
     #chat-name:focus { border-color: var(--primary); background: #fff; }
@@ -1370,6 +1385,7 @@
         <span data-i18n="hero_tagline">Un Rebbe dans votre dose d'IA quotidienne.</span>
       </h1>
       <div class="hero-divider"></div>
+      <p class="hero-trust" data-i18n="hero_trust">✓ Des milliers de sifrey kodesh vérifiés</p>
       <div class="hero-points">
         <div class="hero-point">
           <i class="arr">⚡</i>
@@ -1387,13 +1403,13 @@
       <div class="hero-btns">
         <a class="hero-wa-btn" href="https://wa.me/972555005493" target="_blank" rel="noopener noreferrer" onclick="trackWAClick()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.556 4.112 1.524 5.842L.057 23.882a.5.5 0 0 0 .61.61l6.04-1.467A11.946 11.946 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.944 9.944 0 0 1-5.072-1.382l-.363-.216-3.748.91.928-3.748-.236-.374A9.944 9.944 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-          RebSam sur ton WhatsApp
+          <span data-i18n="hero_wa">RebSam sur ton WhatsApp</span>
         </a>
         <button class="btn btn-primary hero-avatar-btn" onclick="openChat()">
           💬 <span data-i18n="hero_cta">Pose ta première question à RebSam</span>
         </button>
       </div>
-      <p class="hero-sources">Choulhan Aroukh · Michna Beroura · Yalkout Yossef · Igrot Moshé · Shoulhan Aroukh HaRav · Peninei Halakha · Iyounim Halacha et Chass · Plus de 2000 Sifrey Kodesh</p>
+      <p class="hero-sources" data-i18n="hero_sources">Choulhan Aroukh · Michna Beroura · Yalkout Yossef · Igrot Moshé · Shoulhan Aroukh HaRav · Peninei Halakha · Iyounim Halacha et Chass · Plus de 2000 Sifrey Kodesh</p>
       <div class="hero-avatar-wrap">
         <img src="avatar.webp" alt="RebSam - Assistant Torah &amp; Halakha" width="300" height="300" fetchpriority="high" loading="eager" class="hero-avatar-img" />
       </div>
@@ -1664,7 +1680,7 @@
 <a class="float-btn" id="btn-wa" href="https://wa.me/972555005493" target="_blank" rel="noopener noreferrer" onclick="trackWAClick()">
   <div class="float-inner float-wa-bg">
     <div class="float-glow float-wa-glow"></div>
-    <span class="float-label float-wa-label">Ton RebSam sur WhatsApp</span>
+    <span class="float-label float-wa-label" data-i18n="float_wa">Ton RebSam sur WhatsApp</span>
     <span class="float-icon">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="color:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.556 4.112 1.524 5.842L.057 23.882a.5.5 0 0 0 .61.61l6.04-1.467A11.946 11.946 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.944 9.944 0 0 1-5.072-1.382l-.363-.216-3.748.91.928-3.748-.236-.374A9.944 9.944 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
     </span>
@@ -1761,7 +1777,11 @@
       chat_placeholder: 'Pose ta question...',
       chat_hint: 'Les données restent privées. Circuit fermé garanti.',
       chat_status: 'En ligne · Je vous réponds tout de suite…',
-      float_chat: 'Pose ta première question à RebSam'
+      float_chat: 'Pose ta première question à RebSam',
+      float_wa: 'Ton RebSam sur WhatsApp',
+      hero_wa: 'RebSam sur ton WhatsApp',
+      hero_trust: '✓ Des milliers de sifrey kodesh vérifiés',
+      hero_sources: 'Choulhan Aroukh · Michna Beroura · Yalkout Yossef · Igrot Moshé · Shoulhan Aroukh HaRav · Peninei Halakha · Iyounim Halacha et Chass · Plus de 2000 Sifrey Kodesh'
     },
     en: {
       nav_home: 'Home', nav_how: 'How it works', nav_values: 'Our Values',
@@ -1807,7 +1827,11 @@
       chat_placeholder: 'Ask your question...',
       chat_hint: 'Data stays private. Closed circuit guaranteed.',
       chat_status: 'Online · Answering right away…',
-      float_chat: 'Ask your first question to RebSam'
+      float_chat: 'Ask your first question to RebSam',
+      float_wa: 'Your RebSam on WhatsApp',
+      hero_wa: 'RebSam on your WhatsApp',
+      hero_trust: '✓ Thousands of verified Sifrey Kodesh',
+      hero_sources: 'Choulhan Aroukh · Mishna Berura · Yalkout Yossef · Igrot Moshe · Shoulhan Aroukh HaRav · Peninei Halakha · Iyounim Halacha · 2000+ Sifrey Kodesh'
     },
     he: {
       nav_home: 'ראשי', nav_how: 'איך זה עובד', nav_values: 'הערכים שלנו',
@@ -1853,7 +1877,11 @@
       chat_placeholder: 'שאל את שאלתך...',
       chat_hint: '.הנתונים נשארים פרטיים. מעגל סגור מובטח',
       chat_status: 'מקוון · עונה מיד…',
-      float_chat: 'שאל ל-RebSam'
+      float_chat: 'שאל את רב-סמי',
+      float_wa: 'רב-סמי שלך בוואטסאפ',
+      hero_wa: 'רב-סמי שלך בוואטסאפ',
+      hero_trust: '✓ אלפי ספרי קודש מאומתים',
+      hero_sources: 'שולחן ערוך · משנה ברורה · ילקוט יוסף · אגרות משה · שולחן ערוך הרב · פניני הלכה · עיונים הלכה · יותר מ-2000 ספרי קודש'
     }
   };
 
@@ -2147,6 +2175,36 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
     he: 'אתה רבסם, מומחה הלכה. ענה תמיד בעברית, עם מקורות מדויקים (שולחן ערוך, פוסקים). היה מדויק, מובנה ומכבד. שאלה: '
   };
 
+  const CHAT_EXAMPLES = {
+    fr: [
+      'Peut-on utiliser un téléphone le Chabbat ?',
+      'Quelles sont les règles de la bénédiction après les repas ?',
+      'Comment fonctionne la Kashrout de la viande ?',
+      'Que dit la Halacha sur le port des tefilines ?'
+    ],
+    en: [
+      'Can I use my phone on Shabbat?',
+      'What are the rules for Grace after Meals?',
+      'How does Meat Kashruth work?',
+      'What does Halacha say about wearing Tefillin?'
+    ],
+    he: [
+      'האם מותר להשתמש בטלפון בשבת?',
+      'מה הם דיני ברכת המזון?',
+      'כיצד עובדת כשרות הבשר?',
+      'מה אומרת ההלכה על הנחת תפילין?'
+    ]
+  };
+
+  function fillSuggestion(text) {
+    const input = document.getElementById('chat-input');
+    input.value = text;
+    const wrap = document.querySelector('.chat-suggestions');
+    if (wrap) wrap.remove();
+    input.focus();
+    input.dispatchEvent(new Event('input'));
+  }
+
   function buildWelcome() {
     const shuffled = ALL_SOURCES.slice().sort(() => Math.random() - .5);
     const picked = shuffled.slice(0, 5 + Math.floor(Math.random() * 2)); // 5 ou 6
@@ -2156,7 +2214,10 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
       en: `Shalom Aleichem,<br>How can I help you today?`,
       he: `שלום עליכם,<br>?במה אוכל לעזור לך היום`
     };
-    return msgs[currentLang] || msgs.fr;
+    const examples = CHAT_EXAMPLES[currentLang] || CHAT_EXAMPLES.fr;
+    const chips = examples.map(q => `<button class="chat-suggestion" onclick="fillSuggestion(${JSON.stringify(q)})">${q}</button>`).join('');
+    const suggestionsHtml = `<div class="chat-suggestions">${chips}</div>`;
+    return (msgs[currentLang] || msgs.fr) + suggestionsHtml;
   }
 
   function hasHebrew(text) {
@@ -2285,6 +2346,8 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
     chatSending = true;
     input.disabled = true;
     sendBtn.disabled = true;
+    const sendIcon = sendBtn.innerHTML;
+    sendBtn.innerHTML = '<div class="send-spinner"></div>';
 
     const loadingRow = appendMsg('sam', '<div class="loading-dots"><span></span><span></span><span></span></div>');
     const bubble = loadingRow.querySelector('.msg-bubble');
@@ -2337,6 +2400,7 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
       chatSending = false;
       input.disabled = false;
       sendBtn.disabled = false;
+      sendBtn.innerHTML = sendIcon;
       input.focus();
     }
   }
