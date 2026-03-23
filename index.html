@@ -490,7 +490,7 @@
     .rag-chips li { display: flex; align-items: baseline; gap: .65rem; font-size: 1rem; font-weight: 600; color: var(--secondary-dark); line-height: 1.5; }
     .rag-chips li span { color: var(--text-secondary); font-weight: 400; font-style: italic; }
     .rag-explainer { max-width: 680px; margin: 0 auto; }
-    .rag-explainer-text { font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-size: 1rem; color: var(--text); line-height: 1.85; text-align: center; font-weight: 600; }
+    .rag-explainer-text { font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-size: 1rem; color: var(--text); line-height: 1.8; text-align: center; font-weight: 400; }
     .rag-explainer-text strong { color: var(--secondary-dark); }
     .rag-section-title { font-weight: 700; color: var(--secondary-dark); font-size: 1.05rem; letter-spacing: -.01em; }
     [dir="rtl"] .rag-explainer-text { text-align: right; }
@@ -525,7 +525,7 @@
     #faq { padding: 7rem 0 6rem; background: var(--faq-bg); position: relative; overflow: hidden; content-visibility: auto; contain-intrinsic-size: 0 800px; }
     #faq::before { content:''; position:absolute; top:-200px; right:-150px; width:600px; height:600px; border-radius:50%; background: radial-gradient(circle, rgba(186,210,255,.35) 0%, transparent 65%); opacity: .7; }
     #faq::after { content:''; position:absolute; bottom:-150px; left:-100px; width:500px; height:500px; border-radius:50%; background: radial-gradient(circle, rgba(210,225,255,.25) 0%, transparent 65%); opacity: .6; }
-    #faq .section-eyebrow { background: none; color: var(--primary); box-shadow: none; font-size: .75rem; letter-spacing: .12em; font-weight: 700; padding: 0; display: block; text-align: center; margin-bottom: 1rem; }
+    #faq .section-eyebrow { font-size: .85rem; padding: .45rem 1.4rem; letter-spacing: .12em; box-shadow: 0 6px 24px rgba(91,142,240,.4); margin-bottom: 1.5rem; }
     #faq .section-heading h2 { font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-size: clamp(2rem,5vw,3rem); font-weight: 900; color: var(--secondary-dark); margin-bottom: .75rem; letter-spacing: -.02em; }
     #faq .section-heading p { color: var(--text-secondary); font-size: 1.05rem; }
     .faq-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: .85rem; position: relative; z-index: 1; }
@@ -1490,7 +1490,7 @@
       <li>🔗 <span data-i18n="rag_chip3">"La réponse est construite depuis les passages réels trouvés — jamais inventée"</span></li>
     </ul>
     <div class="rag-explainer" data-reveal data-reveal-delay="200">
-      <p class="rag-explainer-text" data-i18n-html="rag_explainer"><span class="rag-section-title">RebSam : La Garantie Zéro Hallucination</span><br><br>Contrairement à une IA classique qui s'appuie sur une mémoire vaste (et peut inventer des faits, appelés « hallucinations »), RebSam opère différemment.<br><br>Avant de générer une réponse, RebSam effectue une recherche stricte dans sa bibliothèque de <em>séfarim</em> (ouvrages) vérifiés et ne cite que les passages réels trouvés. S'il n'y a aucune information écrite sur le sujet, il s'abstient de répondre.<br><br><strong>Le résultat ?</strong> Aucune invention, aucune information fausse. Chaque réponse fournit la référence exacte (<em>Siman</em> et <em>Seif</em>), vous permettant de vérifier la source vous-même.</p>
+      <p class="rag-explainer-text" data-i18n-html="rag_explainer"><span class="rag-section-title">RebSam : Garantie Zéro Hallucination</span><br><br>Contrairement à une IA classique qui peut inventer des faits, RebSam effectue une recherche stricte dans sa bibliothèque de <em>séfarim</em> vérifiés.<br><br>Il ne génère une réponse qu'en citant des passages réels trouvés. S'il n'y a pas d'information écrite, il s'abstient.<br><br><strong>Résultat ?</strong> Aucune invention ni information fausse. Chaque réponse inclut la référence exacte (<em>Siman</em> et <em>Seif</em>) pour vérification.</p>
     </div>
   </div>
 </section>
@@ -1855,7 +1855,7 @@
       footer_privacy: 'Confidentialité', footer_legal: 'Mentions Légales',
       rag_eyebrow: 'Technologie', rag_title: 'Comment le RAG élimine les hallucinations ?',
       rag_sub: 'RebSam utilise une technologie appelée RAG (Retrieval-Augmented Generation) pour garantir des réponses 100% ancrées dans les textes sacrés.',
-      rag_explainer: '<span class="rag-section-title">RebSam : La Garantie Zéro Hallucination</span><br><br>Contrairement à une IA classique qui s\'appuie sur une mémoire vaste (et peut inventer des faits, appelés « hallucinations »), RebSam opère différemment.<br><br>Avant de générer une réponse, RebSam effectue une recherche stricte dans sa bibliothèque de <em>séfarim</em> (ouvrages) vérifiés et ne cite que les passages réels trouvés. S\'il n\'y a aucune information écrite sur le sujet, il s\'abstient de répondre.<br><br><strong>Le résultat ?</strong> Aucune invention, aucune information fausse. Chaque réponse fournit la référence exacte (<em>Siman</em> et <em>Seif</em>), vous permettant de vérifier la source vous-même.',
+      rag_explainer: '<span class="rag-section-title">RebSam : Garantie Zéro Hallucination</span><br><br>Contrairement à une IA classique qui peut inventer des faits, RebSam effectue une recherche stricte dans sa bibliothèque de <em>séfarim</em> vérifiés.<br><br>Il ne génère une réponse qu\'en citant des passages réels trouvés. S\'il n\'y a pas d\'information écrite, il s\'abstient.<br><br><strong>Résultat ?</strong> Aucune invention ni information fausse. Chaque réponse inclut la référence exacte (<em>Siman</em> et <em>Seif</em>) pour vérification.',
       sources_eyebrow: 'Les livres de RebSam',
       sources_title: 'Des milliers de Sifrey Kodesh. Zéro Invention.',
       sources_sub: 'Chaque réponse de RebSam est ancrée dans l\'un de ces textes fondamentaux — avec le Livre, le Siman et le Seif exacts.',
@@ -1927,7 +1927,7 @@
     },
     he: {
       nav_home: 'ראשי', nav_how: 'איך זה עובד', nav_values: 'הערכים שלנו',
-      nav_cta: 'נסה את רב-סמי',
+      nav_cta: 'נסה את רבי סאם',
       hero_badge: 'עוזר הלכתי מבוסס בינה מלאכותית',
       hero_tagline: '.רב בכיסך — כל היום, כל הלילה',
       hero_pt1: '.תשובה הלכתית תוך שניות',
@@ -1935,22 +1935,22 @@
       hero_pt3: '.אלפי ספרי קודש נגישים מיידית',
       hero_cta2: 'גלה את הפרויקט', hero_cta: 'שאל את השאלה הראשונה שלך ל-RebSam',
       pillars_eyebrow: 'ההתחייבויות שלנו', pillars_title: '3 עמודי האמון שלנו',
-      pillars_sub: '.רב-סמי תמיד עונה לפי 3 ההתחייבויות האלה — ללא יוצא מן הכלל',
+      pillars_sub: '.רבי סאם תמיד עונה לפי 3 ההתחייבויות האלה — ללא יוצא מן הכלל',
       p1_title: 'מקורות מאומתים', p1_desc: '.ללא המצאות. ללא הזיות. כל תשובה מעוגנת בטקסטים קדושים — שולחן ערוך, משנה ברורה, פוסקים עכשוויים ועוד',
       p2_title: 'פרטי ומאובטח', p2_desc: '.מעגל סגור. שאלותיך האינטימיות ביותר נשארות פרטיות לחלוטין — אפס איסוף, אפס מכירה, אפס אימון חיצוני',
       p3_title: 'מהיר ואמין', p3_desc: '.תשובות בפחות משנייה. טכנולוגיית RAG הסורקת אלפי ספרי קודש מאומתים לכל שאלה',
       hiw_eyebrow: 'תהליך', hiw_title: 'איך זה עובד?', hiw_sub: '.פשוט, מהיר ושקוף',
-      step1_title: 'אתה שואל את שאלתך', step1_desc: '.כתוב פשוט, כמו שהיית מדבר עם חבר. אין צורך לדעת מונחים טכניים. רב-סמי מבין אותך',
-      step2_title: 'רב-סמי מחפש בשבילך', step2_desc: '!בתוך שניות, הוא עובר על אלפי עמודים של ספרי קודש מאומתים — דרך המקורות שלנו, לא האינטרנט',
+      step1_title: 'אתה שואל את שאלתך', step1_desc: '.כתוב פשוט, כמו שהיית מדבר עם חבר. אין צורך לדעת מונחים טכניים. רבי סאם מבין אותך',
+      step2_title: 'רבי סאם מחפש בשבילך', step2_desc: '!בתוך שניות, הוא עובר על אלפי עמודים של ספרי קודש מאומתים — דרך המקורות שלנו, לא האינטרנט',
       step3_title: 'התשובה שלך מגיעה', step3_desc: '.אתה מקבל תשובה ברורה וחמה, עם הסימן והסעיף המדויקים — כדי שתוכל לאמת בעצמך ולהמשיך את הלימוד',
-      faq_eyebrow: 'שאלות נפוצות', faq_title: 'כל מה שצריך לדעת', faq_sub: '.לשימוש ברב-סמי בשקט נפשי מלא',
-      faq_q1: 'האם אפשר לסמוך על תשובות רב-סמי?', faq_a1: 'רב-סמי הוא חברותא לימוד אמינה ביותר — הוא תמיד מצטט את מקורותיו במדויק (ספר, סימן, סעיף). אך לפסק הלכה רשמי, תמיד התייעץ עם הרב שלך.',
-      faq_q2: 'על אילו טקסטים קדושים רב-סמי מסתמך?', faq_a2: '.רב-סמי שואב מאלפי ספרי קודש מאומתים: שולחן ערוך, משנה ברורה, ילקוט יוסף, אגרות משה ועוד רבים',
-      faq_q3: 'האם שאלותי נשארות חסויות?', faq_a3: '.כן. רב-סמי פועל במעגל סגור. אפס איסוף, אפס מכירה, אפס אימון חיצוני',
-      faq_q4: 'האם רב-סמי מכיר את מנהגי אשכנז וספרד?', faq_a4: '.כן! רב-סמי משלב פוסקים משתי המסורות ויכול להתאים את תשובתו למנהגך',
-      faq_q5: 'במה רב-סמי שונה מ-ChatGPT?', faq_a5: '.רב-סמי משתמש בטכנולוגיית RAG לסריקת אלפי ספרי קודש בלבד. אפס הזיות, אפס המצאות',
+      faq_eyebrow: 'שאלות נפוצות', faq_title: 'כל מה שצריך לדעת', faq_sub: '.לשימוש ברבי סאם בשקט נפשי מלא',
+      faq_q1: 'האם אפשר לסמוך על תשובות רבי סאם?', faq_a1: 'רבי סאם הוא חברותא לימוד אמינה ביותר — הוא תמיד מצטט את מקורותיו במדויק (ספר, סימן, סעיף). אך לפסק הלכה רשמי, תמיד התייעץ עם הרב שלך.',
+      faq_q2: 'על אילו טקסטים קדושים רבי סאם מסתמך?', faq_a2: '.רבי סאם שואב מאלפי ספרי קודש מאומתים: שולחן ערוך, משנה ברורה, ילקוט יוסף, אגרות משה ועוד רבים',
+      faq_q3: 'האם שאלותי נשארות חסויות?', faq_a3: '.כן. רבי סאם פועל במעגל סגור. אפס איסוף, אפס מכירה, אפס אימון חיצוני',
+      faq_q4: 'האם רבי סאם מכיר את מנהגי אשכנז וספרד?', faq_a4: '.כן! רבי סאם משלב פוסקים משתי המסורות ויכול להתאים את תשובתו למנהגך',
+      faq_q5: 'במה רבי סאם שונה מ-ChatGPT?', faq_a5: '.רבי סאם משתמש בטכנולוגיית RAG לסריקת אלפי ספרי קודש בלבד. אפס הזיות, אפס המצאות',
       footer_desc: '.בינה מלאכותית הלכתית שמסרבת להמציא. טכנולוגיה מכובדת ללימוד תורה אמיתי, נגיש לכולם, 24/7',
-      footer_cta: 'נסה את רב-סמי ←',
+      footer_cta: 'נסה את רבי סאם ←',
       footer_nav_title: 'ניווט', footer_home: 'ראשי',
       footer_product: 'מוצר', footer_how: 'איך זה עובד',
       footer_values: 'הערכים שלנו', footer_faq: 'שאלות נפוצות',
@@ -1960,20 +1960,20 @@
       footer_copyright: '.כל הזכויות שמורות 2026 RebSam ©',
       footer_privacy: 'פרטיות', footer_legal: 'תנאי שימוש',
       rag_eyebrow: 'טכנולוגיה', rag_title: 'איך RAG מונע הזיות?',
-      rag_sub: '.רב-סמי משתמש בטכנולוגיית RAG (Retrieval-Augmented Generation) כדי להבטיח תשובות המעוגנות 100% בטקסטים הקדושים',
-      rag_explainer: 'בינה מלאכותית רגילה מייצרת תשובות מתוך כל מה שלמדה — ויכולה להמציא מידע שגוי אך סביר. זה נקרא "הזיה".<br><br>רב-סמי פועל אחרת: לפני כל תשובה, הוא מחפש בספריית ספרי הקודש המאומתים שלו ומבסס את תשובתו אך ורק על הקטעים האמיתיים שנמצאו. אם לא נמצא כלום בנושא — הוא לא עונה.<br><br><strong>.תוצאה: אפס המצאות, אפס הזיות</strong> כל תשובה מצטטת את הסימן והסעיף המדויקים — תוכל לבדוק בעצמך.',
+      rag_sub: '.רבי סאם משתמש בטכנולוגיית RAG (Retrieval-Augmented Generation) כדי להבטיח תשובות המעוגנות 100% בטקסטים הקדושים',
+      rag_explainer: 'בינה מלאכותית רגילה מייצרת תשובות מתוך כל מה שלמדה — ויכולה להמציא מידע שגוי אך סביר. זה נקרא "הזיה".<br><br>רבי סאם פועל אחרת: לפני כל תשובה, הוא מחפש בספריית ספרי הקודש המאומתים שלו ומבסס את תשובתו אך ורק על הקטעים האמיתיים שנמצאו. אם לא נמצא כלום בנושא — הוא לא עונה.<br><br><strong>.תוצאה: אפס המצאות, אפס הזיות</strong> כל תשובה מצטטת את הסימן והסעיף המדויקים — תוכל לבדוק בעצמך.',
       sources_eyebrow: 'ספרי RebSam',
       sources_title: '.אלפי ספרי קודש. אפס המצאות.',
-      sources_sub: '.כל תשובה של רב-סמי מעוגנת באחד מהטקסטים היסודיים הללו — עם הספר, הסימן והסעיף המדויקים',
+      sources_sub: '.כל תשובה של רבי סאם מעוגנת באחד מהטקסטים היסודיים הללו — עם הספר, הסימן והסעיף המדויקים',
       sources_more_count: 'אלפי ספרי קודש נוספים',
       chat_placeholder: 'שאל את שאלתך...',
       chat_hint: '.הנתונים נשארים פרטיים. מעגל סגור מובטח',
       chat_status: 'מקוון · עונה מיד…',
-      float_chat: 'שאל את רב-סמי',
-      float_wa: 'רב-סמי שלך בוואטסאפ',
-      hero_wa: 'רב-סמי שלך בוואטסאפ',
+      float_chat: 'שאל את רבי סאם',
+      float_wa: 'רבי סאם שלך בוואטסאפ',
+      hero_wa: 'רבי סאם שלך בוואטסאפ',
       hero_trust: '✓ חכמת חכמינו — זמינה 24 שעות ביממה',
-      rag_chip1: '"לפני כל תשובה, רב-סמי מחפש בספרי הקודש — לא בזיכרונו"',
+      rag_chip1: '"לפני כל תשובה, רבי סאם מחפש בספרי הקודש — לא בזיכרונו"',
       rag_chip2: '"אפס המצאות, אפס שגיאות. כל תשובה חייבת לכלול את ההפניה המדויקת"',
       rag_chip3: '"התשובה נבנית מקטעים אמיתיים שנמצאו — לא ממוצאת"',
       hero_sources: 'שולחן ערוך · משנה ברורה · ילקוט יוסף · אגרות משה · שולחן ערוך הרב · פניני הלכה · עיונים הלכה · יותר מ-2000 ספרי קודש'
