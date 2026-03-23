@@ -188,41 +188,91 @@
     .nav-cta { display: inline-flex; align-items: center; gap: .4rem; background: var(--primary); color: #fff; padding: .5rem 1.25rem; border-radius: var(--radius-full); font-size: .875rem; font-weight: 600; transition: all .25s; }
     .nav-cta:hover { background: var(--primary-dark); transform: translateY(-1px); }
     .nav-right { display: flex; align-items: center; gap: .75rem; }
-    #hamburger { display: none; background: none; border: none; cursor: pointer; padding: .45rem; color: var(--secondary); border-radius: .5rem; transition: background .2s; }
-    #hamburger:hover { background: rgba(46,107,230,.07); }
-    .burger-box { width: 24px; height: 18px; position: relative; display: flex; flex-direction: column; justify-content: space-between; }
-    .burger-line { display: block; height: 2.5px; border-radius: 2px; background: var(--secondary-dark); transform-origin: center; transition: transform .35s cubic-bezier(.4,0,.2,1), opacity .25s, top .35s cubic-bezier(.4,0,.2,1); position: relative; }
-    .burger-line:nth-child(1) { top: 0; }
-    .burger-line:nth-child(2) { top: 50%; transform: translateY(-50%); }
-    .burger-line:nth-child(3) { top: 100%; transform: translateY(-100%); }
-    #hamburger.open .burger-line:nth-child(1) { top: 50%; transform: translateY(-50%) rotate(45deg); }
-    #hamburger.open .burger-line:nth-child(2) { opacity: 0; transform: translateY(-50%) scaleX(0); }
-    #hamburger.open .burger-line:nth-child(3) { top: 50%; transform: translateY(-50%) rotate(-45deg); }
+    #hamburger { display: none; background: none; border: none; cursor: pointer; padding: .5rem; color: var(--secondary); border-radius: .625rem; transition: background .2s; }
+    #hamburger:hover { background: rgba(91,142,240,.1); }
+    .burger-box { width: 22px; height: 15px; display: flex; flex-direction: column; justify-content: space-between; }
+    .burger-line { display: block; height: 2px; border-radius: 2px; background: var(--secondary-dark); transform-origin: center; transition: transform .32s cubic-bezier(.4,0,.2,1), opacity .2s, width .25s; }
+    .burger-line:nth-child(2) { width: 65%; align-self: flex-end; }
+    #hamburger.open .burger-line:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    #hamburger.open .burger-line:nth-child(2) { opacity: 0; width: 0; }
+    #hamburger.open .burger-line:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
+    /* Menu overlay */
+    #menu-overlay {
+      position: fixed; inset: 0; z-index: 399;
+      background: rgba(15,23,42,.45); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+      opacity: 0; pointer-events: none;
+      transition: opacity .35s ease;
+    }
+    #menu-overlay.open { opacity: 1; pointer-events: auto; }
+
+    /* Mobile menu */
     #mobile-menu {
       display: block; position: fixed; top: 0; left: 0; right: 0; z-index: 400;
-      background: var(--header-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      padding: 5rem 1.75rem 2rem; box-shadow: 0 8px 32px rgba(0,0,0,.12);
+      background: var(--header-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
       transform: translateY(-110%); opacity: 0;
-      transition: transform .4s cubic-bezier(.4,0,.2,1), opacity .35s ease;
-      border-bottom: 1px solid rgba(46,107,230,.1);
+      transition: transform .38s cubic-bezier(.4,0,.2,1), opacity .3s ease;
+      border-radius: 0 0 1.5rem 1.5rem;
+      box-shadow: 0 16px 48px rgba(0,0,0,.18);
+      overflow: hidden;
     }
     #mobile-menu.open { transform: translateY(0); opacity: 1; }
-    .mobile-nav-links { display: flex; flex-direction: column; gap: .25rem; margin-bottom: 1.25rem; }
+
+    /* Gradient accent bar */
+    .menu-gradient-bar { height: 3px; background: linear-gradient(90deg, #5B8EF0 0%, #7C6FCD 50%, #E07B5A 100%); }
+    .menu-inner { padding: 4.5rem 1.5rem 1.75rem; }
+
+    .mobile-nav-links { display: flex; flex-direction: column; gap: .25rem; margin-bottom: 1rem; }
     #mobile-menu .mob-link {
-      display: flex; align-items: center; gap: .65rem;
-      font-size: 1.0625rem; font-weight: 500; color: var(--secondary-dark);
-      padding: .8rem 1rem; border-radius: .75rem;
-      transition: background .2s, color .2s, transform .2s;
+      display: flex; align-items: center; gap: .875rem;
+      font-size: 1rem; font-weight: 500; color: var(--secondary-dark);
+      padding: .75rem 1rem; border-radius: .875rem;
+      transition: background .18s, color .18s, transform .18s;
       text-decoration: none;
     }
-    #mobile-menu .mob-link:hover { background: rgba(46,107,230,.07); color: var(--primary); transform: translateX(4px); }
-    [dir="rtl"] #mobile-menu .mob-link:hover { transform: translateX(-4px); }
-    #mobile-menu .mob-link .mob-icon { width: 1.75rem; height: 1.75rem; border-radius: .5rem; background: rgba(46,107,230,.08); display: flex; align-items: center; justify-content: center; color: var(--primary); }
-    .mobile-divider { height: 1px; background: rgba(0,0,0,.06); margin: .75rem 0; }
-    .btn-primary-mobile { display: flex; align-items: center; justify-content: center; gap: .5rem; background: linear-gradient(135deg, var(--primary-pastel) 0%, var(--primary-pastel-dark) 100%); color: #fff; padding: .7rem 1.5rem; border-radius: var(--radius-full); font-weight: 600; font-size: .9375rem; box-shadow: 0 4px 20px rgba(46,107,230,.3); transition: all .25s; }
-    .btn-primary-mobile:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(46,107,230,.4); }
-    .mobile-lang { display: flex; gap: .5rem; justify-content: center; }
+    #mobile-menu .mob-link:active { transform: scale(.98); }
+    #mobile-menu .mob-link:hover { background: rgba(91,142,240,.08); color: var(--primary); transform: translateX(3px); }
+    [dir="rtl"] #mobile-menu .mob-link:hover { transform: translateX(-3px); }
+    #mobile-menu .mob-icon {
+      width: 2rem; height: 2rem; border-radius: .625rem; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(91,142,240,.12) 0%, rgba(124,111,205,.12) 100%);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--primary);
+    }
+    #mobile-menu .mob-link-label { flex: 1; }
+    #mobile-menu .mob-link-arrow { opacity: .3; transition: opacity .18s, transform .18s; }
+    #mobile-menu .mob-link:hover .mob-link-arrow { opacity: .7; transform: translateX(2px); }
+    [dir="rtl"] #mobile-menu .mob-link:hover .mob-link-arrow { transform: rotate(180deg) translateX(2px); }
+
+    .mobile-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(91,142,240,.2), transparent); margin: .875rem 0; }
+
+    .btn-primary-mobile {
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
+      background: linear-gradient(135deg, #5B8EF0 0%, #7C6FCD 50%, #E07B5A 100%);
+      color: #fff; padding: .85rem 1.5rem; border-radius: var(--radius-full);
+      font-weight: 600; font-size: .9375rem; text-decoration: none;
+      box-shadow: 0 6px 24px rgba(124,111,205,.35);
+      transition: all .25s; margin-bottom: 1.25rem;
+    }
+    .btn-primary-mobile:hover { transform: translateY(-1px); box-shadow: 0 10px 32px rgba(124,111,205,.45); }
+
+    .mobile-bottom { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+    .mobile-lang-tabs { display: flex; background: rgba(91,142,240,.07); border-radius: var(--radius-full); padding: .2rem; gap: .1rem; }
+    .mobile-lang-tabs .lang-btn {
+      padding: .35rem .85rem; border-radius: var(--radius-full); font-size: .8125rem; font-weight: 600;
+      background: none; border: none; cursor: pointer; color: var(--text-muted);
+      transition: all .2s;
+    }
+    .mobile-lang-tabs .lang-btn.active { background: #fff; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+    [data-theme="dark"] .mobile-lang-tabs .lang-btn.active { background: rgba(255,255,255,.15); }
+    .mobile-dark-btn {
+      width: 2.25rem; height: 2.25rem; border-radius: 50%;
+      background: rgba(91,142,240,.08); border: 1.5px solid rgba(91,142,240,.2);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--secondary); transition: all .2s; flex-shrink: 0;
+    }
+    .mobile-dark-btn:hover { background: rgba(91,142,240,.15); border-color: var(--primary); color: var(--primary); }
+
     @media (max-width: 900px) { .nav-links { display: none; } .nav-cta { display: none; } .lang-switcher { display: none; } #hamburger { display: block; } }
 
     /* BUTTONS */
@@ -1238,38 +1288,62 @@
   </div>
 </div>
 
+<!-- Menu overlay -->
+<div id="menu-overlay" onclick="closeMobileMenu()"></div>
+
 <!-- Mobile Menu -->
 <div id="mobile-menu" role="navigation" aria-label="Menu mobile">
-  <div class="mobile-nav-links">
-    <a href="#" class="mob-link" onclick="closeMobileMenu()" data-i18n="nav_home">
-      <span class="mob-icon">🏠</span>
-      Accueil
+  <div class="menu-gradient-bar"></div>
+  <div class="menu-inner">
+    <div class="mobile-nav-links">
+      <a href="#" class="mob-link" onclick="closeMobileMenu()" data-i18n="nav_home">
+        <span class="mob-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </span>
+        <span class="mob-link-label">Accueil</span>
+        <svg class="mob-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a href="#how-it-works" class="mob-link" onclick="closeMobileMenu()" data-i18n="nav_how">
+        <span class="mob-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </span>
+        <span class="mob-link-label">Comment ça marche</span>
+        <svg class="mob-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a href="#pillars" class="mob-link" onclick="closeMobileMenu()" data-i18n="nav_values">
+        <span class="mob-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </span>
+        <span class="mob-link-label">Nos Valeurs</span>
+        <svg class="mob-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a href="#faq" class="mob-link" onclick="closeMobileMenu()">
+        <span class="mob-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </span>
+        <span class="mob-link-label">FAQ</span>
+        <svg class="mob-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </div>
+
+    <div class="mobile-divider"></div>
+
+    <a href="#" onclick="openChat();closeMobileMenu();return false;" class="btn-primary-mobile" data-i18n="nav_cta">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      Essayer RebSam
     </a>
-    <a href="#how-it-works" class="mob-link" onclick="closeMobileMenu()" data-i18n="nav_how">
-      <span class="mob-icon">⚙️</span>
-      Comment ça marche
-    </a>
-    <a href="#pillars" class="mob-link" onclick="closeMobileMenu()" data-i18n="nav_values">
-      <span class="mob-icon">🛡️</span>
-      Nos Valeurs
-    </a>
-    <a href="#faq" class="mob-link" onclick="closeMobileMenu()">
-      <span class="mob-icon">❓</span>
-      FAQ
-    </a>
-  </div>
-  <div class="mobile-divider"></div>
-  <a href="#" onclick="openChat();closeMobileMenu();return false;" class="btn-primary-mobile" data-i18n="nav_cta">
-    💬 Essayer RebSam
-  </a>
-  <div class="mobile-lang" style="display:flex;gap:.5rem;justify-content:center;align-items:center;margin-top:.75rem;">
-    <button class="lang-btn active" onclick="setLang('fr')">FR</button>
-    <button class="lang-btn" onclick="setLang('he')">עברית</button>
-    <button class="lang-btn" onclick="setLang('en')">EN</button>
-    <button id="dark-toggle-mob" onclick="toggleDark()" aria-label="Mode sombre" style="width:2rem;height:2rem;border-radius:50%;background:none;border:1.5px solid var(--border);cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;">
-      <svg id="icon-sun-mob" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-      <svg id="icon-moon-mob" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    </button>
+
+    <div class="mobile-bottom">
+      <div class="mobile-lang-tabs">
+        <button class="lang-btn active" onclick="setLang('fr')">FR</button>
+        <button class="lang-btn" onclick="setLang('he')">עב</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+      </div>
+      <button class="mobile-dark-btn" id="dark-toggle-mob" onclick="toggleDark()" aria-label="Mode sombre">
+        <svg id="icon-sun-mob" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg id="icon-moon-mob" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -2410,13 +2484,19 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
 
   // Mobile Menu Toggle
   document.getElementById('hamburger').addEventListener('click', function() {
-    this.classList.toggle('open');
-    document.getElementById('mobile-menu').classList.toggle('open');
+    const isOpen = this.classList.toggle('open');
+    document.getElementById('mobile-menu').classList.toggle('open', isOpen);
+    document.getElementById('menu-overlay').classList.toggle('open', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    this.setAttribute('aria-expanded', isOpen);
   });
 
   function closeMobileMenu() {
     document.getElementById('hamburger').classList.remove('open');
     document.getElementById('mobile-menu').classList.remove('open');
+    document.getElementById('menu-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+    document.getElementById('hamburger').setAttribute('aria-expanded', 'false');
   }
 
   // Header Scroll Effect
