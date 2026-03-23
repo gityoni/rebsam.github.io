@@ -565,7 +565,7 @@
     .float-wa-glow { background: #25D366; }
     .float-label { position: relative; z-index: 1; white-space: nowrap; }
     .float-icon { position: relative; z-index: 1; display: flex; }
-    @media (max-width: 767px) { .float-label { display: none; } }
+    @media (max-width: 767px) { .float-label { display: none; } .float-wa-label { display: inline; } }
 
     /* CHAT MODAL */
     #chat-overlay { display: none; position: fixed; inset: 0; z-index: 9999; align-items: center; justify-content: center; padding: 1.5rem; background: rgba(5,10,30,.58); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
@@ -1296,25 +1296,25 @@
   <div class="menu-gradient-bar"></div>
   <div class="menu-inner">
     <div class="mobile-nav-links">
-      <a href="#" class="mob-link" onclick="closeMobileMenu()" data-i18n="nav_home">
+      <a href="#" class="mob-link" onclick="closeMobileMenu()">
         <span class="mob-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </span>
-        <span class="mob-link-label">Accueil</span>
+        <span class="mob-link-label" data-i18n="nav_home">Accueil</span>
         <svg class="mob-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       </a>
-      <a href="#how-it-works" class="mob-link" onclick="closeMobileMenu()" data-i18n="nav_how">
+      <a href="#how-it-works" class="mob-link" onclick="closeMobileMenu()">
         <span class="mob-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </span>
-        <span class="mob-link-label">Comment ça marche</span>
+        <span class="mob-link-label" data-i18n="nav_how">Comment ça marche</span>
         <svg class="mob-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       </a>
-      <a href="#pillars" class="mob-link" onclick="closeMobileMenu()" data-i18n="nav_values">
+      <a href="#pillars" class="mob-link" onclick="closeMobileMenu()">
         <span class="mob-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </span>
-        <span class="mob-link-label">Nos Valeurs</span>
+        <span class="mob-link-label" data-i18n="nav_values">Nos Valeurs</span>
         <svg class="mob-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       </a>
       <a href="#faq" class="mob-link" onclick="closeMobileMenu()">
@@ -1328,9 +1328,9 @@
 
     <div class="mobile-divider"></div>
 
-    <a href="#" onclick="openChat();closeMobileMenu();return false;" class="btn-primary-mobile" data-i18n="nav_cta">
+    <a href="#" onclick="openChat();closeMobileMenu();return false;" class="btn-primary-mobile">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-      Essayer RebSam
+      <span data-i18n="nav_cta">Essayer RebSam</span>
     </a>
 
     <div class="mobile-bottom">
@@ -1356,7 +1356,7 @@
   </div>
   <div class="container">
     <div class="hero-content">
-      <span class="hero-badge" data-i18n="hero_badge">Assistant Halachique IA — Réponses fiables, issues uniquement de nos sources</span>
+      <span class="hero-badge" data-i18n="hero_badge">Assistant halachique IA</span>
       <h1 class="hero-h1">
         <span class="rebsam-logo font-logo"><span class="reb">Reb</span><span class="sam">Sam</span></span>
         <span data-i18n="hero_tagline">Un Rebbe dans votre dose d'IA quotidienne.</span>
@@ -1377,12 +1377,8 @@
         </div>
       </div>
       <div class="hero-btns">
-        <a href="#how-it-works" class="btn btn-primary" style="background:var(--secondary-dark);box-shadow:0 8px 28px rgba(30,41,59,.35);">
-          <span data-i18n="hero_cta2">Découvrir le Projet</span>
-          ↓
-        </a>
         <button class="btn btn-primary hero-avatar-btn" onclick="openChat()">
-          💬 <span data-i18n="hero_cta">Pose ta première question à RebSam</span>
+          💬 <span data-i18n="hero_cta">Pose ta première question ici</span>
         </button>
       </div>
       <p class="hero-sources">Choulhan Aroukh · Michna Beroura · Yalkout Yossef · Igrot Moshé · Shoulhan Aroukh HaRav · Peninei Halakha · Iyounim Halacha et Chass · Plus de 2000 Sifrey Kodesh</p>
@@ -1791,7 +1787,7 @@
 <button class="float-btn" id="btn-chat" onclick="openChat()">
   <div class="float-inner float-chat-bg">
     <div class="float-glow float-chat-glow"></div>
-    <span class="float-label" data-i18n="float_chat">Poser une question</span>
+    <span class="float-label" data-i18n="float_chat">Pose ta première question ici</span>
     <span class="float-icon">💬</span>
   </div>
 </button>
@@ -1799,8 +1795,10 @@
 <a class="float-btn" id="btn-wa" href="https://wa.me/972555005493" target="_blank" rel="noopener noreferrer" onclick="trackWAClick()">
   <div class="float-inner float-wa-bg">
     <div class="float-glow float-wa-glow"></div>
-    <span class="float-label">WhatsApp</span>
-    <span class="float-icon">💬</span>
+    <span class="float-label float-wa-label">Chat avec RebSam sur WhatsApp</span>
+    <span class="float-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="color:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.556 4.112 1.524 5.842L.057 23.882a.5.5 0 0 0 .61.61l6.04-1.467A11.946 11.946 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.944 9.944 0 0 1-5.072-1.382l-.363-.216-3.748.91.928-3.748-.236-.374A9.944 9.944 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+    </span>
   </div>
 </a>
 
@@ -1853,12 +1851,12 @@
     fr: {
       nav_home: 'Accueil', nav_how: 'Comment ça marche', nav_values: 'Nos Valeurs',
       nav_cta: 'Essayer RebSam',
-      hero_badge: 'Assistant Halachique IA — Réponses fiables, issues uniquement de nos sources',
+      hero_badge: 'Assistant halachique IA',
       hero_tagline: 'Un Rebbe dans votre dose d\'IA quotidienne.',
       hero_pt1: 'Répond aux multitudes de questions qui émanent de chaque aspect de la vie juive, avec précision et clarté.',
       hero_pt2: 'Aucune "hallucination" — uniquement des réponses sourcées et vérifiables, issues de nos textes sacrés.',
       hero_pt3: 'Digitalise et rend interactive une bibliothèque immense qui serait autrement difficile à consulter rapidement.',
-      hero_cta2: 'Découvrir le Projet', hero_cta: 'Pose ta première question à RebSam',
+      hero_cta2: 'Découvrir le Projet', hero_cta: 'Pose ta première question ici',
       pillars_eyebrow: 'Nos engagements', pillars_title: 'Nos 3 Piliers de Confiance',
       pillars_sub: 'RebSam répond toujours selon ces 3 engagements — sans exception.',
       p1_title: 'Sources Validées', p1_desc: 'Zéro invention, zéro "hallucination". Les réponses sont exclusivement fondées sur nos textes sacrés : Shulchan Aruch, Mishna Broura, Yalkut Yossef, Tossefot, livres du Ari Zal et décisionnaires contemporains.',
@@ -1898,17 +1896,17 @@
       chat_placeholder: 'Pose ta question...',
       chat_hint: 'Les données restent privées. Circuit fermé garanti.',
       chat_status: 'En ligne · Je vous réponds tout de suite…',
-      float_chat: 'Poser une question'
+      float_chat: 'Pose ta première question ici'
     },
     en: {
       nav_home: 'Home', nav_how: 'How it works', nav_values: 'Our Values',
       nav_cta: 'Try RebSam',
-      hero_badge: 'Your Halacha expert, available 24/7',
+      hero_badge: 'AI Halachic Assistant',
       hero_tagline: 'A Rebbe in your daily AI dose.',
       hero_pt1: 'Instant Halachic consultation for the global Jewish community.',
       hero_pt2: 'Eliminates hallucinations by answering only from verified sacred sources.',
       hero_pt3: 'Digitizes an immense library of texts, making them instantly searchable.',
-      hero_cta2: 'Discover the Project', hero_cta: 'Ask your first question to RebSam',
+      hero_cta2: 'Discover the Project', hero_cta: 'Ask your first question here',
       pillars_eyebrow: 'Our commitments', pillars_title: 'Our 3 Pillars of Trust',
       pillars_sub: 'RebSam always answers according to these 3 commitments — no exceptions.',
       p1_title: 'Validated Sources', p1_desc: 'No invention. No hallucination. Every answer is grounded in sacred texts — Shulchan Aruch, Mishna Berura, contemporary Poskim and more.',
@@ -1953,12 +1951,12 @@
     he: {
       nav_home: 'ראשי', nav_how: 'איך זה עובד', nav_values: 'הערכים שלנו',
       nav_cta: 'נסה את רב-סמי',
-      hero_badge: 'מומחה ההלכה שלך, זמין 24/7',
+      hero_badge: 'עוזר הלכתי מבוסס בינה מלאכותית',
       hero_tagline: '.רב בכיסך — כל היום, כל הלילה',
       hero_pt1: '.שאלות הלכתיות מיידיות לקהילה היהודית העולמית',
       hero_pt2: '.ללא הזיות — ענה רק ממקורות מאומתים של חכמינו',
       hero_pt3: '.מאגר ענק של ספרי קודש — נגיש ומיידי',
-      hero_cta2: 'גלה את הפרויקט', hero_cta: 'שאל את השאלה הראשונה שלך',
+      hero_cta2: 'גלה את הפרויקט', hero_cta: 'שאל את השאלה הראשונה שלך כאן',
       pillars_eyebrow: 'ההתחייבויות שלנו', pillars_title: '3 עמודי האמון שלנו',
       pillars_sub: '.רב-סמי תמיד עונה לפי 3 ההתחייבויות האלה — ללא יוצא מן הכלל',
       p1_title: 'מקורות מאומתים', p1_desc: '.ללא המצאות. ללא הזיות. כל תשובה מעוגנת בטקסטים קדושים — שולחן ערוך, משנה ברורה, פוסקים עכשוויים ועוד',
