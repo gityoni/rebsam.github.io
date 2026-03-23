@@ -485,6 +485,9 @@
     .rag-step-label { font-size: .875rem; font-weight: 700; color: var(--secondary-dark); line-height: 1.3; }
     .rag-step-desc { font-size: .75rem; color: var(--text-muted); line-height: 1.55; }
     .rag-step-num { font-size: .65rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
+    .rag-chips { list-style: none; padding: 0; margin: 2rem auto 2.5rem; max-width: 600px; display: flex; flex-direction: column; gap: .85rem; }
+    .rag-chips li { display: flex; align-items: baseline; gap: .65rem; font-size: 1rem; font-weight: 600; color: var(--secondary-dark); line-height: 1.5; }
+    .rag-chips li span { color: var(--text-secondary); font-weight: 400; font-style: italic; }
     .rag-explainer { max-width: 680px; margin: 0 auto; }
     .rag-explainer-text { font-size: 1rem; color: var(--text); line-height: 1.85; text-align: center; font-weight: 600; }
     .rag-explainer-text strong { color: var(--secondary-dark); }
@@ -1479,45 +1482,13 @@
       <h2 data-i18n="rag_title">Comment le RAG élimine les hallucinations ?</h2>
       <p data-i18n="rag_sub">Contrairement aux IA classiques qui "inventent" leurs réponses, RebSam utilise la Retrieval-Augmented Generation — une méthode qui force l'IA à ne répondre qu'à partir de textes réels et vérifiés.</p>
     </div>
-    <div class="rag-flow" data-reveal data-reveal-delay="100">
-      <div class="rag-step">
-        <div class="rag-step-icon rag-icon-blue">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        </div>
-        <div class="rag-step-num">01</div>
-        <div class="rag-step-label" data-i18n="step1_title">Tu poses ta question</div>
-        <div class="rag-step-desc">En français, hébreu ou anglais</div>
-      </div>
-      <div class="rag-arrow">→</div>
-      <div class="rag-step">
-        <div class="rag-step-icon rag-icon-indigo">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </div>
-        <div class="rag-step-num">02</div>
-        <div class="rag-step-label">Scan des séfarim</div>
-        <div class="rag-step-desc">Milliers de pages analysées</div>
-      </div>
-      <div class="rag-arrow">→</div>
-      <div class="rag-step">
-        <div class="rag-step-icon rag-icon-purple">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        </div>
-        <div class="rag-step-num">03</div>
-        <div class="rag-step-label">Passages exacts trouvés</div>
-        <div class="rag-step-desc">Uniquement les sources réelles</div>
-      </div>
-      <div class="rag-arrow">→</div>
-      <div class="rag-step">
-        <div class="rag-step-icon rag-icon-green">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <div class="rag-step-num">04</div>
-        <div class="rag-step-label">Réponse sourcée</div>
-        <div class="rag-step-desc">Siman et Seif exacts cités</div>
-      </div>
-    </div>
+    <ul class="rag-chips" data-reveal data-reveal-delay="100">
+      <li>🔍 <span>"Avant chaque réponse, RebSam cherche dans les séfarim — pas dans sa mémoire"</span></li>
+      <li>🔒 <span>"Pas d'invention ni d'erreur. Toute réponse doit inclure la référence précise"</span></li>
+      <li>🔗 <span>"La réponse est construite depuis les passages réels trouvés — jamais inventée"</span></li>
+    </ul>
     <div class="rag-explainer" data-reveal data-reveal-delay="200">
-      <p class="rag-explainer-text" data-i18n-html="rag_explainer">Une IA classique génère ses réponses depuis tout ce qu'elle a mémorisé — et peut inventer des informations fausses qui sonnent vraies. C'est ce qu'on appelle une «hallucination».<br><br>RebSam fonctionne autrement : avant chaque réponse, il cherche dans sa bibliothèque de séfarim vérifiés et ne s'appuie que sur les passages réels qu'il y trouve. S'il ne trouve rien d'écrit sur le sujet, il ne répond pas.<br><br><strong>Résultat : zéro invention, zéro hallucination.</strong> Chaque réponse cite le Siman et le Seif exacts — tu peux vérifier toi-même.</p>
+      <p class="rag-explainer-text" data-i18n-html="rag_explainer"><strong>RebSam : La Garantie Zéro Hallucination</strong><br><br>Contrairement à une IA classique qui s'appuie sur une mémoire vaste (et peut inventer des faits, appelés « hallucinations »), RebSam opère différemment.<br><br>Avant de générer une réponse, RebSam effectue une recherche stricte dans sa bibliothèque de <em>séfarim</em> (ouvrages) vérifiés et ne cite que les passages réels trouvés. S'il n'y a aucune information écrite sur le sujet, il s'abstient de répondre.<br><br><strong>Le résultat ?</strong> Aucune invention, aucune information fausse. Chaque réponse fournit la référence exacte (<em>Siman</em> et <em>Seif</em>), vous permettant de vérifier la source vous-même.</p>
     </div>
   </div>
 </section>
