@@ -476,6 +476,11 @@
     .rag-step-label { font-size: .875rem; font-weight: 700; color: var(--secondary-dark); line-height: 1.3; }
     .rag-step-desc { font-size: .75rem; color: var(--text-muted); line-height: 1.55; }
     .rag-step-num { font-size: .65rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
+    .rag-explainer { max-width: 680px; margin: 0 auto; }
+    .rag-explainer-text { font-size: 1rem; color: var(--text); line-height: 1.85; text-align: center; }
+    .rag-explainer-text strong { color: var(--secondary-dark); }
+    [dir="rtl"] .rag-explainer-text { text-align: right; }
+    @media (max-width: 640px) { .rag-explainer-text { text-align: left; font-size: .9375rem; } }
     .rag-insight { display: flex; align-items: flex-start; gap: 1rem; background: linear-gradient(135deg, rgba(46,107,230,.07) 0%, rgba(124,58,237,.07) 100%); border: 1px solid rgba(46,107,230,.18); border-radius: 1.25rem; padding: 1.5rem 2rem; margin-top: .5rem; }
     .rag-insight-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: .1rem; }
     .rag-insight p { font-size: .9375rem; color: var(--text); line-height: 1.7; margin: 0; }
@@ -674,7 +679,7 @@
     /* Dark mode — corrections visibilité hero & blobs */
     html.dark .blob-2 { display: none; }
     html.dark .hero-h1 [data-i18n="hero_tagline"] { color: rgba(203,213,225,.8); }
-    html.dark a[href="#how-it-works"].btn { background: rgba(255,255,255,.1) !important; border: 1.5px solid rgba(255,255,255,.25) !important; box-shadow: 0 4px 16px rgba(0,0,0,.35) !important; }
+    html.dark a[href="#rag-tech"].btn { background: rgba(255,255,255,.1) !important; border: 1.5px solid rgba(255,255,255,.25) !important; box-shadow: 0 4px 16px rgba(0,0,0,.35) !important; }
     html.dark #how-it-works .section-heading p { color: #CBD5E1; }
     /* HISTORY PANEL */
     #chat-history-panel { display: none; position: absolute; inset: 0; z-index: 20; background: #fff; border-radius: 1.5rem; flex-direction: column; overflow: hidden; animation: modalIn .25s cubic-bezier(.4,0,.2,1) both; }
@@ -1261,8 +1266,8 @@
     <nav>
       <ul class="nav-links">
         <li><a href="#" data-i18n="nav_home">Accueil</a></li>
-        <li><a href="#how-it-works" data-i18n="nav_how">Comment ça marche</a></li>
-        <li><a href="#pillars" data-i18n="nav_values">Nos Valeurs</a></li>
+        <li><a href="#rag-tech" data-i18n="nav_how">Comment ça marche</a></li>
+        <li><a href="#sources" data-i18n="nav_values">Nos Valeurs</a></li>
         <li><a href="#faq">FAQ</a></li>
       </ul>
     </nav>
@@ -1303,14 +1308,14 @@
         <span class="mob-link-label" data-i18n="nav_home">Accueil</span>
         <svg class="mob-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       </a>
-      <a href="#how-it-works" class="mob-link" onclick="closeMobileMenu()">
+      <a href="#rag-tech" class="mob-link" onclick="closeMobileMenu()">
         <span class="mob-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </span>
         <span class="mob-link-label" data-i18n="nav_how">Comment ça marche</span>
         <svg class="mob-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       </a>
-      <a href="#pillars" class="mob-link" onclick="closeMobileMenu()">
+      <a href="#sources" class="mob-link" onclick="closeMobileMenu()">
         <span class="mob-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </span>
@@ -1367,18 +1372,10 @@
           <i class="arr">⚡</i>
           <span data-i18n="hero_pt1">Rendre la consultation halakhique instantanée pour la communauté mondiale.</span>
         </div>
-        <div class="hero-point">
-          <i class="arr">🛡️</i>
-          <span data-i18n="hero_pt2">Élimine les "hallucinations" des IA classiques en ne répondant qu'à partir des sources de nos sages.</span>
-        </div>
-        <div class="hero-point">
-          <i class="arr">📚</i>
-          <span data-i18n="hero_pt3">Digitalise et rend interactive une bibliothèque immense qui serait autrement difficile à consulter rapidement.</span>
-        </div>
       </div>
       <div class="hero-btns">
         <button class="btn btn-primary hero-avatar-btn" onclick="openChat()">
-          💬 <span data-i18n="hero_cta">Pose ta première question ici</span>
+          💬 <span data-i18n="hero_cta">Pose ta première question à RebSam</span>
         </button>
       </div>
       <p class="hero-sources">Choulhan Aroukh · Michna Beroura · Yalkout Yossef · Igrot Moshé · Shoulhan Aroukh HaRav · Peninei Halakha · Iyounim Halacha et Chass · Plus de 2000 Sifrey Kodesh</p>
@@ -1398,98 +1395,7 @@
   </div>
 </section>
 
-<!-- PILLARS SECTION -->
-<section id="pillars">
-  <div class="container" style="position:relative;z-index:1;">
-    <div class="section-heading">
-      <span class="section-eyebrow" data-i18n="pillars_eyebrow">Nos engagements</span>
-      <h2 data-i18n="pillars_title">Nos 3 Piliers de Confiance</h2>
-      <p data-i18n="pillars_sub">RebSam répond toujours selon ces 3 engagements — sans exception.</p>
-    </div>
-    <div class="pillars-grid">
-      <div class="feature-card" data-reveal>
-        <div class="feature-card-icon">✓</div>
-        <h3 data-i18n="p1_title">Sources Validées</h3>
-        <p data-i18n="p1_desc">Zéro invention, zéro "hallucination". Les réponses sont exclusivement fondées sur nos textes sacrés : Shulchan Aruch, Mishna Broura, Yalkut Yossef, Tossefot, livres du Ari Zal et décisionnaires contemporains.</p>
-      </div>
-      <div class="feature-card" data-reveal data-reveal-delay="100">
-        <div class="feature-card-icon">🔒</div>
-        <h3 data-i18n="p2_title">Privé & Sécurisé</h3>
-        <p data-i18n="p2_desc">Circuit fermé. Vos questions les plus intimes restent strictement privées : zéro collecte, zéro revente, zéro entraînement externe.</p>
-      </div>
-      <div class="feature-card" data-reveal data-reveal-delay="200">
-        <div class="feature-card-icon">⚡</div>
-        <h3 data-i18n="p3_title">Rapide & Fiable</h3>
-        <p data-i18n="p3_desc">Réponses en moins d'une seconde. Technologie RAG qui scanne des milliers d'ouvrages de Halacha pour répondre à chaque question avec une irréfutable précision.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- HOW IT WORKS SECTION -->
-<section id="how-it-works">
-  <div class="container">
-    <div class="section-heading">
-      <span class="section-eyebrow" data-i18n="hiw_eyebrow">Processus</span>
-      <h2 data-i18n="hiw_title">Comment ça marche ?</h2>
-      <p data-i18n="hiw_sub">Simple, rapide et transparent.</p>
-    </div>
-    <div class="steps-grid-new" data-reveal data-reveal-delay="100">
-
-      <!-- Step 1 — Chat bubble icon -->
-      <div class="step-card">
-        <div class="step-card-top">
-          <div class="step-card-icon step-icon-blue">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-              <line x1="9" y1="10" x2="9" y2="10" stroke-width="2.5"/>
-              <line x1="12" y1="10" x2="12" y2="10" stroke-width="2.5"/>
-              <line x1="15" y1="10" x2="15" y2="10" stroke-width="2.5"/>
-            </svg>
-          </div>
-        </div>
-        <div class="step-card-body">
-          <h3 class="step-title" data-i18n="step1_title">Tu poses ta question</h3>
-          <p class="step-desc" data-i18n="step1_desc">Écris simplement, comme tu parlerais à un ami. Pas besoin de connaître les termes techniques. RebSam te comprend.</p>
-        </div>
-      </div>
-
-      <!-- Step 2 — Sparkle/AI search icon -->
-      <div class="step-card">
-        <div class="step-card-top">
-          <div class="step-card-icon step-icon-indigo">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-5.74L4 10l5.91-1.74z"/>
-              <path d="M5 3l.9 2.7L8 6.5l-2.1.8L5 10l-.9-2.7L2 6.5l2.1-.8z" stroke-width="1.5"/>
-              <path d="M19 14l.7 2.1 2.1.7-2.1.7-.7 2.1-.7-2.1-2.1-.7 2.1-.7z" stroke-width="1.5"/>
-            </svg>
-          </div>
-        </div>
-        <div class="step-card-body">
-          <h3 class="step-title" data-i18n="step2_title">RebSam cherche pour toi</h3>
-          <p class="step-desc" data-i18n="step2_desc">En quelques secondes, il explore des milliers de pages de textes sacrés validés — à travers nos sources, pas sur le net&nbsp;!</p>
-        </div>
-      </div>
-
-      <!-- Step 3 — Open scroll/star icon -->
-      <div class="step-card">
-        <div class="step-card-top">
-          <div class="step-card-icon step-icon-cyan">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              <polyline points="9 12 11 14 15 10"/>
-            </svg>
-          </div>
-        </div>
-        <div class="step-card-body">
-          <h3 class="step-title" data-i18n="step3_title">Ta réponse arrive</h3>
-          <p class="step-desc" data-i18n="step3_desc">Tu reçois une réponse claire et chaleureuse, avec le Siman et le Seif exacts — pour vérifier toi-même et continuer ton étude.</p>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
 
 
 
@@ -1501,60 +1407,8 @@
       <h2 data-i18n="rag_title">Comment le RAG élimine les hallucinations ?</h2>
       <p data-i18n="rag_sub">Contrairement aux IA classiques qui "inventent" leurs réponses, RebSam utilise la Retrieval-Augmented Generation — une méthode qui force l'IA à ne répondre qu'à partir de textes réels et vérifiés.</p>
     </div>
-    <div class="rag-flow" data-reveal data-reveal-delay="100">
-
-      <!-- Step 1 -->
-      <div class="rag-step">
-        <div class="rag-step-icon rag-icon-blue">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        </div>
-        <div class="rag-step-num" data-i18n="rag_step_num1">Étape 1</div>
-        <div class="rag-step-label" data-i18n="rag_step1_label">Ta question</div>
-        <div class="rag-step-desc" data-i18n="rag_step1_desc">Tu poses ta question en hébreu, français ou anglais — comme tu parles naturellement.</div>
-      </div>
-
-      <div class="rag-arrow">→</div>
-
-      <!-- Step 2 -->
-      <div class="rag-step">
-        <div class="rag-step-icon rag-icon-indigo">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </div>
-        <div class="rag-step-num" data-i18n="rag_step_num2">Étape 2</div>
-        <div class="rag-step-label" data-i18n="rag_step2_label">Recherche vectorielle</div>
-        <div class="rag-step-desc" data-i18n="rag_step2_desc">Le moteur de recherche vectoriel identifie les passages les plus pertinents parmi des milliers de sifrey kodesh.</div>
-      </div>
-
-      <div class="rag-arrow">→</div>
-
-      <!-- Step 3 -->
-      <div class="rag-step">
-        <div class="rag-step-icon rag-icon-purple">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        </div>
-        <div class="rag-step-num" data-i18n="rag_step_num3">Étape 3</div>
-        <div class="rag-step-label" data-i18n="rag_step3_label">Passages extraits</div>
-        <div class="rag-step-desc" data-i18n="rag_step3_desc">Les extraits les plus pertinents sont sélectionnés et transmis à l'IA — uniquement depuis nos sources vérifiées.</div>
-      </div>
-
-      <div class="rag-arrow">→</div>
-
-      <!-- Step 4 -->
-      <div class="rag-step">
-        <div class="rag-step-icon rag-icon-green">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
-        </div>
-        <div class="rag-step-num" data-i18n="rag_step_num4">Étape 4</div>
-        <div class="rag-step-label" data-i18n="rag_step4_label">Réponse sourcée</div>
-        <div class="rag-step-desc" data-i18n="rag_step4_desc">L'IA synthétise une réponse à partir de ces passages uniquement, avec le Siman et le Seif exacts.</div>
-      </div>
-
-    </div>
-
-    <!-- Key insight -->
-    <div class="rag-insight" data-reveal data-reveal-delay="200">
-      <div class="rag-insight-icon">💡</div>
-      <p><strong data-i18n="rag_insight_key">Le secret :</strong> <span data-i18n="rag_insight_text">L'IA ne "sait" rien par elle-même — elle lit uniquement les passages que le moteur RAG lui transmet, tous extraits de nos sifrey kodesh vérifiés. Impossible d'inventer ce qui n'y est pas.</span></p>
+    <div class="rag-explainer" data-reveal data-reveal-delay="100">
+      <p class="rag-explainer-text" data-i18n="rag_explainer">Une IA classique génère ses réponses depuis tout ce qu'elle a mémorisé — et peut inventer des informations fausses qui sonnent vraies. C'est ce qu'on appelle une «hallucination».<br><br>RebSam fonctionne autrement : avant chaque réponse, il cherche dans sa bibliothèque de séfarim vérifiés et ne s'appuie que sur les passages réels qu'il y trouve. S'il ne trouve rien d'écrit sur le sujet, il ne répond pas.<br><br><strong>Résultat : zéro invention, zéro hallucination.</strong> Chaque réponse cite le Siman et le Seif exacts — tu peux vérifier toi-même.</p>
     </div>
   </div>
 </section>
@@ -1563,7 +1417,7 @@
 <section id="sources" data-reveal>
   <div class="container">
     <div class="section-heading">
-      <span class="section-eyebrow" data-i18n="sources_eyebrow">Bibliothèque Sacrée</span>
+      <span class="section-eyebrow" data-i18n="sources_eyebrow">Les livres de RebSam</span>
       <h2 class="font-logo" data-i18n="sources_title">Des milliers de Sifrey Kodesh. Zéro Invention.</h2>
       <p data-i18n="sources_sub">Chaque réponse de RebSam est ancrée dans l'un de ces textes fondamentaux — avec le Livre, le Siman et le Seif exacts.</p>
     </div>
@@ -1758,8 +1612,8 @@
         <p class="footer-col-title" data-i18n="footer_nav_title">Navigation</p>
         <ul>
           <li><a href="#" onclick="closeMobileMenu();return false;" data-i18n="footer_home">Accueil</a></li>
-          <li><a href="#how-it-works" data-i18n="footer_how">Comment ça marche</a></li>
-          <li><a href="#pillars" data-i18n="footer_values">Nos Valeurs</a></li>
+          <li><a href="#rag-tech" data-i18n="footer_how">Comment ça marche</a></li>
+          <li><a href="#sources" data-i18n="footer_values">Nos Valeurs</a></li>
           <li><a href="#faq" data-i18n="footer_faq">FAQ</a></li>
         </ul>
       </div>
@@ -1787,7 +1641,7 @@
 <button class="float-btn" id="btn-chat" onclick="openChat()">
   <div class="float-inner float-chat-bg">
     <div class="float-glow float-chat-glow"></div>
-    <span class="float-label" data-i18n="float_chat">Pose ta première question ici</span>
+    <span class="float-label" data-i18n="float_chat">Pose ta première question à RebSam</span>
     <span class="float-icon">💬</span>
   </div>
 </button>
@@ -1795,7 +1649,7 @@
 <a class="float-btn" id="btn-wa" href="https://wa.me/972555005493" target="_blank" rel="noopener noreferrer" onclick="trackWAClick()">
   <div class="float-inner float-wa-bg">
     <div class="float-glow float-wa-glow"></div>
-    <span class="float-label float-wa-label">Chat avec RebSam sur WhatsApp</span>
+    <span class="float-label float-wa-label">Ton RebSam sur WhatsApp</span>
     <span class="float-icon">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="color:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.556 4.112 1.524 5.842L.057 23.882a.5.5 0 0 0 .61.61l6.04-1.467A11.946 11.946 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.944 9.944 0 0 1-5.072-1.382l-.363-.216-3.748.91.928-3.748-.236-.374A9.944 9.944 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
     </span>
@@ -1856,7 +1710,7 @@
       hero_pt1: 'Répond aux multitudes de questions qui émanent de chaque aspect de la vie juive, avec précision et clarté.',
       hero_pt2: 'Aucune "hallucination" — uniquement des réponses sourcées et vérifiables, issues de nos textes sacrés.',
       hero_pt3: 'Digitalise et rend interactive une bibliothèque immense qui serait autrement difficile à consulter rapidement.',
-      hero_cta2: 'Découvrir le Projet', hero_cta: 'Pose ta première question ici',
+      hero_cta2: 'Découvrir le Projet', hero_cta: 'Pose ta première question à RebSam',
       pillars_eyebrow: 'Nos engagements', pillars_title: 'Nos 3 Piliers de Confiance',
       pillars_sub: 'RebSam répond toujours selon ces 3 engagements — sans exception.',
       p1_title: 'Sources Validées', p1_desc: 'Zéro invention, zéro "hallucination". Les réponses sont exclusivement fondées sur nos textes sacrés : Shulchan Aruch, Mishna Broura, Yalkut Yossef, Tossefot, livres du Ari Zal et décisionnaires contemporains.',
@@ -1883,20 +1737,16 @@
       footer_copyright: '© 2026 RebSam. Tous droits réservés.',
       footer_privacy: 'Confidentialité', footer_legal: 'Mentions Légales',
       rag_eyebrow: 'Technologie', rag_title: 'Comment le RAG élimine les hallucinations ?',
-      rag_sub: 'Contrairement aux IA classiques qui "inventent" leurs réponses, RebSam utilise la Retrieval-Augmented Generation — une méthode qui force l\'IA à ne répondre qu\'à partir de textes réels et vérifiés.',
-      rag_step_num1: 'Étape 1', rag_step1_label: 'Ta question', rag_step1_desc: 'Tu poses ta question en hébreu, français ou anglais — comme tu parles naturellement.',
-      rag_step_num2: 'Étape 2', rag_step2_label: 'Recherche vectorielle', rag_step2_desc: 'Le moteur de recherche vectoriel identifie les passages les plus pertinents parmi des milliers de sifrey kodesh.',
-      rag_step_num3: 'Étape 3', rag_step3_label: 'Passages extraits', rag_step3_desc: 'Les extraits les plus pertinents sont sélectionnés et transmis à l\'IA — uniquement depuis nos sources vérifiées.',
-      rag_step_num4: 'Étape 4', rag_step4_label: 'Réponse sourcée', rag_step4_desc: 'L\'IA synthétise une réponse à partir de ces passages uniquement, avec le Siman et le Seif exacts.',
-      rag_insight_key: 'Le secret :', rag_insight_text: 'L\'IA ne "sait" rien par elle-même — elle lit uniquement les passages que le moteur RAG lui transmet, tous extraits de nos sifrey kodesh vérifiés. Impossible d\'inventer ce qui n\'y est pas.',
-      sources_eyebrow: 'Bibliothèque Sacrée',
+      rag_sub: 'RebSam utilise une technologie appelée RAG (Retrieval-Augmented Generation) pour garantir des réponses 100% ancrées dans les textes sacrés.',
+      rag_explainer: 'Une IA classique génère ses réponses depuis tout ce qu\'elle a mémorisé — et peut inventer des informations fausses qui sonnent vraies. C\'est ce qu\'on appelle une «hallucination».<br><br>RebSam fonctionne autrement : avant chaque réponse, il cherche dans sa bibliothèque de séfarim vérifiés et ne s\'appuie que sur les passages réels qu\'il y trouve. S\'il ne trouve rien d\'écrit sur le sujet, il ne répond pas.<br><br><strong>Résultat : zéro invention, zéro hallucination.</strong> Chaque réponse cite le Siman et le Seif exacts — tu peux vérifier toi-même.',
+      sources_eyebrow: 'Les livres de RebSam',
       sources_title: 'Des milliers de Sifrey Kodesh. Zéro Invention.',
       sources_sub: 'Chaque réponse de RebSam est ancrée dans l\'un de ces textes fondamentaux — avec le Livre, le Siman et le Seif exacts.',
       sources_more_count: 'des milliers d\'autres sifrey kodesh',
       chat_placeholder: 'Pose ta question...',
       chat_hint: 'Les données restent privées. Circuit fermé garanti.',
       chat_status: 'En ligne · Je vous réponds tout de suite…',
-      float_chat: 'Pose ta première question ici'
+      float_chat: 'Pose ta première question à RebSam'
     },
     en: {
       nav_home: 'Home', nav_how: 'How it works', nav_values: 'Our Values',
@@ -1906,7 +1756,7 @@
       hero_pt1: 'Instant Halachic consultation for the global Jewish community.',
       hero_pt2: 'Eliminates hallucinations by answering only from verified sacred sources.',
       hero_pt3: 'Digitizes an immense library of texts, making them instantly searchable.',
-      hero_cta2: 'Discover the Project', hero_cta: 'Ask your first question here',
+      hero_cta2: 'Discover the Project', hero_cta: 'Ask your first question to RebSam',
       pillars_eyebrow: 'Our commitments', pillars_title: 'Our 3 Pillars of Trust',
       pillars_sub: 'RebSam always answers according to these 3 commitments — no exceptions.',
       p1_title: 'Validated Sources', p1_desc: 'No invention. No hallucination. Every answer is grounded in sacred texts — Shulchan Aruch, Mishna Berura, contemporary Poskim and more.',
@@ -1933,20 +1783,16 @@
       footer_copyright: '© 2026 RebSam. All rights reserved.',
       footer_privacy: 'Privacy', footer_legal: 'Legal',
       rag_eyebrow: 'Technology', rag_title: 'How does RAG eliminate hallucinations?',
-      rag_sub: 'Unlike standard AI models that "make up" answers, RebSam uses Retrieval-Augmented Generation — a method that forces the AI to answer only from real, verified texts.',
-      rag_step_num1: 'Step 1', rag_step1_label: 'Your question', rag_step1_desc: 'You ask your question in Hebrew, French or English — naturally, as you speak.',
-      rag_step_num2: 'Step 2', rag_step2_label: 'Vector search', rag_step2_desc: 'The vector search engine identifies the most relevant passages across thousands of verified Sifrey Kodesh.',
-      rag_step_num3: 'Step 3', rag_step3_label: 'Passages retrieved', rag_step3_desc: 'The most relevant excerpts are selected and passed to the AI — only from our verified sources.',
-      rag_step_num4: 'Step 4', rag_step4_label: 'Sourced answer', rag_step4_desc: 'The AI generates an answer based solely on those passages, with the exact Siman and Seif.',
-      rag_insight_key: 'The secret:', rag_insight_text: 'The AI "knows" nothing on its own — it reads only the passages the RAG engine provides, all drawn from our verified Sifrey Kodesh. It cannot invent what isn\'t there.',
-      sources_eyebrow: 'Sacred Library',
+      rag_sub: 'RebSam uses a technology called RAG (Retrieval-Augmented Generation) to guarantee 100% responses grounded in sacred texts.',
+      rag_explainer: 'Standard AI generates answers from everything it has ever learned — and can make up plausible-sounding but false information. This is called a "hallucination".<br><br>RebSam works differently: before every response, it searches its library of verified Sifrey Kodesh and builds its answer solely from the real passages it finds there. If nothing is found on the topic, it doesn\'t answer.<br><br><strong>Result: zero invention, zero hallucination.</strong> Every answer cites the exact Siman and Seif — you can verify it yourself.',
+      sources_eyebrow: 'RebSam\'s Books',
       sources_title: 'Thousands of Sifrey Kodesh. Zero Invention.',
       sources_sub: 'Every RebSam answer is anchored in one of these foundational texts — with the exact Book, Siman and Seif.',
       sources_more_count: 'thousands of other Sifrey Kodesh',
       chat_placeholder: 'Ask your question...',
       chat_hint: 'Data stays private. Closed circuit guaranteed.',
       chat_status: 'Online · Answering right away…',
-      float_chat: 'Ask a question'
+      float_chat: 'Ask your first question to RebSam'
     },
     he: {
       nav_home: 'ראשי', nav_how: 'איך זה עובד', nav_values: 'הערכים שלנו',
@@ -1956,7 +1802,7 @@
       hero_pt1: '.שאלות הלכתיות מיידיות לקהילה היהודית העולמית',
       hero_pt2: '.ללא הזיות — ענה רק ממקורות מאומתים של חכמינו',
       hero_pt3: '.מאגר ענק של ספרי קודש — נגיש ומיידי',
-      hero_cta2: 'גלה את הפרויקט', hero_cta: 'שאל את השאלה הראשונה שלך כאן',
+      hero_cta2: 'גלה את הפרויקט', hero_cta: 'שאל את השאלה הראשונה שלך ל-RebSam',
       pillars_eyebrow: 'ההתחייבויות שלנו', pillars_title: '3 עמודי האמון שלנו',
       pillars_sub: '.רב-סמי תמיד עונה לפי 3 ההתחייבויות האלה — ללא יוצא מן הכלל',
       p1_title: 'מקורות מאומתים', p1_desc: '.ללא המצאות. ללא הזיות. כל תשובה מעוגנת בטקסטים קדושים — שולחן ערוך, משנה ברורה, פוסקים עכשוויים ועוד',
@@ -1983,20 +1829,16 @@
       footer_copyright: '.כל הזכויות שמורות 2026 RebSam ©',
       footer_privacy: 'פרטיות', footer_legal: 'תנאי שימוש',
       rag_eyebrow: 'טכנולוגיה', rag_title: 'איך RAG מונע הזיות?',
-      rag_sub: 'בניגוד לבינות מלאכותיות רגילות שממציאות תשובות, רב-סמי משתמש ב-Retrieval-Augmented Generation — שיטה שמחייבת את הבינה המלאכותית לענות רק מטקסטים אמיתיים ומאומתים.',
-      rag_step_num1: 'שלב 1', rag_step1_label: 'השאלה שלך', rag_step1_desc: '.אתה שואל שאלה בעברית, צרפתית או אנגלית — בדיוק כמו שאתה מדבר',
-      rag_step_num2: 'שלב 2', rag_step2_label: 'חיפוש וקטורי', rag_step2_desc: '.מנוע החיפוש הוקטורי מאתר את הקטעים הרלוונטיים ביותר מתוך אלפי ספרי קודש',
-      rag_step_num3: 'שלב 3', rag_step3_label: 'קטעים שחולצו', rag_step3_desc: '.הקטעים הרלוונטיים ביותר נבחרים ומועברים לבינה המלאכותית — אך ורק מהמקורות המאומתים שלנו',
-      rag_step_num4: 'שלב 4', rag_step4_label: 'תשובה עם מקורות', rag_step4_desc: '.הבינה המלאכותית מייצרת תשובה על בסיס הקטעים האלה בלבד, עם הסימן והסעיף המדויקים',
-      rag_insight_key: ':הסוד', rag_insight_text: '.הבינה המלאכותית לא "יודעת" כלום בעצמה — היא קוראת רק את הקטעים שמנוע ה-RAG מעביר לה, כולם מתוך ספרי הקודש המאומתים שלנו. אי אפשר להמציא מה שלא כתוב שם',
-      sources_eyebrow: 'ספריית הקודש',
+      rag_sub: '.רב-סמי משתמש בטכנולוגיית RAG (Retrieval-Augmented Generation) כדי להבטיח תשובות המעוגנות 100% בטקסטים הקדושים',
+      rag_explainer: 'בינה מלאכותית רגילה מייצרת תשובות מתוך כל מה שלמדה — ויכולה להמציא מידע שגוי אך סביר. זה נקרא "הזיה".<br><br>רב-סמי פועל אחרת: לפני כל תשובה, הוא מחפש בספריית ספרי הקודש המאומתים שלו ומבסס את תשובתו אך ורק על הקטעים האמיתיים שנמצאו. אם לא נמצא כלום בנושא — הוא לא עונה.<br><br><strong>.תוצאה: אפס המצאות, אפס הזיות</strong> כל תשובה מצטטת את הסימן והסעיף המדויקים — תוכל לבדוק בעצמך.',
+      sources_eyebrow: 'ספרי RebSam',
       sources_title: '.אלפי ספרי קודש. אפס המצאות.',
       sources_sub: '.כל תשובה של רב-סמי מעוגנת באחד מהטקסטים היסודיים הללו — עם הספר, הסימן והסעיף המדויקים',
       sources_more_count: 'אלפי ספרי קודש נוספים',
       chat_placeholder: 'שאל את שאלתך...',
       chat_hint: '.הנתונים נשארים פרטיים. מעגל סגור מובטח',
       chat_status: 'מקוון · עונה מיד…',
-      float_chat: 'שאל שאלה'
+      float_chat: 'שאל ל-RebSam'
     }
   };
 
