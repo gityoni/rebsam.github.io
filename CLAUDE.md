@@ -83,7 +83,18 @@ Ce dégradé bleu→violet→corail est le fil conducteur visuel :
 - Fallback JS si marked non chargé : gère `---` → `<hr>`, `**` → `<b>`, `*` → `<em>`, `#` → `<strong>`
 - `---` du prompt → `<hr>` stylé avec le dégradé identitaire (hauteur 2px)
 
+## PWA — manifest.json (état [2026-03-23])
+| Champ | Valeur |
+|---|---|
+| `id` | `fr.rebsam.app` |
+| `display_override` | `["window-controls-overlay", "standalone", "minimal-ui"]` |
+| `related_applications` | Play Store `com.rebsam.app` |
+| `iarc_rating_id` | placeholder à remplacer (Play Console → Classification du contenu) |
+| `screenshots` | `screenshot-mobile.png` (1170×2526) + `screenshot-wide.png` (997×900) |
+| Score PWABuilder | ~23/45 avant deploy — à re-tester après merge |
+
 ## État actuel / En cours
 - Voir TASKS.md
-- Branche active : `claude/update-claude-docs-WytQh` — fixes sources/emoji en attente de merge sur main
-- Problème sources non résolu en prod : hébreu avant français + ouvrages secondaires avant primaires (voir TASKS.md section PRIORITÉ)
+- Branche active : `claude/update-claude-docs-WytQh` — PWA manifest complet + fixes sources/emoji
+- À merger sur main pour activer tous les changements
+- Problème sources non résolu en prod : hiérarchie primaire/secondaire à fixer dans prompt.txt
