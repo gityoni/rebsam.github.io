@@ -33,12 +33,18 @@ def add_cors(resp):
         resp.headers[k] = v
     return resp
 
+# ── Health check (Cloud Run startup/liveness probe) ───────
+@app.route("/healthz")
+def healthz():
+    return "ok", 200
+
 # ── Exceptions custom ─────────────────────────────────────
 class ClaudeRateLimitError(Exception):
     """Levée quand Claude Vertex AI 429 après tous les retries → déclenche fallback Gemini."""
 
 # ── Config ────────────────────────────────────────────────
-SECRET_TOKEN       = os.environ.get("SECRET_TOKEN", "rebsam-make-2026")
+SECRET_TOKEN       = os.environ.get("SECRET_TOKEN")
+assert SECRET_TOKEN, "FATAL: SECRET_TOKEN env var is not set"
 PROJECT_ID         = os.environ.get("GCP_PROJECT", "rebbe-sam-agent")
 LOCATION           = os.environ.get("GCP_LOCATION", "europe-west1")
 MODEL              = os.environ.get("GEMINI_MODEL", "claude-sonnet-4-6-20251001")
