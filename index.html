@@ -1431,6 +1431,46 @@
 
 
 
+<!-- STATS — Chiffres clés -->
+<section id="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-icon">📚</span>
+        <div class="bucket-wrap">
+          <div class="stat-number" id="cnt-books">0</div>
+          <div class="stat-label">Sifrey Kodesh</div>
+          <div class="bucket-bar"><div class="bucket-fill" id="fill-books"></div></div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">⚡</span>
+        <div class="bucket-wrap">
+          <div class="stat-number" id="cnt-speed">0</div>
+          <div class="stat-label">Seconde de réponse</div>
+          <div class="bucket-bar"><div class="bucket-fill" id="fill-speed"></div></div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">🛡️</span>
+        <div class="bucket-wrap">
+          <div class="stat-number" id="cnt-data">0</div>
+          <div class="stat-label">GB de textes sacrés</div>
+          <div class="bucket-bar"><div class="bucket-fill" id="fill-data"></div></div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">🌍</span>
+        <div class="bucket-wrap">
+          <div class="stat-number" id="cnt-lang">0</div>
+          <div class="stat-label">Langues</div>
+          <div class="bucket-bar"><div class="bucket-fill" id="fill-lang"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- RAG TECHNOLOGY SECTION -->
 <section id="rag-tech" data-reveal>
   <div class="container">
@@ -1439,8 +1479,80 @@
       <h2 data-i18n="rag_title">Comment le RAG élimine les hallucinations ?</h2>
       <p data-i18n="rag_sub">Contrairement aux IA classiques qui "inventent" leurs réponses, RebSam utilise la Retrieval-Augmented Generation — une méthode qui force l'IA à ne répondre qu'à partir de textes réels et vérifiés.</p>
     </div>
-    <div class="rag-explainer" data-reveal data-reveal-delay="100">
+    <div class="rag-flow" data-reveal data-reveal-delay="100">
+      <div class="rag-step">
+        <div class="rag-step-icon rag-icon-blue">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="rag-step-num">01</div>
+        <div class="rag-step-label" data-i18n="step1_title">Tu poses ta question</div>
+        <div class="rag-step-desc">En français, hébreu ou anglais</div>
+      </div>
+      <div class="rag-arrow">→</div>
+      <div class="rag-step">
+        <div class="rag-step-icon rag-icon-indigo">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <div class="rag-step-num">02</div>
+        <div class="rag-step-label">Scan des séfarim</div>
+        <div class="rag-step-desc">Milliers de pages analysées</div>
+      </div>
+      <div class="rag-arrow">→</div>
+      <div class="rag-step">
+        <div class="rag-step-icon rag-icon-purple">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <div class="rag-step-num">03</div>
+        <div class="rag-step-label">Passages exacts trouvés</div>
+        <div class="rag-step-desc">Uniquement les sources réelles</div>
+      </div>
+      <div class="rag-arrow">→</div>
+      <div class="rag-step">
+        <div class="rag-step-icon rag-icon-green">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="rag-step-num">04</div>
+        <div class="rag-step-label">Réponse sourcée</div>
+        <div class="rag-step-desc">Siman et Seif exacts cités</div>
+      </div>
+    </div>
+    <div class="rag-explainer" data-reveal data-reveal-delay="200">
       <p class="rag-explainer-text" data-i18n-html="rag_explainer">Une IA classique génère ses réponses depuis tout ce qu'elle a mémorisé — et peut inventer des informations fausses qui sonnent vraies. C'est ce qu'on appelle une «hallucination».<br><br>RebSam fonctionne autrement : avant chaque réponse, il cherche dans sa bibliothèque de séfarim vérifiés et ne s'appuie que sur les passages réels qu'il y trouve. S'il ne trouve rien d'écrit sur le sujet, il ne répond pas.<br><br><strong>Résultat : zéro invention, zéro hallucination.</strong> Chaque réponse cite le Siman et le Seif exacts — tu peux vérifier toi-même.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PILLARS — 3 Piliers de Confiance -->
+<section id="pillars" data-reveal>
+  <div class="container">
+    <div class="pillars-glow"></div>
+    <div class="section-heading">
+      <span class="section-eyebrow" data-i18n="pillars_eyebrow">Nos engagements</span>
+      <h2 data-i18n="pillars_title">Nos 3 Piliers de Confiance</h2>
+      <p data-i18n="pillars_sub">RebSam répond toujours selon ces 3 engagements — sans exception.</p>
+    </div>
+    <div class="pillars-grid">
+      <div class="feature-card" data-reveal data-reveal-delay="100">
+        <div class="feature-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <h3 data-i18n="p1_title">Sources Validées</h3>
+        <p data-i18n="p1_desc">Zéro invention, zéro "hallucination". Les réponses sont exclusivement fondées sur nos textes sacrés.</p>
+      </div>
+      <div class="feature-card" data-reveal data-reveal-delay="200">
+        <div class="feature-card-icon" style="background:rgba(16,185,129,.1);color:#10b981;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h3 data-i18n="p2_title">Privé &amp; Sécurisé</h3>
+        <p data-i18n="p2_desc">Circuit fermé. Vos questions les plus intimes restent strictement privées : zéro collecte, zéro revente.</p>
+      </div>
+      <div class="feature-card" data-reveal data-reveal-delay="300">
+        <div class="feature-card-icon" style="background:rgba(212,175,55,.1);color:#d4af37;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3 data-i18n="p3_title">Rapide &amp; Fiable</h3>
+        <p data-i18n="p3_desc">Réponses en moins d'une seconde. Technologie RAG qui scanne des milliers d'ouvrages de Halacha.</p>
+      </div>
     </div>
   </div>
 </section>
