@@ -566,7 +566,8 @@
     [dir="rtl"] .footer-bottom { direction: rtl; }
 
     /* FLOATING BUTTONS */
-    .float-btn { position: fixed; bottom: 1.5rem; z-index: 300; border: none; cursor: pointer; background: none; padding: 0; }
+    .float-btn { position: fixed; bottom: 1.5rem; z-index: 300; border: none; cursor: pointer; background: none; padding: 0; transition: opacity .35s, transform .35s; }
+    .float-btn.hero-visible { opacity: 0; transform: translateY(.75rem); pointer-events: none; }
     #btn-chat { left: max(1.5rem, calc((100vw - 1200px) / 2 + 1.5rem)); }
     #btn-wa   { right: max(1.5rem, calc((100vw - 1200px) / 2 + 1.5rem)); }
     .float-inner { position: relative; display: inline-flex; align-items: center; gap: .75rem; padding: .75rem 1.5rem; border-radius: var(--radius-full); font-family: 'Inter', sans-serif; font-weight: 600; font-size: .875rem; transition: all .3s cubic-bezier(.4,0,.2,1); }
@@ -579,7 +580,7 @@
     .float-wa-glow { background: #25D366; }
     .float-label { position: relative; z-index: 1; white-space: nowrap; }
     .float-icon { position: relative; z-index: 1; display: flex; }
-    @media (max-width: 767px) { .float-label { display: none; } .float-wa-label { display: inline; } }
+    @media (max-width: 767px) { .float-label { display: none; } }
 
     /* CHAT MODAL */
     #chat-overlay { display: none; position: fixed; inset: 0; z-index: 9999; align-items: center; justify-content: center; padding: 1.5rem; background: rgba(5,10,30,.58); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
@@ -2486,6 +2487,23 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
       });
     }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
     document.querySelectorAll('[data-reveal]').forEach(function(el) { obs.observe(el); });
+  })();
+
+  /* ═══════════════════════════════════════════════
+     FLOAT BUTTONS — masquer quand le hero est visible
+  ═══════════════════════════════════════════════ */
+  (function() {
+    const hero = document.getElementById('hero');
+    const floats = document.querySelectorAll('.float-btn');
+    if (!hero || !floats.length) return;
+    const heroObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        floats.forEach(function(btn) {
+          btn.classList.toggle('hero-visible', e.isIntersecting);
+        });
+      });
+    }, { threshold: 0.1 });
+    heroObs.observe(hero);
   })();
 
   /* ═══════════════════════════════════════════════
