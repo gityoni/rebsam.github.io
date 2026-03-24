@@ -650,6 +650,46 @@ def build_gemini_payload(system_prompt: str, history: list, message: str) -> dic
     }
 
 
+# ── Boost profiles — hiérarchie halachique des sources ────
+# Valeur boost : -1 à +1, ajoutée au score de pertinence Vertex AI Search.
+_BOOST_PROFILES: dict = {
+    # Halakha pratique : Choulhan Aroukh / MB / Posqim en tête
+    "halakha": [
+        {"condition": 'source_level: ANY("2")', "boost": 0.8},
+        {"condition": 'source_level: ANY("3")', "boost": 0.4},
+        {"condition": 'source_level: ANY("1")', "boost": 0.1},
+        {"condition": 'source_level: ANY("4")', "boost": -0.1},
+    ],
+    # Limoud Rishonim : Rashi, Tosafot, Rambam, Ramban, Rashba…
+    "rishonim": [
+        {"condition": 'source_level: ANY("3")', "boost": 0.9},
+        {"condition": 'source_level: ANY("1")', "boost": 0.6},
+        {"condition": 'source_level: ANY("2")', "boost": 0.2},
+        {"condition": 'source_level: ANY("4")', "boost": -0.1},
+    ],
+    # Limoud Talmudique pur : Guemara, Tanach, Midrash
+    "talmud": [
+        {"condition": 'source_level: ANY("1")', "boost": 0.9},
+        {"condition": 'source_level: ANY("3")', "boost": 0.4},
+        {"condition": 'source_level: ANY("2")', "boost": 0.1},
+        {"condition": 'source_level: ANY("4")', "boost": -0.1},
+    ],
+    # Kabbalah : Zohar > Arizal/Vital > Hassidout/BeSHT > Breslav
+    "kabbalah": [
+        {"condition": 'source_level: ANY("4")', "boost": 0.9},
+        {"condition": 'source_level: ANY("1")', "boost": 0.1},
+        {"condition": 'source_level: ANY("3")', "boost": 0.1},
+        {"condition": 'source_level: ANY("2")', "boost": -0.1},
+    ],
+    # Aggada / Moussar : Talmud + Rishonim équilibrés
+    "aggada": [
+        {"condition": 'source_level: ANY("1")', "boost": 0.6},
+        {"condition": 'source_level: ANY("3")', "boost": 0.5},
+        {"condition": 'source_level: ANY("4")', "boost": 0.2},
+        {"condition": 'source_level: ANY("2")', "boost": 0.1},
+    ],
+}
+
 # ── Outil Agentic RAG pour Claude ─────────────────────────
 CLAUDE_AGENTIC_TOOL = {
     "name": "chercher_halakha",
@@ -667,25 +707,39 @@ CLAUDE_AGENTIC_TOOL = {
     "input_schema": {
         "type": "object",
         "properties": {
+            "source_type": {
+                "type": "string",
+                "enum": ["halakha", "rishonim", "talmud", "kabbalah", "aggada"],
+                "description": (
+                    "OBLIGATOIRE : identifie le type de source dominant avant de chercher. "
+                    "halakha — question de pratique religieuse (Choulhan Aroukh, Mishna Beroura, responsa). "
+                    "rishonim — Limoud ciblant un Rishon nommé : Rashi, Tosafot, Rambam, Ramban, Rashba, Roch, Tur… "
+                    "talmud — question de Guemara, Tanach, Midrash (texte source pur). "
+                    "kabbalah — Zohar, Arizal, Rav Haïm Vital, Baal Chem Tov, Hassidout, Rabbi Nachman/Breslav. "
+                    "aggada — Moussar, récit, éthique, Aggada (mélange Talmud + Rishonim). "
+                    "Exemples : 'Selon les Tosafot…' → rishonim | 'Est-il permis de…' → halakha | "
+                    "'Comment le Zohar explique…' → kabbalah | 'La Guemara en Berakhot dit…' → talmud."
+                ),
+            },
             "queries": {
                 "type": "array",
                 "items": {"type": "string"},
                 "description": (
                     "OBLIGATOIRE : effectue TOUJOURS 3 requêtes distinctes (sauf salutations TYPE 0) : "
-                    "1) La Halakha générale (ex: שולחן ערוך + sujet). "
-                    "2) Les divergences : cherche explicitement 'אשכנז', 'רמ\"א', 'משנה ברורה' vs "
-                    "'ספרד', 'ילקוט יוסף', 'בן איש חי'. "
-                    "3) La profondeur spirituelle : concepts moraux ou kabbalistiques liés (ex: ליקוטי הלכות). "
+                    "1) La source principale nommée dans la question (ex: תוספות + sujet). "
+                    "2) Les sources parallèles ou divergentes du même niveau. "
+                    "3) La profondeur spirituelle ou kabbalistique liée (ex: ליקוטי הלכות). "
                     "TOUTES les requêtes en hébreu script (כתב עברי) — jamais en translittération ni français. "
-                    "Exemples requête 1: 'ברכה על מיץ עגבניות שולחן ערוך', "
-                    "requête 2: 'ברכה על מיץ עגבניות אשכנז ספרד', "
-                    "requête 3: 'מיץ עגבניות ליקוטי הלכות'."
+                    "Exemples (question sur Tosafot) : "
+                    "requête 1: 'תוספות מיני תרגימא מצה עשירה', "
+                    "requête 2: 'ראשונים מיני תרגימא פסח', "
+                    "requête 3: 'מצה עשירה ליקוטי הלכות'."
                 ),
                 "minItems": 3,
                 "maxItems": 3,
-            }
+            },
         },
-        "required": ["queries"],
+        "required": ["source_type", "queries"],
     },
 }
 
@@ -729,29 +783,35 @@ def _write_user_event(session_id: str, query: str, doc_names: list) -> None:
 
 
 # ── RAG Vertex AI Search standalone ───────────────────────
-def search_rag(query: str, top_k: int = 5, session_id: str = "") -> dict:
+def search_rag(query: str, top_k: int = 5, session_id: str = "", boost_profile: str = "halakha") -> dict:
     """
     Appelle Vertex AI Search et retourne {"text": str, "sources": list[dict]}.
+    boost_profile sélectionne le boostSpec (hiérarchie des sources) :
+      halakha | rishonim | talmud | kabbalah | aggada
     Si session_id fourni, envoie l'événement search à Vertex en daemon thread.
     """
     try:
         access_token = get_access_token()
+        search_payload: dict = {
+            "query": query,
+            "pageSize": top_k,
+            "queryExpansionSpec": {"condition": "AUTO"},
+            "spellCorrectionSpec": {"mode": "AUTO"},
+            "contentSearchSpec": {
+                "snippetSpec": {"returnSnippet": True},
+                "extractiveContentSpec": {"maxExtractiveAnswerCount": 3}
+            },
+        }
+        boost_specs = _BOOST_PROFILES.get(boost_profile, _BOOST_PROFILES["halakha"])
+        if boost_specs:
+            search_payload["boostSpec"] = {"conditionBoostSpecs": boost_specs}
         resp = http_requests.post(
             VERTEX_SEARCH_URL,
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type":  "application/json",
             },
-            json={
-                "query": query,
-                "pageSize": top_k,
-                "queryExpansionSpec": {"condition": "AUTO"},
-                "spellCorrectionSpec": {"mode": "AUTO"},
-                "contentSearchSpec": {
-                    "snippetSpec": {"returnSnippet": True},
-                    "extractiveContentSpec": {"maxExtractiveAnswerCount": 3}
-                }
-            },
+            json=search_payload,
             timeout=8,
         )
         resp.raise_for_status()
@@ -916,9 +976,11 @@ def call_claude(system_prompt: str, history: list, message: str, session_id: str
         reply = next((b.get("text", "") for b in content1 if b.get("type") == "text"), "")
         return reply, []
 
-    tool_id = tool_block.get("id", "")
-    queries = tool_block.get("input", {}).get("queries", [message])[:3]
-    logging.info(f"[RebSam/Claude] Agentic search — {len(queries)} requête(s) : {queries}")
+    tool_id      = tool_block.get("id", "")
+    tool_input   = tool_block.get("input", {})
+    queries      = tool_input.get("queries", [message])[:3]
+    source_type  = tool_input.get("source_type", "halakha")
+    logging.info(f"[RebSam/Claude] Agentic search — source_type:{source_type} {len(queries)} requête(s) : {queries}")
 
     # Vertex AI Search — requêtes parallèles via ThreadPoolExecutor
     from concurrent.futures import ThreadPoolExecutor
@@ -926,7 +988,10 @@ def call_claude(system_prompt: str, history: list, message: str, session_id: str
     all_sources: list = []
     seen_titles: set  = set()
     with ThreadPoolExecutor(max_workers=len(queries)) as ex:
-        results = list(ex.map(lambda q: search_rag(q, top_k=4, session_id=session_id), queries))
+        results = list(ex.map(
+            lambda q: search_rag(q, top_k=4, session_id=session_id, boost_profile=source_type),
+            queries
+        ))
     for result in results:
         if result["text"]:
             all_text.append(result["text"])
@@ -1527,13 +1592,18 @@ def chat_stream():
                 yield "data: [DONE]\n\n"
                 return
 
-            tool_id = tool_block.get("id", "")
-            queries = tool_block.get("input", {}).get("queries", [message])[:3]
-            logging.info(f"[RebSam/Claude/Stream] Agentic search — {len(queries)} requête(s) : {queries}")
+            tool_id     = tool_block.get("id", "")
+            tool_input  = tool_block.get("input", {})
+            queries     = tool_input.get("queries", [message])[:3]
+            source_type = tool_input.get("source_type", "halakha")
+            logging.info(f"[RebSam/Claude/Stream] Agentic search — source_type:{source_type} {len(queries)} requête(s) : {queries}")
 
             from concurrent.futures import ThreadPoolExecutor
             with ThreadPoolExecutor(max_workers=len(queries)) as ex:
-                rag_results = list(ex.map(lambda q: search_rag(q, top_k=4, session_id=session_id), queries))
+                rag_results = list(ex.map(
+                    lambda q: search_rag(q, top_k=4, session_id=session_id, boost_profile=source_type),
+                    queries
+                ))
 
             all_text, all_sources, seen_titles = [], [], set()
             for result in rag_results:
