@@ -342,10 +342,8 @@
     .hero-point:hover { box-shadow: 0 6px 20px rgba(46,107,230,.1); transform: translateY(-2px); }
     .hero-point .arr { font-size: 1.4rem; flex-shrink: 0; font-style: normal; line-height: 1; }
     .hero-point span { font-size: clamp(.82rem,1.3vw,.92rem); font-weight: 600; color: var(--secondary-dark); line-height: 1.4; }
-    [dir="rtl"] .hero-point { text-align: right; padding: .85rem 1.2rem; }
-    [dir="rtl"] .hero-point span { font-size: clamp(1rem, 1.8vw, 1.1rem); font-family: 'Heebo', sans-serif; }
-    [dir="rtl"] .hero-points { max-width: 600px; gap: .75rem; }
-    [dir="rtl"] .hero-point .arr { font-size: 1.5rem; }
+    [dir="rtl"] .hero-point { text-align: right; }
+    [dir="rtl"] .hero-point span { font-size: clamp(.86rem, 1.35vw, .95rem); font-family: 'Heebo', sans-serif; }
 
     .hero-trust { font-size: 1rem; font-weight: 500; color: rgba(55,65,81,.6); margin-bottom: 1rem; letter-spacing: -.01em; animation: fadeUp .6s .14s ease both; }
     html.dark .hero-trust { color: rgba(203,213,225,.8); }
@@ -1448,7 +1446,7 @@
         <span class="stat-icon">📚</span>
         <div class="bucket-wrap">
           <div class="stat-number" id="cnt-books">0</div>
-          <div class="stat-label">Sifrey Kodesh</div>
+          <div class="stat-label" data-i18n="stat_books">Sifrey Kodesh</div>
           <div class="bucket-bar"><div class="bucket-fill" id="fill-books"></div></div>
         </div>
       </div>
@@ -1456,7 +1454,7 @@
         <span class="stat-icon">⚡</span>
         <div class="bucket-wrap">
           <div class="stat-number" id="cnt-speed">0</div>
-          <div class="stat-label">Seconde de réponse</div>
+          <div class="stat-label" data-i18n="stat_speed">Seconde de réponse</div>
           <div class="bucket-bar"><div class="bucket-fill" id="fill-speed"></div></div>
         </div>
       </div>
@@ -1464,7 +1462,7 @@
         <span class="stat-icon">🛡️</span>
         <div class="bucket-wrap">
           <div class="stat-number" id="cnt-data">0</div>
-          <div class="stat-label">GB de textes sacrés</div>
+          <div class="stat-label" data-i18n="stat_data">GB de textes sacrés</div>
           <div class="bucket-bar"><div class="bucket-fill" id="fill-data"></div></div>
         </div>
       </div>
@@ -1472,7 +1470,7 @@
         <span class="stat-icon">🌍</span>
         <div class="bucket-wrap">
           <div class="stat-number" id="cnt-lang">0</div>
-          <div class="stat-label">Langues</div>
+          <div class="stat-label" data-i18n="stat_lang">Langues</div>
           <div class="bucket-bar"><div class="bucket-fill" id="fill-lang"></div></div>
         </div>
       </div>
@@ -1642,7 +1640,7 @@
     </div>
 
     <div class="sources-more" data-reveal data-reveal-delay="400">
-      <p>… et <span data-i18n="sources_more_count">des milliers d'autres sifrey kodesh</span> numérisés, vérifiés, indexés.</p>
+      <p data-i18n-html="sources_more_full">… et <span class="sources-more-highlight">des milliers d'autres sifrey kodesh</span> numérisés, vérifiés, indexés.</p>
     </div>
   </div>
 </section>
@@ -1867,6 +1865,8 @@
       sources_title: 'Des milliers de Sifrey Kodesh. Zéro Invention.',
       sources_sub: 'Chaque réponse de RebSam est ancrée dans l\'un de ces textes fondamentaux — avec le Livre, le Siman et le Seif exacts.',
       sources_more_count: 'des milliers d\'autres sifrey kodesh',
+      sources_more_full: '… et <span>des milliers d\'autres sifrey kodesh</span> numérisés, vérifiés, indexés.',
+      stat_books: 'Sifrey Kodesh', stat_speed: 'Seconde de réponse', stat_data: 'GB de textes sacrés', stat_lang: 'Langues',
       chat_placeholder: 'Pose ta question...',
       chat_hint: 'Les données restent privées. Circuit fermé garanti.',
       chat_status: 'En ligne · Je vous réponds tout de suite…',
@@ -1920,6 +1920,8 @@
       sources_title: 'Thousands of Sifrey Kodesh. Zero Invention.',
       sources_sub: 'Every RebSam answer is anchored in one of these foundational texts — with the exact Book, Siman and Seif.',
       sources_more_count: 'thousands of other Sifrey Kodesh',
+      sources_more_full: '… and <span>thousands of other Sifrey Kodesh</span> digitized, verified, indexed.',
+      stat_books: 'Sifrey Kodesh', stat_speed: 'Second response', stat_data: 'GB of sacred texts', stat_lang: 'Languages',
       chat_placeholder: 'Ask your question...',
       chat_hint: 'Data stays private. Closed circuit guaranteed.',
       chat_status: 'Online · Answering right away…',
@@ -1973,6 +1975,8 @@
       sources_title: '.אלפי ספרי קודש. אפס המצאות.',
       sources_sub: '.כל תשובה של רבי סאם מעוגנת באחד מהטקסטים היסודיים הללו — עם הספר, הסימן והסעיף המדויקים',
       sources_more_count: 'אלפי ספרי קודש נוספים',
+      sources_more_full: '… ו<span>אלפי ספרי קודש נוספים</span> ממוינים, מאומתים, מאונדקסים.',
+      stat_books: 'ספרי קודש', stat_speed: 'שניית תגובה', stat_data: 'ג׳יגהבייט טקסטים', stat_lang: 'שפות',
       chat_placeholder: 'שאל את שאלתך...',
       chat_hint: '.הנתונים נשארים פרטיים. מעגל סגור מובטח',
       chat_status: 'מקוון · עונה מיד…',
