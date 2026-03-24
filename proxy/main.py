@@ -1066,7 +1066,11 @@ def call_llm(system_prompt: str, history: list, message: str, session_id: str = 
         # Fallback Gemini (rate-limit ou toute autre erreur Claude)
         global VERTEX_URL
         _prev_url = VERTEX_URL
+        _fb_global = any(GEMINI_FALLBACK_MODEL.startswith(m) for m in _GLOBAL_MODELS)
         VERTEX_URL = (
+            f"https://aiplatform.googleapis.com/v1/projects/{PROJECT_ID}"
+            f"/locations/global/publishers/google/models/{GEMINI_FALLBACK_MODEL}:generateContent"
+            if _fb_global else
             f"https://{LOCATION}-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}"
             f"/locations/{LOCATION}/publishers/google/models/{GEMINI_FALLBACK_MODEL}:generateContent"
         )
