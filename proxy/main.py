@@ -612,7 +612,10 @@ def build_gemini_payload(system_prompt: str, history: list, message: str) -> dic
         "generationConfig": {
             "temperature": 0.35,
             "maxOutputTokens": 2048,
-            "topP": 0.85
+            "topP": 0.85,
+            "thinkingConfig": {
+                "thinkingBudget": -1
+            }
         },
         "safetySettings": [
             {"category": "HARM_CATEGORY_HARASSMENT",        "threshold": "BLOCK_ONLY_HIGH"},
@@ -1041,7 +1044,7 @@ def call_gemini(system_prompt: str, history: list, message: str) -> tuple:
 
 
 # ── Routeur LLM universel ─────────────────────────────────
-GEMINI_FALLBACK_MODEL = os.environ.get("GEMINI_FALLBACK_MODEL", "gemini-2.0-pro-exp")
+GEMINI_FALLBACK_MODEL = os.environ.get("GEMINI_FALLBACK_MODEL", "gemini-3-flash-preview")
 
 
 def call_llm(system_prompt: str, history: list, message: str, session_id: str = "") -> tuple:
@@ -1066,7 +1069,11 @@ def call_llm(system_prompt: str, history: list, message: str, session_id: str = 
         # Fallback Gemini (rate-limit ou toute autre erreur Claude)
         global VERTEX_URL
         _prev_url = VERTEX_URL
+        _fb_global = any(GEMINI_FALLBACK_MODEL.startswith(m) for m in _GLOBAL_MODELS)
         VERTEX_URL = (
+            f"https://aiplatform.googleapis.com/v1/projects/{PROJECT_ID}"
+            f"/locations/global/publishers/google/models/{GEMINI_FALLBACK_MODEL}:generateContent"
+            if _fb_global else
             f"https://{LOCATION}-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}"
             f"/locations/{LOCATION}/publishers/google/models/{GEMINI_FALLBACK_MODEL}:generateContent"
         )
