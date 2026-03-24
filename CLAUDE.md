@@ -118,5 +118,12 @@ Ce dégradé bleu→violet→corail est le fil conducteur visuel :
 
 ## État actuel / En cours
 - Voir TASKS.md
-- Branche active : `claude/update-claude-docs-WytQh` — PWA manifest + fixes sources/emoji + boost profiles recalibrés
+- Branche active : `claude/update-claude-docs-WytQh` — PWA manifest + fixes sources/emoji + boost profiles recalibrés + fix UI chat (fond neutre, gradient header)
 - À merger sur main pour activer tous les changements
+
+## Design system — Couleurs de fond
+| Zone | Couleur | Note |
+|---|---|---|
+| `#chat-box` | `#f8fafc` | Blanc-gris neutre |
+| `.chat-input-area` | `#f0f4fb` | Bleuté léger, harmonisé header |
+| `.chat-header` | `linear-gradient(135deg, #5B8EF0 0%, #7C6FCD 50%, #E07B5A 100%)` | Dégradé identitaire standard |
