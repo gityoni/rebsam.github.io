@@ -18,6 +18,7 @@
 - **[2026-03-18] Prompt : règle FLUIDITÉ & HUMANITÉ** — Transitions naturelles, variété formules d'entrée
 - **[2026-03-22] Sources + emoji** — Règle prompt sources (français d'abord), post-processing `_fix_hebrew_first_sources`, emoji `📜→⚖️`, anti-anglicismes
 - **[2026-03-23] PWA manifest complet** — `id`, `screenshots` (mobile 1170×2526 + wide 997×900), `display_override`, `related_applications` (Play Store), `iarc_rating_id` placeholder
+- **[2026-03-24] Boost profiles recalibrés** — Répartition réelle corpus analysée (1972 docs). Niveau 3 (141 docs Sifrey Halacha) = moteur halacha principal → boost 0.8. Niveau 2 (29 docs Responsa) → 0.7. Niveau 4 kabbalah/Breslav écarté des questions pratiques (-0.2). Commentaires de répartition ajoutés dans le code.
 
 ## 🔄 En cours
 
@@ -27,7 +28,7 @@
 
 ### 1. Merger la branche → main
 - `git checkout main && git merge claude/update-claude-docs-WytQh && git push`
-- Déclenche Cloud Run deploy automatique
+- Déclenche Cloud Run deploy automatique (proxy + boost profiles)
 - Re-tester PWABuilder après deploy (score attendu > 30/45)
 
 ### 2. IARC Rating ID réel
@@ -36,21 +37,23 @@
 - Remplacer le placeholder dans `manifest.json` et committer
 
 ### 3. Hiérarchie des sources dans `proxy/prompt.txt`
-**Problème :** le modèle cite des ouvrages modernes/thématiques avant les sources primaires.
+**Statut :** partiellement traité via boost profiles (Vertex AI remonte les bonnes sources).
+Le problème résiduel est dans l'**ordre d'affichage dans la réponse** (pas la recherche).
 
-**Fix à faire dans la section `📖 SOURCES PRÉCISES`** :
+**Fix restant dans la section `📖 SOURCES PRÉCISES`** :
 ```
 ORDRE OBLIGATOIRE DES SOURCES (du plus primaire au plus récent) :
 1. Talmud Bavli / Yerushalmi, Rambam (Michné Torah), Tur
 2. Shulchan Aruch (Maran) + Rama, Beit Yossef, Darchei Moshe
 3. Acharonim classiques : Mishna Beroura, Ben Ich Haï, Kaf HaHaïm, Aruch HaShulchan
-4. Poskim contemporains : Yalkout Yossef, Igrot Moshe, Tzitz Eliezer, Chaövet Daät...
-5. Ouvrages thématiques modernes EN DERNIER (Shmirat Einayim, Nashim BaHalachah...)
+4. Poskim contemporains : Yalkout Yossef, Igrot Moshe, Tzitz Eliezer, Chevet Daat...
+5. Ouvrages thématiques modernes EN DERNIER
 INTERDIT : citer un ouvrage thématique moderne si une source primaire couvre le même point.
 ```
 
 ## 📋 À faire (suite)
 
+- Affiner les boosts par sous-catégorie : ajouter champ `source_category` dans métadonnées Vertex AI (ex. "Sifrey Halacha" distingué de "Parashat Shavua" dans profil halakha)
 - Soumettre l'AAB sur Google Play Console (test interne d'abord)
 - Mesurer LCP réel post-déploiement via PageSpeed Insights (cible : <2500ms)
 - Invalider le cache og-image sur Facebook Sharing Debugger après merge → main
@@ -59,8 +62,8 @@ INTERDIT : citer un ouvrage thématique moderne si une source primaire couvre le
 
 ## 🐛 Bugs connus
 
-- **Sources secondaires avant primaires** : règle manquante dans le prompt (fix décrit ci-dessus)
+- **Ordre d'affichage sources dans la réponse** : boost profiles corrigent la recherche, mais l'ordre de citation dans le texte reste à fixer dans prompt.txt
 - **IARC rating** : placeholder dans manifest.json, à remplacer par ID réel
 
 ---
-*Dernière mise à jour : 2026-03-23*
+*Dernière mise à jour : 2026-03-24*

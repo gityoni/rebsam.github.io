@@ -93,8 +93,30 @@ Ce dégradé bleu→violet→corail est le fil conducteur visuel :
 | `screenshots` | `screenshot-mobile.png` (1170×2526) + `screenshot-wide.png` (997×900) |
 | Score PWABuilder | ~23/45 avant deploy — à re-tester après merge |
 
+## Corpus Vertex AI Search — Répartition réelle (1972 docs)
+
+| Niveau | Label | Nb docs | Contenu principal |
+|---|---|---|---|
+| 1 | Primaire (Talmud / Rambam / Tur) | 1286 | Talmud Bavli (361), Mishna (313), Nevi'im (182), Houmach (119), Ktouvim (96), Tur (96), Rambam (47) |
+| 2 | Codificateur (ShA / MB / Responsa) | 29 | שאלות ותשובות / Responsa (23), ילקוט שמעוני (6) |
+| 3 | Acharonim classiques | 141 | Sifrey Halacha (55), Parashat Shavua (39), חגי ומועדי ישראל (25), Halakha (22) |
+| 4 | Thématique / Hassidout | 516 | Kabbalah (169), ספרי ברסלב (129), Moussar (54), הדרך לתורה (30), קונטרסים (29), Choutim 2 (21), etc. |
+
+> **Note clé** : Niveau 2 n'a que 29 docs (Responsa uniquement). Les Sifrey Halacha (ShA, MB, Posqim) sont en **Niveau 3**. Le moteur halacha pratique est Niveau 3.
+
+## Boost profiles — `proxy/main.py` (`_BOOST_PROFILES`)
+
+| Profil | N1 | N2 | N3 | N4 | Usage |
+|---|---|---|---|---|---|
+| `halakha` | +0.2 | +0.7 | **+0.8** | -0.2 | Questions pratiques halacha |
+| `rishonim` | +0.6 | +0.2 | **+0.9** | -0.1 | Rashi, Tosafot, Rambam, Ramban |
+| `talmud` | **+0.9** | +0.1 | +0.3 | -0.2 | Guemara, Tanach, Midrash |
+| `kabbalah` | +0.1 | -0.2 | 0.0 | **+0.9** | Zohar, Arizal, Hassidout, Breslav |
+| `aggada` | +0.6 | 0.0 | +0.3 | **+0.5** | Moussar, Aggada, Hassidout |
+
+> Prochaine étape pour affiner : ajouter un champ `source_category` dans les métadonnées Vertex AI pour booster par sous-catégorie (ex. Sifrey Halacha > Parashat Shavua dans un profil halacha).
+
 ## État actuel / En cours
 - Voir TASKS.md
-- Branche active : `claude/update-claude-docs-WytQh` — PWA manifest complet + fixes sources/emoji
+- Branche active : `claude/update-claude-docs-WytQh` — PWA manifest + fixes sources/emoji + boost profiles recalibrés
 - À merger sur main pour activer tous les changements
-- Problème sources non résolu en prod : hiérarchie primaire/secondaire à fixer dans prompt.txt
