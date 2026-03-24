@@ -652,15 +652,28 @@ def build_gemini_payload(system_prompt: str, history: list, message: str) -> dic
 
 # ── Boost profiles — hiérarchie halachique des sources ────
 # Valeur boost : -1 à +1, ajoutée au score de pertinence Vertex AI Search.
+#
+# Répartition réelle du corpus (1972 docs) :
+#   Niveau 1 — 1286 docs : Talmud Bavli, Mishna, Tanach, Tur, Rambam…
+#   Niveau 2 —   29 docs : שאלות ותשובות (Responsa), ילקוט שמעוני
+#   Niveau 3 —  141 docs : Sifrey Halacha (55), Parashat Shavua (39),
+#                           חגי ומועדי ישראל (25), Halakha (22)
+#   Niveau 4 —  516 docs : Kabbalah (169), ספרי ברסלב (129), Moussar (54),
+#                           הדרך לתורה (30), קונטרסים (29), Choutim 2 (21), etc.
 _BOOST_PROFILES: dict = {
-    # Halakha pratique : Choulhan Aroukh / MB / Posqim en tête
+    # Halakha pratique
+    # Niveau 3 = moteur principal (141 docs : Sifrey Halacha, ShA, MB, Posqim)
+    # Niveau 2 = Responsa (29 docs) : autorité maximale mais pool réduit → boost fort
+    # Niveau 1 = Talmud/Tur/Rambam : fondements, pertinents en complément
+    # Niveau 4 = kabbalah/Breslav : non pertinent pour halacha pratique
     "halakha": [
-        {"condition": 'source_level: ANY("2")', "boost": 0.8},
-        {"condition": 'source_level: ANY("3")', "boost": 0.4},
-        {"condition": 'source_level: ANY("1")', "boost": 0.1},
-        {"condition": 'source_level: ANY("4")', "boost": -0.1},
+        {"condition": 'source_level: ANY("3")', "boost": 0.8},
+        {"condition": 'source_level: ANY("2")', "boost": 0.7},
+        {"condition": 'source_level: ANY("1")', "boost": 0.2},
+        {"condition": 'source_level: ANY("4")', "boost": -0.2},
     ],
     # Limoud Rishonim : Rashi, Tosafot, Rambam, Ramban, Rashba…
+    # Niveau 1 = Talmud (base du Limoud) + Niveau 3 = Rishonim classiques
     "rishonim": [
         {"condition": 'source_level: ANY("3")', "boost": 0.9},
         {"condition": 'source_level: ANY("1")', "boost": 0.6},
@@ -670,23 +683,24 @@ _BOOST_PROFILES: dict = {
     # Limoud Talmudique pur : Guemara, Tanach, Midrash
     "talmud": [
         {"condition": 'source_level: ANY("1")', "boost": 0.9},
-        {"condition": 'source_level: ANY("3")', "boost": 0.4},
+        {"condition": 'source_level: ANY("3")', "boost": 0.3},
         {"condition": 'source_level: ANY("2")', "boost": 0.1},
-        {"condition": 'source_level: ANY("4")', "boost": -0.1},
+        {"condition": 'source_level: ANY("4")', "boost": -0.2},
     ],
-    # Kabbalah : Zohar > Arizal/Vital > Hassidout/BeSHT > Breslav
+    # Kabbalah : Niveau 4 dominant (169 Kabbalah + 129 Breslav + 54 Moussar + …)
+    # Zohar > Arizal/Vital > BeSHT/Hassidout > Rabbi Nachman/Breslav
     "kabbalah": [
         {"condition": 'source_level: ANY("4")', "boost": 0.9},
         {"condition": 'source_level: ANY("1")', "boost": 0.1},
-        {"condition": 'source_level: ANY("3")', "boost": 0.1},
-        {"condition": 'source_level: ANY("2")', "boost": -0.1},
+        {"condition": 'source_level: ANY("3")', "boost": 0.0},
+        {"condition": 'source_level: ANY("2")', "boost": -0.2},
     ],
-    # Aggada / Moussar : Talmud + Rishonim équilibrés
+    # Aggada / Moussar : Talmud (fondements) + Moussar/Hassidout (Niveau 4) + Rishonim
     "aggada": [
         {"condition": 'source_level: ANY("1")', "boost": 0.6},
-        {"condition": 'source_level: ANY("3")', "boost": 0.5},
-        {"condition": 'source_level: ANY("4")', "boost": 0.2},
-        {"condition": 'source_level: ANY("2")', "boost": 0.1},
+        {"condition": 'source_level: ANY("4")', "boost": 0.5},
+        {"condition": 'source_level: ANY("3")', "boost": 0.3},
+        {"condition": 'source_level: ANY("2")', "boost": 0.0},
     ],
 }
 
