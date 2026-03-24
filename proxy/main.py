@@ -1077,10 +1077,16 @@ def call_llm(system_prompt: str, history: list, message: str, session_id: str = 
     else:
         logging.info(f"[RebSam] Provider: Gemini/Vertex ({MODEL})")
         return call_gemini(system_prompt, history, message)
+WA_MAX_CHARS = 4096
+
 def send_whatsapp_reply(to: str, text: str):
     if not WHATSAPP_TOKEN or not WHATSAPP_PHONE_ID:
         logging.warning("[RebSam/WA] WHATSAPP_TOKEN ou WHATSAPP_PHONE_ID manquant — réponse non envoyée")
         return
+    # Tronquer si le message dépasse la limite WhatsApp (4096 chars)
+    if len(text) > WA_MAX_CHARS:
+        logging.warning(f"[RebSam/WA] Message tronqué : {len(text)} → {WA_MAX_CHARS} chars")
+        text = text[:WA_MAX_CHARS - 3] + "…"
     url = f"https://graph.facebook.com/v19.0/{WHATSAPP_PHONE_ID}/messages"
     resp = http_requests.post(
         url,
@@ -1096,6 +1102,8 @@ def send_whatsapp_reply(to: str, text: str):
         },
         timeout=8,
     )
+    if not resp.ok:
+        logging.error(f"[RebSam/WA] Erreur API ({resp.status_code}) : {resp.text}")
     resp.raise_for_status()
     return resp.json()
 
