@@ -49,40 +49,58 @@ BASE_URL = (
 
 SOURCE_LEVELS: dict[str, int] = {
     # ── NIVEAU 1 — Sources primaires ──────────────────────
-    "Talmud Bavli":        1,
-    "Mishna":              1,
-    "Mishna - Kodshim":    1,
-    "Mishna - Taharot":    1,
-    "Rambam":              1,
-    "Tur":                 1,
-    "Tanach":              1,
+    "Talmud Bavli":           1,
+    "Mishna":                 1,
+    "Mishna - Kodshim":       1,
+    "Mishna - Taharot":       1,
+    "Rambam":                 1,
+    "משנה תורה להרמבם":       1,   # Mishna Torah = Rambam
+    "Tur":                    1,
+    "Tanach":                 1,
+    "חומש":                   1,   # Torah (Pentateuque)
+    "נביאים":                 1,   # Prophètes
+    "כתובים":                 1,   # Écrits
 
     # ── NIVEAU 2 — Codificateurs majeurs ──────────────────
-    "Choulhan Aroukh":     2,
-    "Mishna Beroura":      2,
-    "Responsa":            2,          # שו"ת
+    "Choulhan Aroukh":        2,
+    "Mishna Beroura":         2,
+    "Responsa":               2,
+    "שאלות ותשובות":          2,   # Responsa en hébreu
+    "ילקוט שמעוני":           2,   # Yalkout Chimoni (midrash classique)
 
     # ── NIVEAU 3 — Acharonim classiques ───────────────────
-    "Ben Ich Haï":         3,
-    "Yalkout Yossef":      3,
-    "Halakha":             3,
-    "Sifrey Halacha":      3,
-    "Parashat Shavua":     3,
+    "Ben Ich Haï":            3,
+    "Yalkout Yossef":         3,
+    "Halakha":                3,
+    "Sifrey Halacha":         3,
+    "Parashat Shavua":        3,
+    "חגי ומועדי ישראל":       3,   # Fêtes et Moadim
 
     # ── NIVEAU 4 — Thématiques / Hassidout / Modernes ─────
-    "Tanya":               4,
-    "Zohar":               4,
-    "Likoutey Moharan":    4,
-    "Likoutey Halachot":   4,
-    "Hassidout":           4,
-    "Kabbalah":            4,
-    "Moussar":             4,
-    "Chabbat":             4,
-    "Kashrout":            4,
-    "Nashim":              4,
-    "Pessah":              4,
-    "Tefila":              4,
-    "Chalom Bait":         4,
+    "Tanya":                  4,
+    "Zohar":                  4,
+    "Likoutey Moharan":       4,
+    "Likoutey Halachot":      4,
+    "Hassidout":              4,
+    "Kabbalah":               4,
+    "Moussar":                4,
+    "Chabbat":                4,
+    "Kashrout":               4,
+    "Nashim":                 4,
+    "Pessah":                 4,
+    "Tefila":                 4,
+    "Chalom Bait":            4,
+    "ספרי ברסלב":             4,   # Livres de Breslav
+    "Choutim 2":              4,
+    "pdf תפילות וסגולות":     4,   # Prières et segoulot
+    "הדרך לתורה":             4,   # Dérekh LaTorah
+    "קונטרסים":               4,   # Kountrassim
+    "הבית היהודי":            4,   # La maison juive
+    "הנהגות":                 4,   # Hanhagot
+    "אהבת ישראל":             4,   # Ahavat Israël
+    "גדולי הדורות":           4,   # Grands des générations
+    "שונות":                  4,   # Divers
+    "Autre":                  4,
 }
 
 LEVEL_LABELS = {
