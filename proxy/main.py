@@ -503,11 +503,27 @@ def detect_language(text: str) -> str:
 
 # ── Formatage WhatsApp ─────────────────────────────────────
 def format_for_whatsapp(text: str) -> str:
-    """Convertit markdown Gemini → format WhatsApp natif."""
-    text = re.sub(r'^#{1,6}\s+', '', text, flags=re.MULTILINE)
+    """Convertit markdown → format WhatsApp natif."""
+    # Titres → MAJUSCULES sans #
+    text = re.sub(r'^#{1,6}\s+(.+)$', lambda m: m.group(1).upper(), text, flags=re.MULTILINE)
+    # **gras** → *gras*
     text = re.sub(r'\*\*(.+?)\*\*', r'*\1*', text)
     text = re.sub(r'__(.+?)__', r'*\1*', text)
+    # Séparateurs --- → saut de ligne
     text = re.sub(r'\n?---\n?', '\n\n', text)
+    # Blockquotes > → italique
+    text = re.sub(r'^>\s*(.+)$', r'_\1_', text, flags=re.MULTILINE)
+    # Lignes séparatrices de tableaux |---|---|
+    text = re.sub(r'^\|[-| :]+\|$\n?', '', text, flags=re.MULTILINE)
+    # Lignes de tableau → liste 🔹
+    def _table_row(m: re.Match) -> str:
+        cells = [c.strip() for c in m.group(1).split('|') if c.strip()]
+        if len(cells) == 2:
+            return f"🔹 *{cells[0]}* : {cells[1]}"
+        return ' | '.join(cells)
+    text = re.sub(r'^\|(.+)\|$', _table_row, text, flags=re.MULTILINE)
+    # Collapse excessive blank lines
+    text = re.sub(r'\n{3,}', '\n\n', text)
     return text.strip()
 
 
@@ -1130,9 +1146,33 @@ def process_wa_event(payload: dict):
         }.get(lang, f"\n\nDate d'aujourd'hui (UTC) : {today_str}.")
 
         wa_note = {
-            "he": "\n\nאתה מגיב דרך WhatsApp. השתמש ב-*מודגש* (כוכבית אחת), _נטוי_, ואמוג'י. אל תשתמש בכותרות markdown (#).",
-            "en": "\n\nYou are responding via WhatsApp. Use *bold* (single asterisk), _italic_, and emojis. Avoid markdown headers (#).",
-        }.get(lang, "\n\nTu réponds via WhatsApp. Utilise *gras* (un seul astérisque), _italique_, et des emojis. Évite les titres markdown (#).")
+            "he": (
+                "\n\nאתה מגיב דרך WhatsApp. כללי עיצוב מחייבים:\n"
+                "- *מודגש* (כוכבית אחת בלבד)\n"
+                "- _נטוי_ (קו תחתון)\n"
+                "- אמוג'י מותרים\n"
+                "- אסור לחלוטין: כותרות # , טבלאות (|), ציטוטים (>)\n"
+                "- רשימות: 🔹 או •\n"
+                "- רווח כפול בין סעיפים"
+            ),
+            "en": (
+                "\n\nYou are responding via WhatsApp. Strict formatting rules:\n"
+                "- *bold* (single asterisk only)\n"
+                "- _italic_ (underscore)\n"
+                "- Emojis allowed\n"
+                "- FORBIDDEN: # headers, tables (|), blockquotes (>)\n"
+                "- Lists: 🔹 or •\n"
+                "- Double line break between sections"
+            ),
+        }.get(lang, (
+            "\n\nTu réponds via WhatsApp. Règles de formatage STRICTES :\n"
+            "- *gras* (un seul astérisque)\n"
+            "- _italique_ (underscore)\n"
+            "- Emojis autorisés\n"
+            "- INTERDIT ABSOLUMENT : titres # , tableaux (|), citations (>)\n"
+            "- Listes : 🔹 ou •\n"
+            "- Double saut de ligne entre chaque section"
+        ))
 
         effective_system = ACTIVE_PROMPT + date_injection + wa_note + _SECTION_LABELS.get(lang, "")
 
@@ -1558,9 +1598,33 @@ def whatsapp_makecom():
     }.get(lang, f"\n\nDate d'aujourd'hui (UTC) : {today_str}.")
 
     wa_note = {
-        "he": "\n\nאתה מגיב דרך WhatsApp. השתמש ב-*מודגש* (כוכבית אחת), _נטוי_, ואמוג'י. אל תשתמש בכותרות markdown (#).",
-        "en": "\n\nYou are responding via WhatsApp. Use *bold* (single asterisk), _italic_, and emojis. Avoid markdown headers (#).",
-    }.get(lang, "\n\nTu réponds via WhatsApp. Utilise *gras* (un seul astérisque), _italique_, et des emojis. Évite les titres markdown (#).")
+        "he": (
+            "\n\nאתה מגיב דרך WhatsApp. כללי עיצוב מחייבים:\n"
+            "- *מודגש* (כוכבית אחת בלבד)\n"
+            "- _נטוי_ (קו תחתון)\n"
+            "- אמוג'י מותרים\n"
+            "- אסור לחלוטין: כותרות # , טבלאות (|), ציטוטים (>)\n"
+            "- רשימות: 🔹 או •\n"
+            "- רווח כפול בין סעיפים"
+        ),
+        "en": (
+            "\n\nYou are responding via WhatsApp. Strict formatting rules:\n"
+            "- *bold* (single asterisk only)\n"
+            "- _italic_ (underscore)\n"
+            "- Emojis allowed\n"
+            "- FORBIDDEN: # headers, tables (|), blockquotes (>)\n"
+            "- Lists: 🔹 or •\n"
+            "- Double line break between sections"
+        ),
+    }.get(lang, (
+        "\n\nTu réponds via WhatsApp. Règles de formatage STRICTES :\n"
+        "- *gras* (un seul astérisque)\n"
+        "- _italique_ (underscore)\n"
+        "- Emojis autorisés\n"
+        "- INTERDIT ABSOLUMENT : titres # , tableaux (|), citations (>)\n"
+        "- Listes : 🔹 ou •\n"
+        "- Double saut de ligne entre chaque section"
+    ))
 
     effective_system = ACTIVE_PROMPT + date_injection + wa_note + _SECTION_LABELS.get(lang, "")
 
