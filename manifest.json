@@ -11,6 +11,7 @@
   "theme_color": "#2E6BE6",
   "orientation": "portrait-primary",
   "lang": "fr",
+  "dir": "ltr",
   "categories": ["education", "lifestyle", "religion"],
   "icons": [
     {
