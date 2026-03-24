@@ -136,6 +136,30 @@ def save_history(key: str, history: list, collection: str = FIRESTORE_COLLECTION
         logging.warning(f"[RebSam] Firestore save_history échoué : {e}")
 
 
+# ── Déduplication wamid (anti-double-livraison Meta) ──────
+def is_duplicate_wamid(wamid: str) -> bool:
+    """Retourne True si ce wamid a déjà été traité."""
+    if db is None:
+        return False
+    try:
+        return db.collection("wa_dedup").document(wamid).get().exists
+    except Exception as e:
+        logging.warning(f"[RebSam] Firestore dedup check échoué : {e}")
+        return False
+
+
+def mark_wamid_seen(wamid: str):
+    """Marque le wamid comme traité dans Firestore."""
+    if db is None:
+        return
+    try:
+        db.collection("wa_dedup").document(wamid).set({
+            "ts": datetime.now(timezone.utc).isoformat()
+        })
+    except Exception as e:
+        logging.warning(f"[RebSam] Firestore dedup mark échoué : {e}")
+
+
 # ── Prompt ────────────────────────────────────────────────
 SYSTEM_FALLBACK = """Tu es Reb Sam, un Mashpia (guide spirituel) et expert en Halakha. Tu allies la profondeur de la Torah, la chaleur d'un Rav à l'écoute, et la précision d'un Posek.
 Tu parles comme un Rav bienveillant qui VOIT la personne derrière la question.
@@ -1115,6 +1139,37 @@ def send_whatsapp_reply(to: str, text: str):
     return resp.json()
 
 
+# ── Read receipt (coches bleues) + indicateur "en cours" ──
+def send_wa_read_receipt(wamid: str):
+    """Envoie un accusé de lecture (coches bleues) pour le message wamid."""
+    if not WHATSAPP_TOKEN or not WHATSAPP_PHONE_ID:
+        return
+    url = f"https://graph.facebook.com/v19.0/{WHATSAPP_PHONE_ID}/messages"
+    try:
+        http_requests.post(
+            url,
+            headers={
+                "Authorization": f"Bearer {WHATSAPP_TOKEN}",
+                "Content-Type":  "application/json",
+            },
+            json={
+                "messaging_product": "whatsapp",
+                "status":     "read",
+                "message_id": wamid,
+            },
+            timeout=5,
+        )
+    except Exception as e:
+        logging.warning(f"[RebSam/WA] Read receipt échoué : {e}")
+
+
+_WA_PENDING_MSG = {
+    "fr": "📖 Consultation des sources en cours…",
+    "en": "📖 Consulting the sources…",
+    "he": "📖 מתייעץ עם המקורות…",
+}
+
+
 # ── Traitement d'un message WhatsApp (en arrière-plan) ────
 def process_wa_event(payload: dict):
     """
@@ -1134,6 +1189,14 @@ def process_wa_event(payload: dict):
         if msg.get("type") != "text":
             logging.info(f"[RebSam/WA] Type non-texte ignoré : {msg.get('type')}")
             return
+
+        # ── Déduplication wamid ───────────────────────────
+        wamid = msg.get("id", "")
+        if wamid:
+            if is_duplicate_wamid(wamid):
+                logging.info(f"[RebSam/WA] wamid dupliqué ignoré : {wamid}")
+                return
+            mark_wamid_seen(wamid)
 
         phone   = msg.get("from", "")
         text    = msg.get("text", {}).get("body", "").strip()
@@ -1191,7 +1254,12 @@ def process_wa_event(payload: dict):
 
         effective_system = ACTIVE_PROMPT + date_injection + wa_note + _SECTION_LABELS.get(lang, "")
 
-        # 4. Appel LLM (Gemini ou Claude selon MODEL)
+        # 4. Accusé de lecture + indicateur "en cours"
+        if wamid:
+            send_wa_read_receipt(wamid)
+        send_whatsapp_reply(phone, _WA_PENDING_MSG.get(lang, _WA_PENDING_MSG["fr"]))
+
+        # 5. Appel LLM (Gemini ou Claude selon MODEL)
         reply, _ = call_llm(effective_system, history, text, session_id=phone)
 
         if not reply:
@@ -1201,16 +1269,16 @@ def process_wa_event(payload: dict):
                 "he": "שלום! לא הצלחתי ליצור תשובה. אנא נסה שוב. 🙏",
             }.get(lang, "Chalom ! Je n'ai pas pu générer de réponse. 🙏")
 
-        # 5. Nettoyage + formatage WhatsApp
+        # 6. Nettoyage + formatage WhatsApp
         reply    = re.sub(r'^#{1,6}\s+', '', reply, flags=re.MULTILINE)
         reply    = _clean_reply(reply)
         reply_wa = format_for_whatsapp(reply)
 
-        # 6. Envoi via WhatsApp Cloud API
+        # 7. Envoi via WhatsApp Cloud API
         send_whatsapp_reply(phone, reply_wa)
         logging.info(f"[RebSam/WA] Réponse envoyée à ****{phone[-4:]}")
 
-        # 7. Mise à jour historique Firestore
+        # 8. Mise à jour historique Firestore
         updated = history + [
             {"role": "user",  "content": text},
             {"role": "model", "content": reply},
@@ -1219,7 +1287,7 @@ def process_wa_event(payload: dict):
             updated = updated[-MAX_WA_HISTORY_TURNS:]
         save_history(phone, updated)
 
-        # 8. Log optionnel Make.com
+        # 9. Log optionnel Make.com
         log_to_make({
             "sessionId": phone,
             "name":      name,
