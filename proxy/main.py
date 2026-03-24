@@ -207,7 +207,7 @@ def log_to_make(data: dict, reply: str):
         "turns":     len(data.get("history", [])),
         "channel":   data.get("channel", "web"),
     }
-    threading.Thread(target=_send_log, args=(log_payload,), daemon=True).start()
+    threading.Thread(target=_send_log, args=(log_payload,), daemon=False).start()
 
 
 # ── Détection de langue ───────────────────────────────────
@@ -298,7 +298,7 @@ def send_whatsapp_reply(to: str, text: str):
             "type": "text",
             "text": {"body": text},
         },
-        timeout=15,
+        timeout=8,
     )
     resp.raise_for_status()
     return resp.json()
@@ -450,7 +450,7 @@ def webhook_receive():
     Répond 200 immédiatement, traite en arrière-plan.
     """
     payload = request.get_json(force=True, silent=True) or {}
-    threading.Thread(target=process_wa_event, args=(payload,), daemon=True).start()
+    threading.Thread(target=process_wa_event, args=(payload,), daemon=False).start()
     return "OK", 200
 
 
