@@ -725,7 +725,7 @@ def search_rag(query: str, top_k: int = 5, session_id: str = "") -> dict:
                     "extractiveContentSpec": {"maxExtractiveAnswerCount": 3}
                 }
             },
-            timeout=15,
+            timeout=8,
         )
         resp.raise_for_status()
         data    = resp.json()
@@ -1250,7 +1250,7 @@ def webhook_receive():
     Répond 200 immédiatement, traite en arrière-plan.
     """
     payload = request.get_json(force=True, silent=True) or {}
-    threading.Thread(target=process_wa_event, args=(payload,), daemon=True).start()
+    threading.Thread(target=process_wa_event, args=(payload,), daemon=False).start()
     return "OK", 200
 
 
