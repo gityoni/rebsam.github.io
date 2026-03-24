@@ -1,9 +1,12 @@
 {
   "name": "RebSam — Expert Halakha IA",
   "short_name": "RebSam",
+  "id": "fr.rebsam.app",
   "description": "Votre expert en Halacha alimenté par l'IA. 1 972 ouvrages, disponible 24h/24.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "prefer_related_applications": false,
   "background_color": "#ffffff",
   "theme_color": "#2E6BE6",
   "orientation": "portrait-primary",
@@ -33,6 +36,31 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "1170x2526",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "RebSam — Chat Halakha"
+    },
+    {
+      "src": "/screenshot-wide.png",
+      "sizes": "997x900",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "RebSam — Interface complète"
+    }
+  ],
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.rebsam.app",
+      "id": "com.rebsam.app"
     }
   ],
   "shortcuts": [

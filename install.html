@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installer RebSam</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f7;
+      color: #1d1d1f;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #2E6BE6;
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem 1.5rem;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    header p {
+      margin-top: 0.4rem;
+      font-size: 0.95rem;
+      opacity: 0.85;
+    }
+
+    main {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    .cta {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .cta a {
+      display: inline-block;
+      background: #2E6BE6;
+      color: white;
+      text-decoration: none;
+      padding: 0.85rem 2rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .cta p {
+      margin-top: 0.75rem;
+      font-size: 0.8rem;
+      color: #888;
+    }
+
+    h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+    }
+
+    .steps {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      margin-bottom: 1.5rem;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.1rem 1.25rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .step:last-child { border-bottom: none; }
+
+    .step-num {
+      background: #2E6BE6;
+      color: white;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .step-content strong {
+      display: block;
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .step-content span {
+      font-size: 0.85rem;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .icon {
+      font-size: 1.1em;
+      vertical-align: middle;
+    }
+
+    .platform-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 0.6rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 2px solid transparent;
+      background: white;
+      color: #555;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      background: #2E6BE6;
+      color: white;
+    }
+
+    .platform-content { display: none; }
+    .platform-content.active { display: block; }
+
+    .note {
+      background: #fff8e1;
+      border-left: 4px solid #ffc107;
+      border-radius: 0 8px 8px 0;
+      padding: 0.85rem 1rem;
+      font-size: 0.85rem;
+      color: #555;
+      margin-top: 1.5rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🕍 RebSam</h1>
+  <p>Expert Halakha — 1 972 ouvrages, disponible 24h/24</p>
+</header>
+
+<main>
+
+  <div class="cta">
+    <a href="https://rebsam.fr">Ouvrir RebSam →</a>
+    <p>Puis suis les étapes ci-dessous pour l'installer sur ton écran d'accueil</p>
+  </div>
+
+  <h2>Installer l'application</h2>
+
+  <div class="platform-tabs">
+    <div class="tab active" onclick="switchTab('ios')">📱 iPhone / iPad</div>
+    <div class="tab" onclick="switchTab('android')">🤖 Android</div>
+  </div>
+
+  <!-- iOS -->
+  <div class="platform-content active" id="tab-ios">
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>Ouvre Safari</strong>
+          <span>Le lien doit être ouvert dans <strong>Safari</strong> (pas Chrome, pas Firefox).</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>Appuie sur <span class="icon">⎋</span> Partager</strong>
+          <span>L'icône carrée avec une flèche vers le haut, en bas de l'écran (ou en haut sur iPad).</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>Choisis "Sur l'écran d'accueil"</strong>
+          <span>Fais défiler le menu vers le bas jusqu'à trouver cette option.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>Appuie sur "Ajouter"</strong>
+          <span>L'icône RebSam apparaît sur ton écran d'accueil comme une vraie app.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Android -->
+  <div class="platform-content" id="tab-android">
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>Ouvre Chrome</strong>
+          <span>Assure-toi d'utiliser Google Chrome pour accéder à rebsam.fr.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>Appuie sur ⋮ (menu)</strong>
+          <span>Les trois points en haut à droite de Chrome.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>Choisis "Ajouter à l'écran d'accueil"</strong>
+          <span>Ou une bannière peut apparaître automatiquement en bas de l'écran.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>Confirme l'installation</strong>
+          <span>L'icône RebSam est maintenant sur ton écran d'accueil.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    💬 <strong>Des problèmes ?</strong> Envoie un message sur le groupe WhatsApp/Telegram — on est là pour t'aider.
+  </div>
+
+</main>
+
+<script>
+  function switchTab(platform) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.platform-content').forEach(c => c.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('tab-' + platform).classList.add('active');
+  }
+</script>
+
+</body>
+</html>

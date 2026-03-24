@@ -2,7 +2,7 @@
 <html lang="fr" dir="ltr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
   <title>RebSam — Un Rebbe dans votre dose d'IA quotidienne</title>
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -112,6 +112,8 @@
     [dir="rtl"] .chat-header, [dir="rtl"] .section-heading,
     [dir="rtl"] .step-title, [dir="rtl"] .pillar-title, [dir="rtl"] .faq-question span,
     [dir="rtl"] #chat-input, [dir="rtl"] .float-chat, [dir="rtl"] .float-wa { font-family: 'Heebo', sans-serif; }
+    /* Forcer Outfit pour le logo RebSam même en RTL */
+    [dir="rtl"] .font-logo, [dir="rtl"] .rebsam-logo, [dir="rtl"] .logo.font-logo { font-family: 'Outfit', 'Outfit-fallback', sans-serif !important; letter-spacing: -.04em; }
     :root {
       --primary: #2E6BE6; --primary-dark: #1A4DB3; --primary-light: #5B8EF0;
       --primary-pastel: #4C7FE8; --primary-pastel-dark: #2557C8;
@@ -188,41 +190,91 @@
     .nav-cta { display: inline-flex; align-items: center; gap: .4rem; background: var(--primary); color: #fff; padding: .5rem 1.25rem; border-radius: var(--radius-full); font-size: .875rem; font-weight: 600; transition: all .25s; }
     .nav-cta:hover { background: var(--primary-dark); transform: translateY(-1px); }
     .nav-right { display: flex; align-items: center; gap: .75rem; }
-    #hamburger { display: none; background: none; border: none; cursor: pointer; padding: .45rem; color: var(--secondary); border-radius: .5rem; transition: background .2s; }
-    #hamburger:hover { background: rgba(46,107,230,.07); }
-    .burger-box { width: 24px; height: 18px; position: relative; display: flex; flex-direction: column; justify-content: space-between; }
-    .burger-line { display: block; height: 2.5px; border-radius: 2px; background: var(--secondary-dark); transform-origin: center; transition: transform .35s cubic-bezier(.4,0,.2,1), opacity .25s, top .35s cubic-bezier(.4,0,.2,1); position: relative; }
-    .burger-line:nth-child(1) { top: 0; }
-    .burger-line:nth-child(2) { top: 50%; transform: translateY(-50%); }
-    .burger-line:nth-child(3) { top: 100%; transform: translateY(-100%); }
-    #hamburger.open .burger-line:nth-child(1) { top: 50%; transform: translateY(-50%) rotate(45deg); }
-    #hamburger.open .burger-line:nth-child(2) { opacity: 0; transform: translateY(-50%) scaleX(0); }
-    #hamburger.open .burger-line:nth-child(3) { top: 50%; transform: translateY(-50%) rotate(-45deg); }
+    #hamburger { display: none; background: none; border: none; cursor: pointer; padding: .5rem; color: var(--secondary); border-radius: .625rem; transition: background .2s; }
+    #hamburger:hover { background: rgba(91,142,240,.1); }
+    .burger-box { width: 22px; height: 15px; display: flex; flex-direction: column; justify-content: space-between; }
+    .burger-line { display: block; height: 2px; border-radius: 2px; background: var(--secondary-dark); transform-origin: center; transition: transform .32s cubic-bezier(.4,0,.2,1), opacity .2s, width .25s; }
+    .burger-line:nth-child(2) { width: 65%; align-self: flex-end; }
+    #hamburger.open .burger-line:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    #hamburger.open .burger-line:nth-child(2) { opacity: 0; width: 0; }
+    #hamburger.open .burger-line:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
+    /* Menu overlay */
+    #menu-overlay {
+      position: fixed; inset: 0; z-index: 399;
+      background: rgba(15,23,42,.45); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+      opacity: 0; pointer-events: none;
+      transition: opacity .35s ease;
+    }
+    #menu-overlay.open { opacity: 1; pointer-events: auto; }
+
+    /* Mobile menu */
     #mobile-menu {
       display: block; position: fixed; top: 0; left: 0; right: 0; z-index: 400;
-      background: var(--header-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      padding: 5rem 1.75rem 2rem; box-shadow: 0 8px 32px rgba(0,0,0,.12);
+      background: var(--header-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
       transform: translateY(-110%); opacity: 0;
-      transition: transform .4s cubic-bezier(.4,0,.2,1), opacity .35s ease;
-      border-bottom: 1px solid rgba(46,107,230,.1);
+      transition: transform .38s cubic-bezier(.4,0,.2,1), opacity .3s ease;
+      border-radius: 0 0 1.5rem 1.5rem;
+      box-shadow: 0 16px 48px rgba(0,0,0,.18);
+      overflow: hidden;
     }
     #mobile-menu.open { transform: translateY(0); opacity: 1; }
-    .mobile-nav-links { display: flex; flex-direction: column; gap: .25rem; margin-bottom: 1.25rem; }
+
+    /* Gradient accent bar */
+    .menu-gradient-bar { height: 3px; background: linear-gradient(90deg, #5B8EF0 0%, #7C6FCD 50%, #E07B5A 100%); }
+    .menu-inner { padding: 4rem 1.25rem 1.25rem; }
+
+    .mobile-nav-links { display: flex; flex-direction: column; gap: .1rem; margin-bottom: .75rem; }
     #mobile-menu .mob-link {
-      display: flex; align-items: center; gap: .65rem;
-      font-size: 1.0625rem; font-weight: 500; color: var(--secondary-dark);
-      padding: .8rem 1rem; border-radius: .75rem;
-      transition: background .2s, color .2s, transform .2s;
+      display: flex; align-items: center; gap: .75rem;
+      font-size: .9375rem; font-weight: 500; color: var(--secondary-dark);
+      padding: .6rem .875rem; border-radius: .75rem;
+      transition: background .18s, color .18s, transform .18s;
       text-decoration: none;
     }
-    #mobile-menu .mob-link:hover { background: rgba(46,107,230,.07); color: var(--primary); transform: translateX(4px); }
-    [dir="rtl"] #mobile-menu .mob-link:hover { transform: translateX(-4px); }
-    #mobile-menu .mob-link .mob-icon { width: 1.75rem; height: 1.75rem; border-radius: .5rem; background: rgba(46,107,230,.08); display: flex; align-items: center; justify-content: center; color: var(--primary); }
-    .mobile-divider { height: 1px; background: rgba(0,0,0,.06); margin: .75rem 0; }
-    .btn-primary-mobile { display: flex; align-items: center; justify-content: center; gap: .5rem; background: linear-gradient(135deg, var(--primary-pastel) 0%, var(--primary-pastel-dark) 100%); color: #fff; padding: .7rem 1.5rem; border-radius: var(--radius-full); font-weight: 600; font-size: .9375rem; box-shadow: 0 4px 20px rgba(46,107,230,.3); transition: all .25s; }
-    .btn-primary-mobile:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(46,107,230,.4); }
-    .mobile-lang { display: flex; gap: .5rem; justify-content: center; }
+    #mobile-menu .mob-link:active { transform: scale(.98); }
+    #mobile-menu .mob-link:hover { background: rgba(91,142,240,.08); color: var(--primary); transform: translateX(3px); }
+    [dir="rtl"] #mobile-menu .mob-link:hover { transform: translateX(-3px); }
+    #mobile-menu .mob-icon {
+      width: 1.75rem; height: 1.75rem; border-radius: .5rem; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(91,142,240,.12) 0%, rgba(124,111,205,.12) 100%);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--primary);
+    }
+    #mobile-menu .mob-link-label { flex: 1; }
+    #mobile-menu .mob-link-arrow { opacity: .3; transition: opacity .18s, transform .18s; }
+    #mobile-menu .mob-link:hover .mob-link-arrow { opacity: .7; transform: translateX(2px); }
+    [dir="rtl"] #mobile-menu .mob-link:hover .mob-link-arrow { transform: rotate(180deg) translateX(2px); }
+
+    .mobile-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(91,142,240,.2), transparent); margin: .5rem 0; }
+
+    .btn-primary-mobile {
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
+      background: linear-gradient(135deg, #5B8EF0 0%, #7C6FCD 50%, #E07B5A 100%);
+      color: #fff; padding: .7rem 1.25rem; border-radius: var(--radius-full);
+      font-weight: 600; font-size: .9rem; text-decoration: none;
+      box-shadow: 0 4px 18px rgba(124,111,205,.3);
+      transition: all .25s; margin-bottom: .875rem;
+    }
+    .btn-primary-mobile:hover { transform: translateY(-1px); box-shadow: 0 10px 32px rgba(124,111,205,.45); }
+
+    .mobile-bottom { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+    .mobile-lang-tabs { display: flex; background: rgba(91,142,240,.07); border-radius: var(--radius-full); padding: .2rem; gap: .1rem; }
+    .mobile-lang-tabs .lang-btn {
+      padding: .3rem .75rem; border-radius: var(--radius-full); font-size: .8125rem; font-weight: 600;
+      background: none; border: none; cursor: pointer; color: var(--text-muted);
+      transition: all .2s;
+    }
+    .mobile-lang-tabs .lang-btn.active { background: #fff; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+    [data-theme="dark"] .mobile-lang-tabs .lang-btn.active { background: rgba(255,255,255,.15); }
+    .mobile-dark-btn {
+      width: 2.25rem; height: 2.25rem; border-radius: 50%;
+      background: rgba(91,142,240,.08); border: 1.5px solid rgba(91,142,240,.2);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--secondary); transition: all .2s; flex-shrink: 0;
+    }
+    .mobile-dark-btn:hover { background: rgba(91,142,240,.15); border-color: var(--primary); color: var(--primary); }
+
     @media (max-width: 900px) { .nav-links { display: none; } .nav-cta { display: none; } .lang-switcher { display: none; } #hamburger { display: block; } }
 
     /* BUTTONS */
@@ -265,7 +317,7 @@
     .hero-content { position: relative; z-index: 10; text-align: center; max-width: 780px; margin: 0 auto; }
     [dir="rtl"] .hero-content { text-align: center; }
 
-    .hero-badge { display: inline-flex; align-items: center; padding: .6rem 1.5rem; border-radius: var(--radius-full); background: rgba(46,107,230,.09); color: var(--primary); font-size: .875rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 1.75rem; }
+    .hero-badge { display: inline-flex; align-items: center; justify-content: center; padding: .6rem 1.5rem; border-radius: var(--radius-full); background: rgba(46,107,230,.09); color: var(--primary); font-size: .875rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 1.75rem; min-width: clamp(220px, 28vw, 300px); }
 
     .hero-h1 { margin-bottom: 1rem; animation: fadeUp .6s .08s ease both; line-height: 1; }
     .hero-h1 .rebsam-logo { display: block; font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-weight: 900; font-size: clamp(2.8rem,7vw,4.5rem); letter-spacing: -.04em; line-height: 1; margin-bottom: .4rem; }
@@ -292,9 +344,14 @@
     .hero-point span { font-size: clamp(.82rem,1.3vw,.92rem); font-weight: 600; color: var(--secondary-dark); line-height: 1.4; }
     [dir="rtl"] .hero-point { text-align: right; }
 
-    .hero-btns { display: flex; flex-wrap: wrap; gap: .75rem; justify-content: center; margin-bottom: 1.25rem; animation: fadeUp .6s .2s ease both; }
-    [dir="rtl"] .hero-btns { justify-content: center; }
-    @media (max-width: 639px) { .hero-btns { flex-direction: column; align-items: stretch; } .hero-btns .btn { justify-content: center; } }
+    .hero-trust { font-size: 1rem; font-weight: 500; color: rgba(55,65,81,.6); margin-bottom: 1rem; letter-spacing: -.01em; animation: fadeUp .6s .14s ease both; }
+    html.dark .hero-trust { color: rgba(203,213,225,.8); }
+    .hero-btns { display: flex; flex-direction: column; align-items: center; gap: .75rem; margin-bottom: 1.25rem; animation: fadeUp .6s .2s ease both; }
+    [dir="rtl"] .hero-btns { align-items: center; }
+    .hero-btns .btn { justify-content: center; width: fit-content; min-width: clamp(240px, 50vw, 380px); }
+    .hero-wa-btn { display: inline-flex; align-items: center; gap: .6rem; background: #25D366; color: #fff !important; border: none; padding: .75rem 1.75rem; border-radius: var(--radius-full); font-weight: 700; font-size: .95rem; text-decoration: none; box-shadow: 0 4px 16px rgba(37,211,102,.35); transition: all .25s; }
+    .hero-wa-btn:hover { background: #1ebe5d; box-shadow: 0 6px 22px rgba(37,211,102,.45); transform: translateY(-2px); }
+    @media (max-width: 639px) { .hero-btns .btn { min-width: 0; width: 100%; } .hero-wa-btn { width: 100%; } }
 
     .hero-sources { font-size: .68rem; color: rgba(100,116,139,.5); letter-spacing: .03em; animation: fadeUp .6s .25s ease both; line-height: 1.6; max-width: 540px; margin: 0 auto .5rem; }
 
@@ -344,12 +401,15 @@
 
     /* SECTIONS */
     .section-heading { text-align: center; margin-bottom: 3rem; }
-    [dir="rtl"] .section-heading { text-align: right; }
+    [dir="rtl"] .section-heading { text-align: center; direction: rtl; }
     .section-heading h2 { font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-size: clamp(1.75rem,4vw,2.5rem); font-weight: 900; color: var(--secondary-dark); margin-bottom: .75rem; letter-spacing: -.02em; }
     .section-heading p { font-size: 1.0625rem; color: var(--text-secondary); max-width: 560px; margin: 0 auto; line-height: 1.65; }
     .section-eyebrow { display: inline-block; padding: .28rem .95rem; border-radius: var(--radius-full); background: linear-gradient(135deg, #5B8EF0 0%, #7C6FCD 50%, #E07B5A 100%); color: #fff; font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; box-shadow: 0 4px 15px rgba(91,142,240,.3); }
     #how-it-works .section-eyebrow { font-size: .85rem; padding: .45rem 1.4rem; letter-spacing: .12em; box-shadow: 0 6px 24px rgba(91,142,240,.4); margin-bottom: 1.5rem; }
     #how-it-works .section-heading { margin-bottom: 4rem; }
+    #rag-tech .section-eyebrow { font-size: .85rem; padding: .45rem 1.4rem; letter-spacing: .12em; box-shadow: 0 6px 24px rgba(91,142,240,.4); margin-bottom: 1.5rem; }
+    #rag-tech .section-heading { margin-bottom: 3.5rem; }
+    #rag-tech .section-heading h2 { margin-top: .75rem; margin-bottom: 1rem; }
     #how-it-works .section-heading h2 { margin-top: .75rem; margin-bottom: 1rem; }
     #pillars .section-eyebrow { font-size: .85rem; padding: .45rem 1.4rem; letter-spacing: .12em; box-shadow: 0 6px 24px rgba(91,142,240,.4); margin-bottom: 1.5rem; }
     #pillars .section-heading { margin-bottom: 4rem; }
@@ -426,6 +486,15 @@
     .rag-step-label { font-size: .875rem; font-weight: 700; color: var(--secondary-dark); line-height: 1.3; }
     .rag-step-desc { font-size: .75rem; color: var(--text-muted); line-height: 1.55; }
     .rag-step-num { font-size: .65rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
+    .rag-chips { list-style: none; padding: 0; margin: 2rem auto 2.5rem; max-width: 600px; display: flex; flex-direction: column; gap: .85rem; }
+    .rag-chips li { display: flex; align-items: baseline; gap: .65rem; font-size: 1rem; font-weight: 600; color: var(--secondary-dark); line-height: 1.5; }
+    .rag-chips li span { color: var(--text-secondary); font-weight: 600; font-style: italic; }
+    .rag-explainer { max-width: 680px; margin: 0 auto; }
+    .rag-explainer-text { font-family: 'Inter', sans-serif; font-size: 1rem; color: var(--text-secondary); line-height: 1.8; text-align: center; font-weight: 600; }
+    .rag-explainer-text strong { font-weight: 600; color: var(--secondary-dark); }
+    .rag-section-title { font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-weight: 900; color: var(--secondary-dark); font-size: clamp(1.35rem,3vw,1.75rem); letter-spacing: -.02em; display: block; margin-bottom: 1rem; }
+    [dir="rtl"] .rag-explainer-text { text-align: right; }
+    @media (max-width: 640px) { .rag-explainer-text { text-align: left; font-size: .9375rem; } }
     .rag-insight { display: flex; align-items: flex-start; gap: 1rem; background: linear-gradient(135deg, rgba(46,107,230,.07) 0%, rgba(124,58,237,.07) 100%); border: 1px solid rgba(46,107,230,.18); border-radius: 1.25rem; padding: 1.5rem 2rem; margin-top: .5rem; }
     .rag-insight-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: .1rem; }
     .rag-insight p { font-size: .9375rem; color: var(--text); line-height: 1.7; margin: 0; }
@@ -456,7 +525,7 @@
     #faq { padding: 7rem 0 6rem; background: var(--faq-bg); position: relative; overflow: hidden; content-visibility: auto; contain-intrinsic-size: 0 800px; }
     #faq::before { content:''; position:absolute; top:-200px; right:-150px; width:600px; height:600px; border-radius:50%; background: radial-gradient(circle, rgba(186,210,255,.35) 0%, transparent 65%); opacity: .7; }
     #faq::after { content:''; position:absolute; bottom:-150px; left:-100px; width:500px; height:500px; border-radius:50%; background: radial-gradient(circle, rgba(210,225,255,.25) 0%, transparent 65%); opacity: .6; }
-    #faq .section-eyebrow { background: none; color: var(--primary); box-shadow: none; font-size: .75rem; letter-spacing: .12em; font-weight: 700; padding: 0; display: block; text-align: center; margin-bottom: 1rem; }
+    #faq .section-eyebrow { font-size: .85rem; padding: .45rem 1.4rem; letter-spacing: .12em; box-shadow: 0 6px 24px rgba(91,142,240,.4); margin-bottom: 1.5rem; }
     #faq .section-heading h2 { font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-size: clamp(2rem,5vw,3rem); font-weight: 900; color: var(--secondary-dark); margin-bottom: .75rem; letter-spacing: -.02em; }
     #faq .section-heading p { color: var(--text-secondary); font-size: 1.05rem; }
     .faq-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: .85rem; position: relative; z-index: 1; }
@@ -502,7 +571,8 @@
     [dir="rtl"] .footer-bottom { direction: rtl; }
 
     /* FLOATING BUTTONS */
-    .float-btn { position: fixed; bottom: 1.5rem; z-index: 300; border: none; cursor: pointer; background: none; padding: 0; }
+    .float-btn { position: fixed; bottom: 1.5rem; z-index: 300; border: none; cursor: pointer; background: none; padding: 0; transition: opacity .35s, transform .35s; }
+    .float-btn.hero-visible { opacity: 0; transform: translateY(.75rem); pointer-events: none; }
     #btn-chat { left: max(1.5rem, calc((100vw - 1200px) / 2 + 1.5rem)); }
     #btn-wa   { right: max(1.5rem, calc((100vw - 1200px) / 2 + 1.5rem)); }
     .float-inner { position: relative; display: inline-flex; align-items: center; gap: .75rem; padding: .75rem 1.5rem; border-radius: var(--radius-full); font-family: 'Inter', sans-serif; font-weight: 600; font-size: .875rem; transition: all .3s cubic-bezier(.4,0,.2,1); }
@@ -518,29 +588,39 @@
     @media (max-width: 767px) { .float-label { display: none; } }
 
     /* CHAT MODAL */
-    #chat-overlay { display: none; position: fixed; inset: 0; z-index: 9999; align-items: center; justify-content: center; padding: 1rem; background: rgba(0,0,0,.5); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+    #chat-overlay { display: none; position: fixed; inset: 0; z-index: 9999; align-items: center; justify-content: center; padding: 1.5rem; background: rgba(5,10,30,.58); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
     #chat-overlay.open { display: flex; }
-    #chat-modal { position: relative; width: 100%; max-width: 680px; height: min(80vh,680px); background: #fff; border-radius: 1.5rem; box-shadow: var(--shadow-2xl); display: flex; flex-direction: column; animation: modalIn .35s cubic-bezier(.4,0,.2,1) both; overflow: hidden; }
+    #chat-modal { position: relative; width: 100%; max-width: 860px; height: min(86vh,780px); background: #fff; border-radius: 1.75rem; box-shadow: 0 32px 80px rgba(0,0,0,.28), 0 8px 24px rgba(0,0,0,.18); display: flex; flex-direction: column; animation: modalIn .35s cubic-bezier(.4,0,.2,1) both; overflow: hidden; }
     @keyframes modalIn { from{opacity:0;transform:scale(.95) translateY(20px);} to{opacity:1;transform:scale(1) translateY(0);} }
-    .chat-header { background: linear-gradient(90deg, var(--primary-pastel) 0%, var(--primary-pastel-dark) 100%); padding: 1.125rem 1.25rem; display: flex; align-items: center; justify-content: space-between; border-radius: 1.5rem 1.5rem 0 0; }
-    .chat-header-left { display: flex; align-items: center; gap: .75rem; }
-    .chat-avatar { width: 2.75rem; height: 2.75rem; border-radius: 50%; background: rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center; font-family: 'Outfit', 'Outfit-fallback', sans-serif; font-weight: 700; color: #fff; font-size: .9rem; }
-    .chat-header-name { font-weight: 700; color: #fff; font-size: .9375rem; }
-    .chat-header-status { font-size: .75rem; color: rgba(255,255,255,.72); display: flex; align-items: center; gap: .35rem; margin-top: .15rem; }
+    .chat-header { background: linear-gradient(135deg, #1a3caa 0%, #0e2575 55%, #152080 100%); padding: 1.35rem 1.5rem; display: flex; align-items: center; justify-content: space-between; border-radius: 1.75rem 1.75rem 0 0; border-bottom: 1px solid rgba(255,255,255,.07); position: relative; overflow: hidden; }
+    /* Subtle star-of-david watermark in header */
+    .chat-header::after { content: '✡'; position: absolute; right: 4.5rem; top: 50%; transform: translateY(-50%); font-size: 4.5rem; color: rgba(255,255,255,.04); pointer-events: none; line-height: 1; }
+    .chat-header-left { display: flex; align-items: center; gap: .9rem; position: relative; z-index: 1; }
+    .chat-avatar { width: 3.25rem; height: 3.25rem; border-radius: 50%; background: linear-gradient(135deg, rgba(255,255,255,.22), rgba(255,255,255,.1)); border: 2px solid rgba(255,220,80,.55); box-shadow: 0 0 0 3px rgba(255,220,80,.15), inset 0 1px 0 rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; font-family: 'Heebo', sans-serif; font-weight: 800; color: #fff; font-size: 1.25rem; letter-spacing: -.02em; text-shadow: 0 1px 4px rgba(0,0,0,.35); }
+    .chat-header-name { font-weight: 800; color: #fff; font-size: 1.1rem; letter-spacing: -.02em; text-shadow: 0 1px 4px rgba(0,0,0,.2); }
+    .chat-header-subtitle { font-size: .72rem; color: rgba(255,255,255,.62); letter-spacing: .02em; font-style: italic; margin-top: .08rem; }
+    .chat-header-status { font-size: .75rem; color: rgba(255,255,255,.75); display: flex; align-items: center; gap: .35rem; margin-top: .2rem; }
     .chat-header-status .dot { width: .45rem; height: .45rem; border-radius: 50%; background: #4ade80; display: inline-block; }
-    .chat-close { width: 2rem; height: 2rem; border-radius: 50%; background: rgba(255,255,255,.15); border: none; cursor: pointer; color: #fff; display: flex; align-items: center; justify-content: center; transition: all .25s; }
-    .chat-close:hover { background: rgba(255,255,255,.25); transform: rotate(90deg); }
-    #chat-box { flex: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; background: var(--surface-2); }
+    .chat-close { width: 2.1rem; height: 2.1rem; border-radius: 50%; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); cursor: pointer; color: #fff; display: flex; align-items: center; justify-content: center; transition: all .25s; position: relative; z-index: 1; }
+    .chat-close:hover { background: rgba(255,255,255,.22); transform: rotate(90deg); }
+    #chat-box {
+      flex: 1; overflow-y: auto; padding: 1.5rem 1.75rem;
+      display: flex; flex-direction: column; gap: 1.1rem;
+      background: #eef0f8;
+      background-image:
+        radial-gradient(ellipse at 12% 88%, rgba(124,111,205,.06) 0%, transparent 42%),
+        radial-gradient(ellipse at 88% 12%, rgba(91,142,240,.05) 0%, transparent 42%);
+    }
     #chat-box::-webkit-scrollbar{width:4px;} #chat-box::-webkit-scrollbar-track{background:transparent;} #chat-box::-webkit-scrollbar-thumb{background:#e5e7eb;border-radius:4px;}
     .msg-row { display: flex; align-items: flex-end; gap: .6rem; }
     .msg-row.user { flex-direction: row-reverse; }
     .msg-avatar { width: 2.25rem; height: 2.25rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .7rem; color: #fff; flex-shrink: 0; }
-    .msg-avatar.sam { background: var(--primary); }
+    .msg-avatar.sam { background: linear-gradient(135deg, #5B8EF0 0%, #7C6FCD 60%, #E07B5A 100%); }
     .msg-avatar.user { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); font-size: .65rem; }
-    .msg-bubble { max-width: 78%; padding: .875rem 1.125rem; border-radius: 1.125rem; font-size: .875rem; line-height: 1.6; box-shadow: var(--shadow-sm); word-break: break-word; animation: bubbleIn .32s ease-out; }
+    .msg-bubble { max-width: 80%; padding: 1rem 1.25rem; border-radius: 1.25rem; font-size: .9375rem; line-height: 1.65; box-shadow: 0 2px 8px rgba(0,0,0,.07); word-break: break-word; animation: bubbleIn .32s ease-out; }
     @keyframes bubbleIn { from { opacity: 0; transform: translateY(10px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    .msg-bubble.sam { background: linear-gradient(135deg, #eef3fd, #e8f0fe); border: 1.5px solid var(--primary); color: var(--secondary-dark); }
-    .msg-bubble.user { background: linear-gradient(135deg, var(--primary-pastel), var(--primary-pastel-dark)); color: #fff; border-top-right-radius: .2rem; white-space: pre-line; position: relative; cursor: pointer; }
+    .msg-bubble.sam { background: #fff; border: 1.5px solid rgba(46,107,230,.18); border-bottom-left-radius: .3rem; color: var(--secondary-dark); box-shadow: 0 2px 12px rgba(46,107,230,.09); font-family: 'Outfit', 'Inter', sans-serif; }
+    .msg-bubble.user { background: linear-gradient(135deg, #2a5ce0, #1a3caa); color: #fff; border-top-right-radius: .3rem; white-space: pre-line; position: relative; cursor: pointer; box-shadow: 0 2px 12px rgba(26,60,170,.25); }
     .msg-bubble.user:hover::after { content: '✏️'; position: absolute; top: .3rem; right: .3rem; font-size: .75rem; opacity: .8; }
     .msg-bubble.user[contenteditable="true"] { outline: 2px solid rgba(255,255,255,.6); cursor: text; white-space: pre-wrap; }
     .msg-bubble.sam b,.msg-bubble.sam strong { color: #0056D2; font-weight: 700; }
@@ -548,24 +628,66 @@
     .msg-bubble.sam code { background: rgba(0,86,210,.08); padding: 1px 5px; border-radius: 4px; font-size: .85em; }
     .msg-bubble.sam ul,.msg-bubble.sam ol { padding-left: 1.25rem; margin: .3rem 0; }
     .msg-bubble.sam li { margin-bottom: .2rem; }
-    .msg-bubble.sam hr { border: none; border-top: 1px solid #e5e7eb; margin: .6rem 0; }
+    .msg-bubble.sam hr { border: none; height: 2px; background: linear-gradient(90deg, #5B8EF0 0%, #7C6FCD 55%, #E07B5A 100%); border-radius: 2px; margin: 1rem 0; opacity: .55; }
     .msg-bubble.sam p { margin: 0 0 .5rem; }
     .msg-bubble.sam p:last-child { margin-bottom: 0; }
+    /* ── Sources grounding (NotebookLM-style) ── */
+    .msg-sources { max-width: 78%; margin: .25rem 0 .75rem 2.75rem; }
+    .msg-sources-label { font-size: .67rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; margin-bottom: .45rem; background: linear-gradient(135deg, #5B8EF0 0%, #7C6FCD 60%, #E07B5A 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .msg-sources-list { display: flex; flex-wrap: wrap; gap: .4rem; }
+    /* Book-spine chip */
+    .msg-source-chip {
+      display: inline-flex; align-items: flex-start; gap: .35rem;
+      background: linear-gradient(135deg, rgba(91,142,240,.07) 0%, rgba(124,111,205,.05) 100%);
+      border: 1px solid rgba(91,142,240,.2);
+      border-left: 2.5px solid #7C6FCD;
+      border-radius: .4rem .6rem .6rem .4rem;
+      padding: .35rem .65rem .35rem .5rem;
+      cursor: default;
+      box-shadow: 0 1px 5px rgba(91,142,240,.1);
+      transition: all .18s;
+      max-width: 100%;
+    }
+    .msg-source-chip:hover {
+      background: linear-gradient(135deg, rgba(91,142,240,.13) 0%, rgba(124,111,205,.1) 100%);
+      box-shadow: 0 3px 10px rgba(124,111,205,.2);
+      transform: translateY(-1px);
+      border-left-color: #5B8EF0;
+    }
+    .msg-source-icon { display: flex; align-items: center; flex-shrink: 0; margin-top: .1rem; color: #7C6FCD; }
+    .msg-source-icon svg { width: .85rem; height: .85rem; }
+    .msg-source-body { min-width: 0; }
+    .msg-source-title { font-size: .7rem; font-weight: 600; color: #374151; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 22ch; display: block; }
+    .msg-source-snippet { font-size: .62rem; color: #6b7280; line-height: 1.4; margin-top: .12rem; display: none; max-width: 36ch; white-space: normal; }
+    .msg-source-chip:hover .msg-source-snippet { display: block; }
+    html.dark .msg-source-chip { background: linear-gradient(135deg, rgba(91,142,240,.1) 0%, rgba(124,111,205,.08) 100%); border-color: rgba(124,111,205,.3); border-left-color: #9d8fe0; }
+    html.dark .msg-source-icon { color: #b4a8f0; }
+    html.dark .msg-source-title { color: #c8d7f5; }
+    html.dark .msg-source-snippet { color: #94a3b8; }
+    @media (max-width: 640px) { .msg-sources { margin-left: 2.25rem; } .msg-source-title { max-width: 18ch; } }
     .msg-bubble.sam h1,.msg-bubble.sam h2,.msg-bubble.sam h3 { font-size: 1em; font-weight: 700; color: #0056D2; margin: .6rem 0 .2rem; }
     .loading-dots { display: flex; align-items: center; gap: .35rem; padding: .25rem 0; }
-    .loading-dots span { width: .5rem; height: .5rem; border-radius: 50%; background: var(--primary); opacity: .6; animation: dotBounce 1.2s ease-in-out infinite; }
-    .loading-dots span:nth-child(2){animation-delay:.2s;} .loading-dots span:nth-child(3){animation-delay:.4s;}
-    @keyframes dotBounce { 0%,80%,100%{transform:translateY(0);opacity:.5;} 40%{transform:translateY(-7px);opacity:1;} }
-    .chat-input-area { padding: 1rem; background: #fff; border-top: 1px solid #f3f4f6; flex-shrink: 0; border-radius: 0 0 1.5rem 1.5rem; }
-    .chat-input-row { display: flex; align-items: flex-end; gap: .75rem; background: #f9fafb; border-radius: 1rem; padding: .75rem 1rem; border: 1.5px solid #e5e7eb; transition: border-color .25s, box-shadow .25s; }
-    .chat-input-row:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,86,210,.1); }
-    #chat-input { flex: 1; background: none; border: none; outline: none; font-family: 'Inter', sans-serif; font-size: .875rem; color: var(--secondary-dark); resize: none; min-height: 1.4rem; max-height: 8rem; overflow-y: auto; line-height: 1.5; }
-    #chat-input::placeholder { color: #9ca3af; }
+    .loading-dots span { width: .46rem; height: .46rem; border-radius: 50%; background: rgba(74,222,128,.55); animation: dotPulse 1.5s ease-in-out infinite; }
+    .loading-dots span:nth-child(2){animation-delay:.18s;} .loading-dots span:nth-child(3){animation-delay:.36s;}
+    .chat-input-area { padding: 1.1rem 1.5rem 1.25rem; background: #fff; border-top: 1px solid #eaecf4; flex-shrink: 0; border-radius: 0 0 1.75rem 1.75rem; }
+    .chat-input-row { display: flex; align-items: flex-end; gap: .75rem; background: #f6f7fb; border-radius: 1.1rem; padding: .875rem 1.125rem; border: 1.5px solid #dde1f0; transition: border-color .25s, box-shadow .25s; }
+    .chat-input-row:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26,60,170,.1); background: #fff; }
+    #chat-input { flex: 1; background: none; border: none; outline: none; font-family: 'Inter', sans-serif; font-size: .9375rem; color: var(--secondary-dark); resize: none; min-height: 1.5rem; max-height: 10rem; overflow-y: auto; line-height: 1.55; }
+    #chat-input::placeholder { color: #a0a8c0; }
     #chat-input:disabled { opacity: .5; }
-    #chat-send { width: 2.5rem; height: 2.5rem; border-radius: .75rem; background: var(--primary); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .25s; flex-shrink: 0; }
-    #chat-send:hover:not(:disabled){background:var(--primary-dark);transform:scale(1.08);}
+    #chat-send { width: 2.75rem; height: 2.75rem; border-radius: .875rem; background: linear-gradient(135deg, #2a5ce0, #1a3caa); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .25s; flex-shrink: 0; box-shadow: 0 2px 8px rgba(26,60,170,.3); }
+    #chat-send:hover:not(:disabled){ background: linear-gradient(135deg, #1a3caa, #0e2575); transform: scale(1.08); box-shadow: 0 4px 14px rgba(26,60,170,.4); }
     #chat-send:disabled{opacity:.4;cursor:not-allowed;}
-    .chat-hint { text-align: center; font-size: .7375rem; color: #9ca3af; margin-top: .5rem; }
+    .chat-hint { text-align: center; font-size: .72rem; color: #a0a8c0; margin-top: .6rem; letter-spacing: .01em; }
+    .chat-suggestions { display: flex; flex-direction: column; gap: .45rem; margin-top: .9rem; }
+    .chat-suggestion { background: rgba(46,107,230,.07); border: 1px solid rgba(46,107,230,.18); border-radius: .75rem; padding: .55rem .9rem; font-size: .82rem; font-weight: 500; color: var(--primary); text-align: left; cursor: pointer; transition: all .2s; font-family: 'Inter', sans-serif; line-height: 1.4; }
+    .chat-suggestion:hover { background: rgba(46,107,230,.13); border-color: rgba(46,107,230,.32); transform: translateX(2px); }
+    [dir="rtl"] .chat-suggestion { text-align: right; }
+    [dir="rtl"] .chat-suggestion:hover { transform: translateX(-2px); }
+    html.dark .chat-suggestion { background: rgba(91,142,240,.1); border-color: rgba(91,142,240,.25); color: #93b4ff; }
+    html.dark .chat-suggestion:hover { background: rgba(91,142,240,.18); }
+    .send-spinner { width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .chat-name-row { padding: .6rem 1rem .2rem; }
     #chat-name { width: auto; max-width: 180px; border: 1.5px solid #e5e7eb; border-radius: .6rem; padding: .4rem .75rem; font-size: .8rem; font-family: 'Inter', sans-serif; color: var(--secondary-dark); background: #f4f6fa; outline: none; transition: border-color .25s; }
     #chat-name:focus { border-color: var(--primary); background: #fff; }
@@ -581,7 +703,7 @@
     /* Dark mode — corrections visibilité hero & blobs */
     html.dark .blob-2 { display: none; }
     html.dark .hero-h1 [data-i18n="hero_tagline"] { color: rgba(203,213,225,.8); }
-    html.dark a[href="#how-it-works"].btn { background: rgba(255,255,255,.1) !important; border: 1.5px solid rgba(255,255,255,.25) !important; box-shadow: 0 4px 16px rgba(0,0,0,.35) !important; }
+    html.dark a[href="#rag-tech"].btn { background: rgba(255,255,255,.1) !important; border: 1.5px solid rgba(255,255,255,.25) !important; box-shadow: 0 4px 16px rgba(0,0,0,.35) !important; }
     html.dark #how-it-works .section-heading p { color: #CBD5E1; }
     /* HISTORY PANEL */
     #chat-history-panel { display: none; position: absolute; inset: 0; z-index: 20; background: #fff; border-radius: 1.5rem; flex-direction: column; overflow: hidden; animation: modalIn .25s cubic-bezier(.4,0,.2,1) both; }
@@ -729,7 +851,7 @@
         border-radius: 1.5rem 1.5rem 0 0;
         margin: 0;
       }
-      .chat-header { border-radius: 1.5rem 1.5rem 0 0; }
+      .chat-header { border-radius: 1.75rem 1.75rem 0 0; }
     }
 
     /* ── Boutons flottants — iOS safe area + tap targets ── */
@@ -746,7 +868,7 @@
 
     /* ── Mobile menu ── */
     @media (max-width: 640px) {
-      #mobile-menu { padding: 4.5rem 1.25rem 2rem; }
+      .menu-inner { padding: 3.75rem 1.25rem 1.25rem; }
     }
 
     /* ── Désactiver les animations lourdes sur mobile ── */
@@ -790,6 +912,373 @@
       *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
       .halo-1, .halo-2, .halo-3, .blob-1, .blob-2 { animation: none; will-change: auto; }
     }
+
+    /* ══════════════════════════════════════════════════════════════
+       DESIGN ENHANCEMENTS
+       Chat bubbles · Hebrew/RTL · Dark mode · Mobile UX (iOS Safari)
+    ══════════════════════════════════════════════════════════════ */
+
+    /* ── iOS / PWA global ── */
+    html { -webkit-text-size-adjust: 100%; }
+    a, button, [role="button"] {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    /* ══ CHAT MODAL ══ */
+
+    /* Smoother bottom-sheet on iOS */
+    @media (max-width: 640px) {
+      #chat-overlay { background: rgba(0,0,0,.65); }
+      #chat-modal {
+        border-radius: 1.75rem 1.75rem 0 0;
+        height: 94svh;
+      }
+      .chat-header { border-radius: 1.75rem 1.75rem 0 0; position: relative; }
+      /* Pull-to-dismiss pill */
+      .chat-header::before {
+        content: '';
+        position: absolute;
+        top: .55rem; left: 50%;
+        transform: translateX(-50%);
+        width: 2.25rem; height: .22rem;
+        background: rgba(255,255,255,.45);
+        border-radius: 9999px;
+        pointer-events: none;
+      }
+      /* Respect iOS keyboard / safe-area */
+      #chat-box {
+        padding-bottom: max(.75rem, env(safe-area-inset-bottom, .75rem));
+      }
+      .chat-input-area {
+        padding-bottom: max(.875rem, calc(env(safe-area-inset-bottom, 0px) + .5rem));
+      }
+    }
+
+    /* ── Chat box scroll ── */
+    #chat-box {
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      gap: .6rem;
+    }
+    #chat-box::-webkit-scrollbar { width: 3px; }
+    #chat-box::-webkit-scrollbar-thumb { background: rgba(46,107,230,.18); border-radius: 9999px; }
+    html.dark #chat-box::-webkit-scrollbar-thumb { background: rgba(91,142,240,.28); }
+
+    /* ── Chat header — deep navy ── */
+    .chat-header {
+      background: linear-gradient(135deg, #1a3caa 0%, #0e2575 55%, #152080 100%);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    html.dark .chat-header {
+      background: linear-gradient(135deg, #111d45 0%, #0a1530 55%, #0d1840 100%);
+      border-bottom-color: rgba(91,142,240,.2);
+    }
+    .chat-header-name { font-weight: 800; letter-spacing: -.02em; }
+    /* Pulsing "online" dot */
+    @keyframes onlinePulse { 0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.5);} 60%{box-shadow:0 0 0 5px rgba(74,222,128,0);} }
+    .chat-header-status .dot { animation: onlinePulse 2.8s ease-in-out infinite; }
+
+    /* ══ CHAT BUBBLES ══ */
+
+    /* --- Sam (assistant) bubble — style "lettre du Rav" --- */
+    .msg-bubble.sam {
+      position: relative;
+      border-radius: .25rem 1.25rem 1.25rem 1.25rem;
+      background: #ffffff;
+      border: none;
+      border-left: 3px solid transparent;
+      color: #1e293b;
+      font-size: .9rem;
+      line-height: 1.8;
+      padding: 1rem 1.25rem .875rem 1.1rem;
+      box-shadow:
+        0 2px 8px rgba(91,142,240,.09),
+        0 6px 28px rgba(0,0,0,.07);
+      max-width: 82%;
+      overflow: hidden;
+    }
+    /* Barre dégradée gauche bleu→violet→corail */
+    .msg-bubble.sam::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, #5B8EF0 0%, #7C6FCD 50%, #E07B5A 100%);
+      border-radius: 3px 0 0 3px;
+    }
+    html.dark .msg-bubble.sam {
+      background: linear-gradient(145deg, #19274a 0%, #131e3a 100%);
+      color: #dde6f7;
+      box-shadow: 0 2px 8px rgba(0,0,0,.4), 0 6px 28px rgba(0,0,0,.3);
+    }
+
+    /* Sam bubble inline formatting */
+    .msg-bubble.sam b, .msg-bubble.sam strong {
+      color: #1a3caa; font-weight: 700;
+      background: rgba(26,60,170,.06);
+      padding: 0 3px; border-radius: 3px;
+    }
+    html.dark .msg-bubble.sam b, html.dark .msg-bubble.sam strong {
+      color: #7aaaf5; background: rgba(91,142,240,.12);
+    }
+    .msg-bubble.sam a { color: #1a3caa; font-weight: 600; text-decoration: none; border-bottom: 1px solid rgba(26,60,170,.3); transition: border-color .2s; }
+    .msg-bubble.sam a:hover { border-bottom-color: #c9a84c; color: #9a6a00; }
+    .msg-bubble.sam code { background: rgba(46,107,230,.09); padding: 1px 6px; border-radius: 4px; font-size: .85em; }
+    /* HR → séparateur dégradé moderne */
+    .msg-bubble.sam hr {
+      border: none; margin: 1rem 0; height: 2px;
+      background: linear-gradient(90deg, #5B8EF0 0%, #7C6FCD 55%, #E07B5A 100%);
+      border-radius: 2px; opacity: .55;
+    }
+    .msg-bubble.sam blockquote {
+      border-left: 3px solid #7C6FCD;
+      margin: .5rem 0; padding: .4rem .85rem;
+      background: rgba(124,111,205,.06); border-radius: 0 .5rem .5rem 0;
+      font-style: italic; color: #374151;
+    }
+    html.dark .msg-bubble.sam blockquote { background: rgba(124,111,205,.1); color: #c8d7f5; }
+    .msg-bubble.sam h1, .msg-bubble.sam h2, .msg-bubble.sam h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05em; font-weight: 800;
+      background: linear-gradient(135deg, #2a5ce0 0%, #7C6FCD 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: .85rem 0 .3rem; letter-spacing: -.01em;
+    }
+    html.dark .msg-bubble.sam h1, html.dark .msg-bubble.sam h2, html.dark .msg-bubble.sam h3 {
+      background: linear-gradient(135deg, #7aaaf5 0%, #b4a8f0 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .msg-bubble.sam ul, .msg-bubble.sam ol { padding-left: 1.4rem; margin: .4rem 0; direction: ltr; }
+    .msg-bubble.sam li { margin-bottom: .3rem; unicode-bidi: isolate; text-align: left; }
+    .msg-bubble.sam p { margin: 0 0 .55rem; }
+    .msg-bubble.sam p:last-child { margin-bottom: 0; }
+
+    /* --- User bubble --- */
+    .msg-bubble.user {
+      position: relative;
+      border-radius: 1.25rem .25rem 1.25rem 1.25rem;
+      background: linear-gradient(145deg, #2558d8 0%, #1840b8 55%, #112e94 100%);
+      color: #fff;
+      font-size: .9rem;
+      line-height: 1.65;
+      padding: .875rem 1.1rem .75rem;
+      box-shadow:
+        0 4px 22px rgba(24,64,184,.4),
+        0 1px 5px rgba(0,0,0,.12),
+        inset 0 1px 0 rgba(255,255,255,.14);
+      max-width: 80%;
+    }
+    html.dark .msg-bubble.user {
+      background: linear-gradient(145deg, #2458c0 0%, #153495 100%);
+      box-shadow: 0 4px 20px rgba(20,65,190,.35), 0 1px 5px rgba(0,0,0,.3);
+    }
+
+    /* Bubble entrance animation */
+    @keyframes bubbleIn {
+      from { opacity: 0; transform: translateY(10px) scale(.96); }
+      to   { opacity: 1; transform: translateY(0)  scale(1); }
+    }
+
+    /* ══ RTL / HEBREW BUBBLES ══ */
+
+    /* Flip corner asymmetry for RTL reading direction */
+    [dir="rtl"] .msg-bubble.sam {
+      border-radius: 1.2rem .3rem 1.2rem 1.2rem;
+      /* Frank Ruhl Libre: sefer-like script for Torah content */
+      font-family: 'Frank Ruhl Libre', 'Heebo', serif;
+      font-size: 1.025rem;
+      line-height: 1.95;
+      text-align: right;
+    }
+    [dir="rtl"] .msg-bubble.user {
+      border-radius: .3rem 1.2rem 1.2rem 1.2rem;
+      font-family: 'Heebo', sans-serif;
+      font-size: .9375rem;
+      line-height: 1.8;
+      text-align: right;
+    }
+
+    /* Hebrew bold → gold (source references) */
+    [dir="rtl"] .msg-bubble.sam b, [dir="rtl"] .msg-bubble.sam strong {
+      color: #9a6a00; font-weight: 700;
+    }
+    html.dark [dir="rtl"] .msg-bubble.sam b,
+    html.dark [dir="rtl"] .msg-bubble.sam strong { color: var(--gold); }
+
+    /* Hebrew headings inside bubble */
+    [dir="rtl"] .msg-bubble.sam h1, [dir="rtl"] .msg-bubble.sam h2, [dir="rtl"] .msg-bubble.sam h3 {
+      font-family: 'Heebo', sans-serif; font-weight: 800;
+      color: var(--primary);
+    }
+    /* Hebrew lists */
+    [dir="rtl"] .msg-bubble.sam ul, [dir="rtl"] .msg-bubble.sam ol {
+      padding-right: 1.25rem; padding-left: 0;
+    }
+
+    /* Hebrew header in chat */
+    [dir="rtl"] .chat-header-left { flex-direction: row-reverse; }
+    [dir="rtl"] .chat-header-status { flex-direction: row-reverse; }
+    [dir="rtl"] .chat-header-name { font-family: 'Heebo', sans-serif; }
+
+    /* ══ LOADING DOTS — vert "En ligne" ══ */
+    @keyframes dotPulse {
+      0%,100% { transform: translateY(0) scale(1); background: rgba(74,222,128,.55); }
+      40%      { transform: translateY(-7px) scale(1.3); background: #4ade80; box-shadow: 0 0 8px rgba(74,222,128,.6); }
+    }
+    .loading-dots { gap: .42rem; padding: .4rem 0; }
+    .loading-dots span {
+      width: .46rem; height: .46rem; border-radius: 50%;
+      background: rgba(74,222,128,.55);
+      animation: dotPulse 1.5s ease-in-out infinite;
+    }
+    .loading-dots span:nth-child(2) { animation-delay: .18s; }
+    .loading-dots span:nth-child(3) { animation-delay: .36s; }
+
+    /* ══ SEND BUTTON ══ */
+    #chat-send {
+      width: 2.75rem; height: 2.75rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2f6ce0 0%, #1840b8 100%);
+      box-shadow: 0 2px 10px rgba(46,107,230,.45);
+      transition: all .2s cubic-bezier(.4,0,.2,1);
+    }
+    #chat-send:hover:not(:disabled) {
+      background: linear-gradient(135deg, #3d7af5 0%, #2050cc 100%);
+      box-shadow: 0 4px 18px rgba(46,107,230,.6);
+      transform: scale(1.08) translateY(-1px);
+    }
+    #chat-send:active:not(:disabled) { transform: scale(.93); }
+
+    /* ══ CHAT INPUT — RTL + iOS ══ */
+    [dir="rtl"] #chat-input {
+      text-align: right;
+      font-family: 'Heebo', sans-serif;
+      font-size: 1rem;
+      direction: rtl;
+      unicode-bidi: embed;
+    }
+    [dir="rtl"] .chat-input-row { flex-direction: row-reverse; }
+
+    /* Prevent iOS auto-zoom on input focus (16px minimum) */
+    @media (max-width: 767px) {
+      #chat-input { font-size: 16px; }
+      #chat-name  { font-size: 16px; }
+      #chat-send  { width: 3rem; height: 3rem; }
+      .chat-close { width: 2.5rem; height: 2.5rem; }
+      /* Accessible tap targets */
+      .lang-btn   { min-height: 40px; min-width: 40px; }
+      .float-inner { min-width: 52px; min-height: 52px; }
+    }
+
+    /* ══ FLOATING BUTTONS — safe-area ══ */
+    @media (max-width: 767px) {
+      .float-btn {
+        bottom: max(1.25rem, calc(env(safe-area-inset-bottom, 0px) + .75rem));
+      }
+      #btn-chat { left:  max(1.25rem, calc(env(safe-area-inset-left,  0px) + 1rem)); }
+      #btn-wa   { right: max(1.25rem, calc(env(safe-area-inset-right, 0px) + 1rem)); }
+    }
+
+    /* ══ HISTORY PANEL ══ */
+    #chat-hist-list { -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+    [dir="rtl"] .hist-item { text-align: right; direction: rtl; }
+    [dir="rtl"] .hist-item:hover { transform: translateX(-3px); }
+    [dir="rtl"] .hist-item-q,
+    [dir="rtl"] .hist-item-a,
+    [dir="rtl"] .hist-item-meta { font-family: 'Heebo', sans-serif; }
+
+    /* ══ DARK MODE — Chat ══ */
+    html.dark #chat-modal { background: #07101e; }
+    html.dark #chat-box { background: linear-gradient(180deg, #07101e 0%, #0a1428 100%); }
+    html.dark #chat-history-panel { background: #07101e; }
+    html.dark #chat-hist-list { background: #07101e; }
+    html.dark .hist-item {
+      background: linear-gradient(135deg, #101e38 0%, #0c1628 100%);
+      border-color: rgba(94,130,198,.2);
+    }
+    html.dark .hist-item:hover {
+      background: linear-gradient(135deg, #182b4a 0%, #12203a 100%);
+      border-color: rgba(91,142,240,.4);
+    }
+    html.dark .chat-input-area { border-top-color: rgba(91,142,240,.15); }
+    html.dark .chat-input-row { background: #101e38; border-color: rgba(91,142,240,.22); }
+    html.dark .chat-input-row:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(91,142,240,.12);
+    }
+
+    /* ══ THEME TRANSITIONS — chat elements only ══ */
+    #chat-modal, #chat-box, .chat-input-area, .chat-input-row,
+    .msg-bubble, #chat-history-panel, .hist-item {
+      transition: background .28s ease, border-color .28s ease, color .28s ease,
+                  box-shadow .28s ease;
+    }
+
+    /* ── Retina antialiasing ── */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .msg-bubble, .chat-header-name, .logo { -webkit-font-smoothing: antialiased; }
+    }
+
+    /* ══════════════════════════════════════════════════════
+       CHAT REDESIGN — Fullscreen mobile · Rounded · Contrast
+    ══════════════════════════════════════════════════════ */
+
+    /* 1. Masquer l'input prénom */
+    .chat-name-row { display: none; }
+
+    /* 2. Bulles plus arrondies */
+    .msg-bubble.sam  { border-radius: .3rem 1.5rem 1.5rem 1.5rem; }
+    .msg-bubble.user { border-radius: 1.5rem .3rem 1.5rem 1.5rem; }
+    [dir="rtl"] .msg-bubble.sam  { border-radius: 1.5rem .3rem 1.5rem 1.5rem; }
+    [dir="rtl"] .msg-bubble.user { border-radius: .3rem 1.5rem 1.5rem 1.5rem; }
+
+    /* 3. Bulles plus larges — collées aux bords */
+    #chat-box { padding: 1rem .75rem; }
+    .msg-bubble { max-width: 86%; }
+    .msg-bubble.sam  { max-width: 90%; }
+
+    /* 4. Contraste net input vs chat area */
+    .chat-input-area {
+      background: #e8edf8;
+      border-top: 2px solid rgba(46,107,230,.16);
+      padding: .875rem .875rem;
+    }
+    .chat-input-row {
+      background: #fff;
+      border-radius: 1.5rem;
+      border: 1.5px solid rgba(46,107,230,.2);
+    }
+    html.dark .chat-input-area {
+      background: #060d1c;
+      border-top-color: rgba(91,142,240,.2);
+    }
+    html.dark .chat-input-row {
+      background: #111c33;
+      border-color: rgba(91,142,240,.28);
+    }
+
+    /* 5. Plein écran sur mobile */
+    @media (max-width: 640px) {
+      #chat-overlay {
+        padding: 0;
+        background: transparent;
+        align-items: stretch;
+      }
+      #chat-modal {
+        height: 100%;
+        border-radius: 0;
+        max-width: 100%;
+      }
+      .chat-header { border-radius: 0; }
+      .chat-header::before { display: none; }
+      .chat-input-area { border-radius: 0; padding-bottom: max(.875rem, calc(env(safe-area-inset-bottom, 0px) + .875rem)); }
+      #chat-history-panel { border-radius: 0; }
+      .chat-hist-header { border-radius: 0; }
+    }
   </style>
 </head>
 <body>
@@ -801,8 +1290,8 @@
     <nav>
       <ul class="nav-links">
         <li><a href="#" data-i18n="nav_home">Accueil</a></li>
-        <li><a href="#how-it-works" data-i18n="nav_how">Comment ça marche</a></li>
-        <li><a href="#pillars" data-i18n="nav_values">Nos Valeurs</a></li>
+        <li><a href="#rag-tech" data-i18n="nav_how">Comment ça marche</a></li>
+        <li><a href="#sources" data-i18n="nav_values">Nos Valeurs</a></li>
         <li><a href="#faq">FAQ</a></li>
       </ul>
     </nav>
@@ -828,38 +1317,62 @@
   </div>
 </div>
 
+<!-- Menu overlay -->
+<div id="menu-overlay" onclick="closeMobileMenu()"></div>
+
 <!-- Mobile Menu -->
 <div id="mobile-menu" role="navigation" aria-label="Menu mobile">
-  <div class="mobile-nav-links">
-    <a href="#" class="mob-link" onclick="closeMobileMenu()" data-i18n="nav_home">
-      <span class="mob-icon">🏠</span>
-      Accueil
+  <div class="menu-gradient-bar"></div>
+  <div class="menu-inner">
+    <div class="mobile-nav-links">
+      <a href="#" class="mob-link" onclick="closeMobileMenu()">
+        <span class="mob-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </span>
+        <span class="mob-link-label" data-i18n="nav_home">Accueil</span>
+        <svg class="mob-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a href="#rag-tech" class="mob-link" onclick="closeMobileMenu()">
+        <span class="mob-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </span>
+        <span class="mob-link-label" data-i18n="nav_how">Comment ça marche</span>
+        <svg class="mob-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a href="#sources" class="mob-link" onclick="closeMobileMenu()">
+        <span class="mob-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </span>
+        <span class="mob-link-label" data-i18n="nav_values">Nos Valeurs</span>
+        <svg class="mob-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a href="#faq" class="mob-link" onclick="closeMobileMenu()">
+        <span class="mob-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </span>
+        <span class="mob-link-label">FAQ</span>
+        <svg class="mob-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </div>
+
+    <div class="mobile-divider"></div>
+
+    <a href="#" onclick="openChat();closeMobileMenu();return false;" class="btn-primary-mobile">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <span data-i18n="nav_cta">Essayer RebSam</span>
     </a>
-    <a href="#how-it-works" class="mob-link" onclick="closeMobileMenu()" data-i18n="nav_how">
-      <span class="mob-icon">⚙️</span>
-      Comment ça marche
-    </a>
-    <a href="#pillars" class="mob-link" onclick="closeMobileMenu()" data-i18n="nav_values">
-      <span class="mob-icon">🛡️</span>
-      Nos Valeurs
-    </a>
-    <a href="#faq" class="mob-link" onclick="closeMobileMenu()">
-      <span class="mob-icon">❓</span>
-      FAQ
-    </a>
-  </div>
-  <div class="mobile-divider"></div>
-  <a href="#" onclick="openChat();closeMobileMenu();return false;" class="btn-primary-mobile" data-i18n="nav_cta">
-    💬 Essayer RebSam
-  </a>
-  <div class="mobile-lang" style="display:flex;gap:.5rem;justify-content:center;align-items:center;margin-top:.75rem;">
-    <button class="lang-btn active" onclick="setLang('fr')">FR</button>
-    <button class="lang-btn" onclick="setLang('he')">עברית</button>
-    <button class="lang-btn" onclick="setLang('en')">EN</button>
-    <button id="dark-toggle-mob" onclick="toggleDark()" aria-label="Mode sombre" style="width:2rem;height:2rem;border-radius:50%;background:none;border:1.5px solid var(--border);cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;">
-      <svg id="icon-sun-mob" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-      <svg id="icon-moon-mob" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    </button>
+
+    <div class="mobile-bottom">
+      <div class="mobile-lang-tabs">
+        <button class="lang-btn active" onclick="setLang('fr')">FR</button>
+        <button class="lang-btn" onclick="setLang('he')">עב</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+      </div>
+      <button class="mobile-dark-btn" id="dark-toggle-mob" onclick="toggleDark()" aria-label="Mode sombre">
+        <svg id="icon-sun-mob" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg id="icon-moon-mob" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -872,36 +1385,37 @@
   </div>
   <div class="container">
     <div class="hero-content">
-      <span class="hero-badge" data-i18n="hero_badge">Assistant Halachique IA — Réponses fiables, issues uniquement de nos sources</span>
+      <span class="hero-badge" data-i18n="hero_badge">Assistant halachique IA</span>
       <h1 class="hero-h1">
         <span class="rebsam-logo font-logo"><span class="reb">Reb</span><span class="sam">Sam</span></span>
         <span data-i18n="hero_tagline">Un Rebbe dans votre dose d'IA quotidienne.</span>
       </h1>
       <div class="hero-divider"></div>
+      <p class="hero-trust" data-i18n="hero_trust">✓ Des milliers de sifrey kodesh vérifiés</p>
       <div class="hero-points">
         <div class="hero-point">
           <i class="arr">⚡</i>
-          <span data-i18n="hero_pt1">Rendre la consultation halakhique instantanée pour la communauté mondiale.</span>
+          <span data-i18n="hero_pt1">Réponse halakhique en quelques secondes</span>
         </div>
         <div class="hero-point">
           <i class="arr">🛡️</i>
-          <span data-i18n="hero_pt2">Élimine les "hallucinations" des IA classiques en ne répondant qu'à partir des sources de nos sages.</span>
+          <span data-i18n="hero_pt2">Zéro hallucination — sources vérifiables uniquement</span>
         </div>
         <div class="hero-point">
           <i class="arr">📚</i>
-          <span data-i18n="hero_pt3">Digitalise et rend interactive une bibliothèque immense qui serait autrement difficile à consulter rapidement.</span>
+          <span data-i18n="hero_pt3">Des milliers de sifrey kodesh accessibles instantanément</span>
         </div>
       </div>
       <div class="hero-btns">
-        <a href="#how-it-works" class="btn btn-primary" style="background:var(--secondary-dark);box-shadow:0 8px 28px rgba(30,41,59,.35);">
-          <span data-i18n="hero_cta2">Découvrir le Projet</span>
-          ↓
+        <a class="hero-wa-btn" href="https://wa.me/972555005493" target="_blank" rel="noopener noreferrer" onclick="trackWAClick()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.556 4.112 1.524 5.842L.057 23.882a.5.5 0 0 0 .61.61l6.04-1.467A11.946 11.946 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.944 9.944 0 0 1-5.072-1.382l-.363-.216-3.748.91.928-3.748-.236-.374A9.944 9.944 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+          <span data-i18n="hero_wa">RebSam sur ton WhatsApp</span>
         </a>
         <button class="btn btn-primary hero-avatar-btn" onclick="openChat()">
           💬 <span data-i18n="hero_cta">Pose ta première question à RebSam</span>
         </button>
       </div>
-      <p class="hero-sources">Choulhan Aroukh · Michna Beroura · Yalkout Yossef · Igrot Moshé · Shoulhan Aroukh HaRav · Peninei Halakha · Iyounim Halacha et Chass · Plus de 2000 Sifrey Kodesh</p>
+      <p class="hero-sources" data-i18n="hero_sources">Choulhan Aroukh · Michna Beroura · Yalkout Yossef · Igrot Moshé · Shoulhan Aroukh HaRav · Peninei Halakha · Iyounim Halacha et Chass · Plus de 2000 Sifrey Kodesh</p>
       <div class="hero-avatar-wrap">
         <img src="avatar.webp" alt="RebSam - Assistant Torah &amp; Halakha" width="300" height="300" fetchpriority="high" loading="eager" class="hero-avatar-img" />
       </div>
@@ -918,100 +1432,49 @@
   </div>
 </section>
 
-<!-- PILLARS SECTION -->
-<section id="pillars">
-  <div class="container" style="position:relative;z-index:1;">
-    <div class="section-heading">
-      <span class="section-eyebrow" data-i18n="pillars_eyebrow">Nos engagements</span>
-      <h2 data-i18n="pillars_title">Nos 3 Piliers de Confiance</h2>
-      <p data-i18n="pillars_sub">RebSam répond toujours selon ces 3 engagements — sans exception.</p>
-    </div>
-    <div class="pillars-grid">
-      <div class="feature-card" data-reveal>
-        <div class="feature-card-icon">✓</div>
-        <h3 data-i18n="p1_title">Sources Validées</h3>
-        <p data-i18n="p1_desc">Zéro invention, zéro "hallucination". Les réponses sont exclusivement fondées sur nos textes sacrés : Shulchan Aruch, Mishna Broura, Yalkut Yossef, Tossefot, livres du Ari Zal et décisionnaires contemporains.</p>
-      </div>
-      <div class="feature-card" data-reveal data-reveal-delay="100">
-        <div class="feature-card-icon">🔒</div>
-        <h3 data-i18n="p2_title">Privé & Sécurisé</h3>
-        <p data-i18n="p2_desc">Circuit fermé. Vos questions les plus intimes restent strictement privées : zéro collecte, zéro revente, zéro entraînement externe.</p>
-      </div>
-      <div class="feature-card" data-reveal data-reveal-delay="200">
-        <div class="feature-card-icon">⚡</div>
-        <h3 data-i18n="p3_title">Rapide & Fiable</h3>
-        <p data-i18n="p3_desc">Réponses en moins d'une seconde. Technologie RAG qui scanne des milliers d'ouvrages de Halacha pour répondre à chaque question avec une irréfutable précision.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- HOW IT WORKS SECTION -->
-<section id="how-it-works">
+
+
+
+<!-- STATS — Chiffres clés -->
+<section id="stats">
   <div class="container">
-    <div class="section-heading">
-      <span class="section-eyebrow" data-i18n="hiw_eyebrow">Processus</span>
-      <h2 data-i18n="hiw_title">Comment ça marche ?</h2>
-      <p data-i18n="hiw_sub">Simple, rapide et transparent.</p>
-    </div>
-    <div class="steps-grid-new" data-reveal data-reveal-delay="100">
-
-      <!-- Step 1 — Chat bubble icon -->
-      <div class="step-card">
-        <div class="step-card-top">
-          <div class="step-card-icon step-icon-blue">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-              <line x1="9" y1="10" x2="9" y2="10" stroke-width="2.5"/>
-              <line x1="12" y1="10" x2="12" y2="10" stroke-width="2.5"/>
-              <line x1="15" y1="10" x2="15" y2="10" stroke-width="2.5"/>
-            </svg>
-          </div>
-        </div>
-        <div class="step-card-body">
-          <h3 class="step-title" data-i18n="step1_title">Tu poses ta question</h3>
-          <p class="step-desc" data-i18n="step1_desc">Écris simplement, comme tu parlerais à un ami. Pas besoin de connaître les termes techniques. RebSam te comprend.</p>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-icon">📚</span>
+        <div class="bucket-wrap">
+          <div class="stat-number" id="cnt-books">0</div>
+          <div class="stat-label">Sifrey Kodesh</div>
+          <div class="bucket-bar"><div class="bucket-fill" id="fill-books"></div></div>
         </div>
       </div>
-
-      <!-- Step 2 — Sparkle/AI search icon -->
-      <div class="step-card">
-        <div class="step-card-top">
-          <div class="step-card-icon step-icon-indigo">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-5.74L4 10l5.91-1.74z"/>
-              <path d="M5 3l.9 2.7L8 6.5l-2.1.8L5 10l-.9-2.7L2 6.5l2.1-.8z" stroke-width="1.5"/>
-              <path d="M19 14l.7 2.1 2.1.7-2.1.7-.7 2.1-.7-2.1-2.1-.7 2.1-.7z" stroke-width="1.5"/>
-            </svg>
-          </div>
-        </div>
-        <div class="step-card-body">
-          <h3 class="step-title" data-i18n="step2_title">RebSam cherche pour toi</h3>
-          <p class="step-desc" data-i18n="step2_desc">En quelques secondes, il explore des milliers de pages de textes sacrés validés — à travers nos sources, pas sur le net&nbsp;!</p>
+      <div class="stat-card">
+        <span class="stat-icon">⚡</span>
+        <div class="bucket-wrap">
+          <div class="stat-number" id="cnt-speed">0</div>
+          <div class="stat-label">Seconde de réponse</div>
+          <div class="bucket-bar"><div class="bucket-fill" id="fill-speed"></div></div>
         </div>
       </div>
-
-      <!-- Step 3 — Open scroll/star icon -->
-      <div class="step-card">
-        <div class="step-card-top">
-          <div class="step-card-icon step-icon-cyan">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              <polyline points="9 12 11 14 15 10"/>
-            </svg>
-          </div>
-        </div>
-        <div class="step-card-body">
-          <h3 class="step-title" data-i18n="step3_title">Ta réponse arrive</h3>
-          <p class="step-desc" data-i18n="step3_desc">Tu reçois une réponse claire et chaleureuse, avec le Siman et le Seif exacts — pour vérifier toi-même et continuer ton étude.</p>
+      <div class="stat-card">
+        <span class="stat-icon">🛡️</span>
+        <div class="bucket-wrap">
+          <div class="stat-number" id="cnt-data">0</div>
+          <div class="stat-label">GB de textes sacrés</div>
+          <div class="bucket-bar"><div class="bucket-fill" id="fill-data"></div></div>
         </div>
       </div>
-
+      <div class="stat-card">
+        <span class="stat-icon">🌍</span>
+        <div class="bucket-wrap">
+          <div class="stat-number" id="cnt-lang">0</div>
+          <div class="stat-label">Langues</div>
+          <div class="bucket-bar"><div class="bucket-fill" id="fill-lang"></div></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
-
-
 
 <!-- RAG TECHNOLOGY SECTION -->
 <section id="rag-tech" data-reveal>
@@ -1021,60 +1484,48 @@
       <h2 data-i18n="rag_title">Comment le RAG élimine les hallucinations ?</h2>
       <p data-i18n="rag_sub">Contrairement aux IA classiques qui "inventent" leurs réponses, RebSam utilise la Retrieval-Augmented Generation — une méthode qui force l'IA à ne répondre qu'à partir de textes réels et vérifiés.</p>
     </div>
-    <div class="rag-flow" data-reveal data-reveal-delay="100">
-
-      <!-- Step 1 -->
-      <div class="rag-step">
-        <div class="rag-step-icon rag-icon-blue">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        </div>
-        <div class="rag-step-num" data-i18n="rag_step_num1">Étape 1</div>
-        <div class="rag-step-label" data-i18n="rag_step1_label">Ta question</div>
-        <div class="rag-step-desc" data-i18n="rag_step1_desc">Tu poses ta question en hébreu, français ou anglais — comme tu parles naturellement.</div>
-      </div>
-
-      <div class="rag-arrow">→</div>
-
-      <!-- Step 2 -->
-      <div class="rag-step">
-        <div class="rag-step-icon rag-icon-indigo">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </div>
-        <div class="rag-step-num" data-i18n="rag_step_num2">Étape 2</div>
-        <div class="rag-step-label" data-i18n="rag_step2_label">Recherche vectorielle</div>
-        <div class="rag-step-desc" data-i18n="rag_step2_desc">Le moteur de recherche vectoriel identifie les passages les plus pertinents parmi des milliers de sifrey kodesh.</div>
-      </div>
-
-      <div class="rag-arrow">→</div>
-
-      <!-- Step 3 -->
-      <div class="rag-step">
-        <div class="rag-step-icon rag-icon-purple">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        </div>
-        <div class="rag-step-num" data-i18n="rag_step_num3">Étape 3</div>
-        <div class="rag-step-label" data-i18n="rag_step3_label">Passages extraits</div>
-        <div class="rag-step-desc" data-i18n="rag_step3_desc">Les extraits les plus pertinents sont sélectionnés et transmis à l'IA — uniquement depuis nos sources vérifiées.</div>
-      </div>
-
-      <div class="rag-arrow">→</div>
-
-      <!-- Step 4 -->
-      <div class="rag-step">
-        <div class="rag-step-icon rag-icon-green">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
-        </div>
-        <div class="rag-step-num" data-i18n="rag_step_num4">Étape 4</div>
-        <div class="rag-step-label" data-i18n="rag_step4_label">Réponse sourcée</div>
-        <div class="rag-step-desc" data-i18n="rag_step4_desc">L'IA synthétise une réponse à partir de ces passages uniquement, avec le Siman et le Seif exacts.</div>
-      </div>
-
+    <ul class="rag-chips" data-reveal data-reveal-delay="100">
+      <li>🔍 <span data-i18n="rag_chip1">"Avant chaque réponse, RebSam cherche dans les séfarim — pas dans sa mémoire"</span></li>
+      <li>🔒 <span data-i18n="rag_chip2">"Pas d'invention ni d'erreur. Toute réponse doit inclure la référence précise"</span></li>
+      <li>🔗 <span data-i18n="rag_chip3">"La réponse est construite depuis les passages réels trouvés — jamais inventée"</span></li>
+    </ul>
+    <div class="rag-explainer" data-reveal data-reveal-delay="200">
+      <p class="rag-explainer-text" data-i18n-html="rag_explainer"><span class="rag-section-title">RebSam : Garantie Zéro Hallucination</span><br><br>Contrairement à une IA classique qui peut inventer des faits, RebSam effectue une recherche stricte dans sa bibliothèque de <em>séfarim</em> vérifiés.<br><br>Il ne génère une réponse qu'en citant des passages réels trouvés. S'il n'y a pas d'information écrite, il s'abstient.<br><br><strong>Résultat ?</strong> Aucune invention ni information fausse. Chaque réponse inclut la référence exacte (<em>Siman</em> et <em>Seif</em>) pour vérification.</p>
     </div>
+  </div>
+</section>
 
-    <!-- Key insight -->
-    <div class="rag-insight" data-reveal data-reveal-delay="200">
-      <div class="rag-insight-icon">💡</div>
-      <p><strong data-i18n="rag_insight_key">Le secret :</strong> <span data-i18n="rag_insight_text">L'IA ne "sait" rien par elle-même — elle lit uniquement les passages que le moteur RAG lui transmet, tous extraits de nos sifrey kodesh vérifiés. Impossible d'inventer ce qui n'y est pas.</span></p>
+<!-- PILLARS — 3 Piliers de Confiance -->
+<section id="pillars" data-reveal>
+  <div class="container">
+    <div class="pillars-glow"></div>
+    <div class="section-heading">
+      <span class="section-eyebrow" data-i18n="pillars_eyebrow">Nos engagements</span>
+      <h2 data-i18n="pillars_title">Nos 3 Piliers de Confiance</h2>
+      <p data-i18n="pillars_sub">RebSam répond toujours selon ces 3 engagements — sans exception.</p>
+    </div>
+    <div class="pillars-grid">
+      <div class="feature-card" data-reveal data-reveal-delay="100">
+        <div class="feature-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <h3 data-i18n="p1_title">Sources Validées</h3>
+        <p data-i18n="p1_desc">Zéro invention, zéro "hallucination". Les réponses sont exclusivement fondées sur nos textes sacrés.</p>
+      </div>
+      <div class="feature-card" data-reveal data-reveal-delay="200">
+        <div class="feature-card-icon" style="background:rgba(16,185,129,.1);color:#10b981;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h3 data-i18n="p2_title">Privé &amp; Sécurisé</h3>
+        <p data-i18n="p2_desc">Circuit fermé. Vos questions les plus intimes restent strictement privées : zéro collecte, zéro revente.</p>
+      </div>
+      <div class="feature-card" data-reveal data-reveal-delay="300">
+        <div class="feature-card-icon" style="background:rgba(212,175,55,.1);color:#d4af37;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3 data-i18n="p3_title">Rapide &amp; Fiable</h3>
+        <p data-i18n="p3_desc">Réponses en moins d'une seconde. Technologie RAG qui scanne des milliers d'ouvrages de Halacha.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -1083,7 +1534,7 @@
 <section id="sources" data-reveal>
   <div class="container">
     <div class="section-heading">
-      <span class="section-eyebrow" data-i18n="sources_eyebrow">Bibliothèque Sacrée</span>
+      <span class="section-eyebrow" data-i18n="sources_eyebrow">Les livres de RebSam</span>
       <h2 class="font-logo" data-i18n="sources_title">Des milliers de Sifrey Kodesh. Zéro Invention.</h2>
       <p data-i18n="sources_sub">Chaque réponse de RebSam est ancrée dans l'un de ces textes fondamentaux — avec le Livre, le Siman et le Seif exacts.</p>
     </div>
@@ -1278,8 +1729,8 @@
         <p class="footer-col-title" data-i18n="footer_nav_title">Navigation</p>
         <ul>
           <li><a href="#" onclick="closeMobileMenu();return false;" data-i18n="footer_home">Accueil</a></li>
-          <li><a href="#how-it-works" data-i18n="footer_how">Comment ça marche</a></li>
-          <li><a href="#pillars" data-i18n="footer_values">Nos Valeurs</a></li>
+          <li><a href="#rag-tech" data-i18n="footer_how">Comment ça marche</a></li>
+          <li><a href="#sources" data-i18n="footer_values">Nos Valeurs</a></li>
           <li><a href="#faq" data-i18n="footer_faq">FAQ</a></li>
         </ul>
       </div>
@@ -1307,7 +1758,7 @@
 <button class="float-btn" id="btn-chat" onclick="openChat()">
   <div class="float-inner float-chat-bg">
     <div class="float-glow float-chat-glow"></div>
-    <span class="float-label" data-i18n="float_chat">Poser une question</span>
+    <span class="float-label" data-i18n="float_chat">Pose ta première question à RebSam</span>
     <span class="float-icon">💬</span>
   </div>
 </button>
@@ -1315,8 +1766,10 @@
 <a class="float-btn" id="btn-wa" href="https://wa.me/972555005493" target="_blank" rel="noopener noreferrer" onclick="trackWAClick()">
   <div class="float-inner float-wa-bg">
     <div class="float-glow float-wa-glow"></div>
-    <span class="float-label">WhatsApp</span>
-    <span class="float-icon">💬</span>
+    <span class="float-label float-wa-label" data-i18n="float_wa">Ton RebSam sur WhatsApp</span>
+    <span class="float-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="color:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.556 4.112 1.524 5.842L.057 23.882a.5.5 0 0 0 .61.61l6.04-1.467A11.946 11.946 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.944 9.944 0 0 1-5.072-1.382l-.363-.216-3.748.91.928-3.748-.236-.374A9.944 9.944 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+    </span>
   </div>
 </a>
 
@@ -1325,9 +1778,10 @@
   <div id="chat-modal">
     <div class="chat-header">
       <div class="chat-header-left">
-        <div class="chat-avatar font-logo">RS</div>
+        <div class="chat-avatar" id="chat-header-avatar">RS</div>
         <div>
-          <div class="chat-header-name font-logo" style="font-size:1.1rem;letter-spacing:-.01em;">RebSam</div>
+          <div class="chat-header-name">RebSam</div>
+          <div class="chat-header-subtitle">Expert en Halakha · 2000+ séfarim</div>
           <div class="chat-header-status"><span class="dot"></span><span data-i18n="chat_status">En ligne · Je vous réponds tout de suite…</span></div>
         </div>
       </div>
@@ -1359,7 +1813,7 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" integrity="sha384-948ahk4ZmxYVYOc+rxN1H2gM1EJ2Duhp7uHtZ4WSLkV4Vtx5MUqnV+l7u9B+jFv+" crossorigin="anonymous" defer></script>
 <script>
   /* ═══════════════════════════════════════════════
      i18n — Traductions FR / EN / HE
@@ -1368,11 +1822,11 @@
     fr: {
       nav_home: 'Accueil', nav_how: 'Comment ça marche', nav_values: 'Nos Valeurs',
       nav_cta: 'Essayer RebSam',
-      hero_badge: 'Assistant Halachique IA — Réponses fiables, issues uniquement de nos sources',
+      hero_badge: 'Assistant halachique IA',
       hero_tagline: 'Un Rebbe dans votre dose d\'IA quotidienne.',
-      hero_pt1: 'Répond aux multitudes de questions qui émanent de chaque aspect de la vie juive, avec précision et clarté.',
-      hero_pt2: 'Aucune "hallucination" — uniquement des réponses sourcées et vérifiables, issues de nos textes sacrés.',
-      hero_pt3: 'Digitalise et rend interactive une bibliothèque immense qui serait autrement difficile à consulter rapidement.',
+      hero_pt1: 'Réponse halakhique en quelques secondes',
+      hero_pt2: 'Zéro hallucination — sources vérifiables uniquement',
+      hero_pt3: 'Des milliers de sifrey kodesh accessibles instantanément',
       hero_cta2: 'Découvrir le Projet', hero_cta: 'Pose ta première question à RebSam',
       pillars_eyebrow: 'Nos engagements', pillars_title: 'Nos 3 Piliers de Confiance',
       pillars_sub: 'RebSam répond toujours selon ces 3 engagements — sans exception.',
@@ -1400,29 +1854,32 @@
       footer_copyright: '© 2026 RebSam. Tous droits réservés.',
       footer_privacy: 'Confidentialité', footer_legal: 'Mentions Légales',
       rag_eyebrow: 'Technologie', rag_title: 'Comment le RAG élimine les hallucinations ?',
-      rag_sub: 'Contrairement aux IA classiques qui "inventent" leurs réponses, RebSam utilise la Retrieval-Augmented Generation — une méthode qui force l\'IA à ne répondre qu\'à partir de textes réels et vérifiés.',
-      rag_step_num1: 'Étape 1', rag_step1_label: 'Ta question', rag_step1_desc: 'Tu poses ta question en hébreu, français ou anglais — comme tu parles naturellement.',
-      rag_step_num2: 'Étape 2', rag_step2_label: 'Recherche vectorielle', rag_step2_desc: 'Le moteur de recherche vectoriel identifie les passages les plus pertinents parmi des milliers de sifrey kodesh.',
-      rag_step_num3: 'Étape 3', rag_step3_label: 'Passages extraits', rag_step3_desc: 'Les extraits les plus pertinents sont sélectionnés et transmis à l\'IA — uniquement depuis nos sources vérifiées.',
-      rag_step_num4: 'Étape 4', rag_step4_label: 'Réponse sourcée', rag_step4_desc: 'L\'IA synthétise une réponse à partir de ces passages uniquement, avec le Siman et le Seif exacts.',
-      rag_insight_key: 'Le secret :', rag_insight_text: 'L\'IA ne "sait" rien par elle-même — elle lit uniquement les passages que le moteur RAG lui transmet, tous extraits de nos sifrey kodesh vérifiés. Impossible d\'inventer ce qui n\'y est pas.',
-      sources_eyebrow: 'Bibliothèque Sacrée',
+      rag_sub: 'RebSam utilise une technologie appelée RAG (Retrieval-Augmented Generation) pour garantir des réponses 100% ancrées dans les textes sacrés.',
+      rag_explainer: '<span class="rag-section-title">RebSam : Garantie Zéro Hallucination</span><br><br>Contrairement à une IA classique qui peut inventer des faits, RebSam effectue une recherche stricte dans sa bibliothèque de <em>séfarim</em> vérifiés.<br><br>Il ne génère une réponse qu\'en citant des passages réels trouvés. S\'il n\'y a pas d\'information écrite, il s\'abstient.<br><br><strong>Résultat ?</strong> Aucune invention ni information fausse. Chaque réponse inclut la référence exacte (<em>Siman</em> et <em>Seif</em>) pour vérification.',
+      sources_eyebrow: 'Les livres de RebSam',
       sources_title: 'Des milliers de Sifrey Kodesh. Zéro Invention.',
       sources_sub: 'Chaque réponse de RebSam est ancrée dans l\'un de ces textes fondamentaux — avec le Livre, le Siman et le Seif exacts.',
       sources_more_count: 'des milliers d\'autres sifrey kodesh',
       chat_placeholder: 'Pose ta question...',
       chat_hint: 'Les données restent privées. Circuit fermé garanti.',
       chat_status: 'En ligne · Je vous réponds tout de suite…',
-      float_chat: 'Poser une question'
+      float_chat: 'Pose ta première question à RebSam',
+      float_wa: 'Ton RebSam sur WhatsApp',
+      hero_wa: 'RebSam sur ton WhatsApp',
+      hero_trust: '✓ La sagesse de nos Sages, disponible 24h/24',
+      rag_chip1: '"Avant chaque réponse, RebSam cherche dans les séfarim — pas dans sa mémoire"',
+      rag_chip2: '"Pas d\'invention ni d\'erreur. Toute réponse doit inclure la référence précise"',
+      rag_chip3: '"La réponse est construite depuis les passages réels trouvés — jamais inventée"',
+      hero_sources: 'Choulhan Aroukh · Michna Beroura · Yalkout Yossef · Igrot Moshé · Shoulhan Aroukh HaRav · Peninei Halakha · Iyounim Halacha et Chass · Plus de 2000 Sifrey Kodesh'
     },
     en: {
       nav_home: 'Home', nav_how: 'How it works', nav_values: 'Our Values',
       nav_cta: 'Try RebSam',
-      hero_badge: 'Your Halacha expert, available 24/7',
+      hero_badge: 'AI Halachic Assistant',
       hero_tagline: 'A Rebbe in your daily AI dose.',
-      hero_pt1: 'Instant Halachic consultation for the global Jewish community.',
-      hero_pt2: 'Eliminates hallucinations by answering only from verified sacred sources.',
-      hero_pt3: 'Digitizes an immense library of texts, making them instantly searchable.',
+      hero_pt1: 'Halachic answer in seconds',
+      hero_pt2: 'Zero hallucination — verified sources only',
+      hero_pt3: 'Thousands of sifrey kodesh instantly accessible',
       hero_cta2: 'Discover the Project', hero_cta: 'Ask your first question to RebSam',
       pillars_eyebrow: 'Our commitments', pillars_title: 'Our 3 Pillars of Trust',
       pillars_sub: 'RebSam always answers according to these 3 commitments — no exceptions.',
@@ -1450,47 +1907,50 @@
       footer_copyright: '© 2026 RebSam. All rights reserved.',
       footer_privacy: 'Privacy', footer_legal: 'Legal',
       rag_eyebrow: 'Technology', rag_title: 'How does RAG eliminate hallucinations?',
-      rag_sub: 'Unlike standard AI models that "make up" answers, RebSam uses Retrieval-Augmented Generation — a method that forces the AI to answer only from real, verified texts.',
-      rag_step_num1: 'Step 1', rag_step1_label: 'Your question', rag_step1_desc: 'You ask your question in Hebrew, French or English — naturally, as you speak.',
-      rag_step_num2: 'Step 2', rag_step2_label: 'Vector search', rag_step2_desc: 'The vector search engine identifies the most relevant passages across thousands of verified Sifrey Kodesh.',
-      rag_step_num3: 'Step 3', rag_step3_label: 'Passages retrieved', rag_step3_desc: 'The most relevant excerpts are selected and passed to the AI — only from our verified sources.',
-      rag_step_num4: 'Step 4', rag_step4_label: 'Sourced answer', rag_step4_desc: 'The AI generates an answer based solely on those passages, with the exact Siman and Seif.',
-      rag_insight_key: 'The secret:', rag_insight_text: 'The AI "knows" nothing on its own — it reads only the passages the RAG engine provides, all drawn from our verified Sifrey Kodesh. It cannot invent what isn\'t there.',
-      sources_eyebrow: 'Sacred Library',
+      rag_sub: 'RebSam uses a technology called RAG (Retrieval-Augmented Generation) to guarantee 100% responses grounded in sacred texts.',
+      rag_explainer: 'Standard AI generates answers from everything it has ever learned — and can make up plausible-sounding but false information. This is called a "hallucination".<br><br>RebSam works differently: before every response, it searches its library of verified Sifrey Kodesh and builds its answer solely from the real passages it finds there. If nothing is found on the topic, it doesn\'t answer.<br><br><strong>Result: zero invention, zero hallucination.</strong> Every answer cites the exact Siman and Seif — you can verify it yourself.',
+      sources_eyebrow: 'RebSam\'s Books',
       sources_title: 'Thousands of Sifrey Kodesh. Zero Invention.',
       sources_sub: 'Every RebSam answer is anchored in one of these foundational texts — with the exact Book, Siman and Seif.',
       sources_more_count: 'thousands of other Sifrey Kodesh',
       chat_placeholder: 'Ask your question...',
       chat_hint: 'Data stays private. Closed circuit guaranteed.',
       chat_status: 'Online · Answering right away…',
-      float_chat: 'Ask a question'
+      float_chat: 'Ask your first question to RebSam',
+      float_wa: 'Your RebSam on WhatsApp',
+      hero_wa: 'RebSam on your WhatsApp',
+      hero_trust: '✓ The wisdom of our Sages, available 24/7',
+      rag_chip1: '"Before every response, RebSam searches the séfarim — not its memory"',
+      rag_chip2: '"No invention, no error. Every response must include the precise reference"',
+      rag_chip3: '"The response is built from real passages found — never invented"',
+      hero_sources: 'Choulhan Aroukh · Mishna Berura · Yalkout Yossef · Igrot Moshe · Shoulhan Aroukh HaRav · Peninei Halakha · Iyounim Halacha · 2000+ Sifrey Kodesh'
     },
     he: {
       nav_home: 'ראשי', nav_how: 'איך זה עובד', nav_values: 'הערכים שלנו',
-      nav_cta: 'נסה את רב-סמי',
-      hero_badge: 'מומחה ההלכה שלך, זמין 24/7',
+      nav_cta: 'נסה את רבי סאם',
+      hero_badge: 'עוזר הלכתי מבוסס בינה מלאכותית',
       hero_tagline: '.רב בכיסך — כל היום, כל הלילה',
-      hero_pt1: '.שאלות הלכתיות מיידיות לקהילה היהודית העולמית',
-      hero_pt2: '.ללא הזיות — ענה רק ממקורות מאומתים של חכמינו',
-      hero_pt3: '.מאגר ענק של ספרי קודש — נגיש ומיידי',
-      hero_cta2: 'גלה את הפרויקט', hero_cta: 'שאל את השאלה הראשונה שלך',
+      hero_pt1: '.תשובה הלכתית תוך שניות',
+      hero_pt2: '.אפס הזיות — מקורות מאומתים בלבד',
+      hero_pt3: '.אלפי ספרי קודש נגישים מיידית',
+      hero_cta2: 'גלה את הפרויקט', hero_cta: 'שאל את השאלה הראשונה שלך ל-RebSam',
       pillars_eyebrow: 'ההתחייבויות שלנו', pillars_title: '3 עמודי האמון שלנו',
-      pillars_sub: '.רב-סמי תמיד עונה לפי 3 ההתחייבויות האלה — ללא יוצא מן הכלל',
+      pillars_sub: '.רבי סאם תמיד עונה לפי 3 ההתחייבויות האלה — ללא יוצא מן הכלל',
       p1_title: 'מקורות מאומתים', p1_desc: '.ללא המצאות. ללא הזיות. כל תשובה מעוגנת בטקסטים קדושים — שולחן ערוך, משנה ברורה, פוסקים עכשוויים ועוד',
       p2_title: 'פרטי ומאובטח', p2_desc: '.מעגל סגור. שאלותיך האינטימיות ביותר נשארות פרטיות לחלוטין — אפס איסוף, אפס מכירה, אפס אימון חיצוני',
       p3_title: 'מהיר ואמין', p3_desc: '.תשובות בפחות משנייה. טכנולוגיית RAG הסורקת אלפי ספרי קודש מאומתים לכל שאלה',
       hiw_eyebrow: 'תהליך', hiw_title: 'איך זה עובד?', hiw_sub: '.פשוט, מהיר ושקוף',
-      step1_title: 'אתה שואל את שאלתך', step1_desc: '.כתוב פשוט, כמו שהיית מדבר עם חבר. אין צורך לדעת מונחים טכניים. רב-סמי מבין אותך',
-      step2_title: 'רב-סמי מחפש בשבילך', step2_desc: '!בתוך שניות, הוא עובר על אלפי עמודים של ספרי קודש מאומתים — דרך המקורות שלנו, לא האינטרנט',
+      step1_title: 'אתה שואל את שאלתך', step1_desc: '.כתוב פשוט, כמו שהיית מדבר עם חבר. אין צורך לדעת מונחים טכניים. רבי סאם מבין אותך',
+      step2_title: 'רבי סאם מחפש בשבילך', step2_desc: '!בתוך שניות, הוא עובר על אלפי עמודים של ספרי קודש מאומתים — דרך המקורות שלנו, לא האינטרנט',
       step3_title: 'התשובה שלך מגיעה', step3_desc: '.אתה מקבל תשובה ברורה וחמה, עם הסימן והסעיף המדויקים — כדי שתוכל לאמת בעצמך ולהמשיך את הלימוד',
-      faq_eyebrow: 'שאלות נפוצות', faq_title: 'כל מה שצריך לדעת', faq_sub: '.לשימוש ברב-סמי בשקט נפשי מלא',
-      faq_q1: 'האם אפשר לסמוך על תשובות רב-סמי?', faq_a1: 'רב-סמי הוא חברותא לימוד אמינה ביותר — הוא תמיד מצטט את מקורותיו במדויק (ספר, סימן, סעיף). אך לפסק הלכה רשמי, תמיד התייעץ עם הרב שלך.',
-      faq_q2: 'על אילו טקסטים קדושים רב-סמי מסתמך?', faq_a2: '.רב-סמי שואב מאלפי ספרי קודש מאומתים: שולחן ערוך, משנה ברורה, ילקוט יוסף, אגרות משה ועוד רבים',
-      faq_q3: 'האם שאלותי נשארות חסויות?', faq_a3: '.כן. רב-סמי פועל במעגל סגור. אפס איסוף, אפס מכירה, אפס אימון חיצוני',
-      faq_q4: 'האם רב-סמי מכיר את מנהגי אשכנז וספרד?', faq_a4: '.כן! רב-סמי משלב פוסקים משתי המסורות ויכול להתאים את תשובתו למנהגך',
-      faq_q5: 'במה רב-סמי שונה מ-ChatGPT?', faq_a5: '.רב-סמי משתמש בטכנולוגיית RAG לסריקת אלפי ספרי קודש בלבד. אפס הזיות, אפס המצאות',
+      faq_eyebrow: 'שאלות נפוצות', faq_title: 'כל מה שצריך לדעת', faq_sub: '.לשימוש ברבי סאם בשקט נפשי מלא',
+      faq_q1: 'האם אפשר לסמוך על תשובות רבי סאם?', faq_a1: 'רבי סאם הוא חברותא לימוד אמינה ביותר — הוא תמיד מצטט את מקורותיו במדויק (ספר, סימן, סעיף). אך לפסק הלכה רשמי, תמיד התייעץ עם הרב שלך.',
+      faq_q2: 'על אילו טקסטים קדושים רבי סאם מסתמך?', faq_a2: '.רבי סאם שואב מאלפי ספרי קודש מאומתים: שולחן ערוך, משנה ברורה, ילקוט יוסף, אגרות משה ועוד רבים',
+      faq_q3: 'האם שאלותי נשארות חסויות?', faq_a3: '.כן. רבי סאם פועל במעגל סגור. אפס איסוף, אפס מכירה, אפס אימון חיצוני',
+      faq_q4: 'האם רבי סאם מכיר את מנהגי אשכנז וספרד?', faq_a4: '.כן! רבי סאם משלב פוסקים משתי המסורות ויכול להתאים את תשובתו למנהגך',
+      faq_q5: 'במה רבי סאם שונה מ-ChatGPT?', faq_a5: '.רבי סאם משתמש בטכנולוגיית RAG לסריקת אלפי ספרי קודש בלבד. אפס הזיות, אפס המצאות',
       footer_desc: '.בינה מלאכותית הלכתית שמסרבת להמציא. טכנולוגיה מכובדת ללימוד תורה אמיתי, נגיש לכולם, 24/7',
-      footer_cta: 'נסה את רב-סמי ←',
+      footer_cta: 'נסה את רבי סאם ←',
       footer_nav_title: 'ניווט', footer_home: 'ראשי',
       footer_product: 'מוצר', footer_how: 'איך זה עובד',
       footer_values: 'הערכים שלנו', footer_faq: 'שאלות נפוצות',
@@ -1500,20 +1960,23 @@
       footer_copyright: '.כל הזכויות שמורות 2026 RebSam ©',
       footer_privacy: 'פרטיות', footer_legal: 'תנאי שימוש',
       rag_eyebrow: 'טכנולוגיה', rag_title: 'איך RAG מונע הזיות?',
-      rag_sub: 'בניגוד לבינות מלאכותיות רגילות שממציאות תשובות, רב-סמי משתמש ב-Retrieval-Augmented Generation — שיטה שמחייבת את הבינה המלאכותית לענות רק מטקסטים אמיתיים ומאומתים.',
-      rag_step_num1: 'שלב 1', rag_step1_label: 'השאלה שלך', rag_step1_desc: '.אתה שואל שאלה בעברית, צרפתית או אנגלית — בדיוק כמו שאתה מדבר',
-      rag_step_num2: 'שלב 2', rag_step2_label: 'חיפוש וקטורי', rag_step2_desc: '.מנוע החיפוש הוקטורי מאתר את הקטעים הרלוונטיים ביותר מתוך אלפי ספרי קודש',
-      rag_step_num3: 'שלב 3', rag_step3_label: 'קטעים שחולצו', rag_step3_desc: '.הקטעים הרלוונטיים ביותר נבחרים ומועברים לבינה המלאכותית — אך ורק מהמקורות המאומתים שלנו',
-      rag_step_num4: 'שלב 4', rag_step4_label: 'תשובה עם מקורות', rag_step4_desc: '.הבינה המלאכותית מייצרת תשובה על בסיס הקטעים האלה בלבד, עם הסימן והסעיף המדויקים',
-      rag_insight_key: ':הסוד', rag_insight_text: '.הבינה המלאכותית לא "יודעת" כלום בעצמה — היא קוראת רק את הקטעים שמנוע ה-RAG מעביר לה, כולם מתוך ספרי הקודש המאומתים שלנו. אי אפשר להמציא מה שלא כתוב שם',
-      sources_eyebrow: 'ספריית הקודש',
+      rag_sub: '.רבי סאם משתמש בטכנולוגיית RAG (Retrieval-Augmented Generation) כדי להבטיח תשובות המעוגנות 100% בטקסטים הקדושים',
+      rag_explainer: 'בינה מלאכותית רגילה מייצרת תשובות מתוך כל מה שלמדה — ויכולה להמציא מידע שגוי אך סביר. זה נקרא "הזיה".<br><br>רבי סאם פועל אחרת: לפני כל תשובה, הוא מחפש בספריית ספרי הקודש המאומתים שלו ומבסס את תשובתו אך ורק על הקטעים האמיתיים שנמצאו. אם לא נמצא כלום בנושא — הוא לא עונה.<br><br><strong>.תוצאה: אפס המצאות, אפס הזיות</strong> כל תשובה מצטטת את הסימן והסעיף המדויקים — תוכל לבדוק בעצמך.',
+      sources_eyebrow: 'ספרי RebSam',
       sources_title: '.אלפי ספרי קודש. אפס המצאות.',
-      sources_sub: '.כל תשובה של רב-סמי מעוגנת באחד מהטקסטים היסודיים הללו — עם הספר, הסימן והסעיף המדויקים',
+      sources_sub: '.כל תשובה של רבי סאם מעוגנת באחד מהטקסטים היסודיים הללו — עם הספר, הסימן והסעיף המדויקים',
       sources_more_count: 'אלפי ספרי קודש נוספים',
       chat_placeholder: 'שאל את שאלתך...',
       chat_hint: '.הנתונים נשארים פרטיים. מעגל סגור מובטח',
       chat_status: 'מקוון · עונה מיד…',
-      float_chat: 'שאל שאלה'
+      float_chat: 'שאל את רבי סאם',
+      float_wa: 'רבי סאם שלך בוואטסאפ',
+      hero_wa: 'רבי סאם שלך בוואטסאפ',
+      hero_trust: '✓ חכמת חכמינו — זמינה 24 שעות ביממה',
+      rag_chip1: '"לפני כל תשובה, רבי סאם מחפש בספרי הקודש — לא בזיכרונו"',
+      rag_chip2: '"אפס המצאות, אפס שגיאות. כל תשובה חייבת לכלול את ההפניה המדויקת"',
+      rag_chip3: '"התשובה נבנית מקטעים אמיתיים שנמצאו — לא ממוצאת"',
+      hero_sources: 'שולחן ערוך · משנה ברורה · ילקוט יוסף · אגרות משה · שולחן ערוך הרב · פניני הלכה · עיונים הלכה · יותר מ-2000 ספרי קודש'
     }
   };
 
@@ -1536,6 +1999,10 @@
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
       if (t[key] !== undefined) el.textContent = t[key];
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const key = el.getAttribute('data-i18n-html');
+      if (t[key] !== undefined) el.innerHTML = t[key];
     });
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
       const key = el.getAttribute('data-i18n-placeholder');
@@ -1562,6 +2029,9 @@
 
   function setLang(lang) {
     applyTranslations(lang);
+    // Avatar : ר en hébreu, RS en FR/EN
+    const av = document.getElementById('chat-header-avatar');
+    if (av) av.textContent = (lang === 'he') ? 'ר' : 'RS';
     // Reset chat si ouvert → nouveau message d'accueil dans la nouvelle langue
     const chatBox = document.getElementById('chat-box');
     if (chatBox) {
@@ -1652,10 +2122,11 @@
   /* ═══════════════════════════════════════════════
      CHAT — STATE & HELPERS
   ═══════════════════════════════════════════════ */
-  const MAKE_WEBHOOK_URL = '/api';
+  const MAKE_WEBHOOK_URL = '/api'; // fallback (non utilisé)
+  const PROXY_URL = 'https://rebsam-proxy-217121855341.europe-west1.run.app/';
   let chatSending = false;
   let conversationHistory = []; // Mémoire de la conversation en cours
-  const _sid = () => { if (!sessionStorage._rsid) sessionStorage._rsid = Date.now().toString(36) + Math.random().toString(36).slice(2); return sessionStorage._rsid; };
+  const _sid = () => { if (!localStorage._rsid) localStorage._rsid = Date.now().toString(36) + Math.random().toString(36).slice(2); return localStorage._rsid; };
 
   /* ── PALETTE DÉGRADÉS USER ── */
   const USER_GRADIENTS = [
@@ -1799,16 +2270,49 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
     he: 'אתה רבסם, מומחה הלכה. ענה תמיד בעברית, עם מקורות מדויקים (שולחן ערוך, פוסקים). היה מדויק, מובנה ומכבד. שאלה: '
   };
 
+  const CHAT_EXAMPLES = {
+    fr: [
+      'Peut-on utiliser un téléphone le Chabbat ?',
+      'Quelles sont les règles de la bénédiction après les repas ?',
+      'Comment fonctionne la Kashrout de la viande ?',
+      'Que dit la Halacha sur le port des tefilines ?'
+    ],
+    en: [
+      'Can I use my phone on Shabbat?',
+      'What are the rules for Grace after Meals?',
+      'How does Meat Kashruth work?',
+      'What does Halacha say about wearing Tefillin?'
+    ],
+    he: [
+      'האם מותר להשתמש בטלפון בשבת?',
+      'מה הם דיני ברכת המזון?',
+      'כיצד עובדת כשרות הבשר?',
+      'מה אומרת ההלכה על הנחת תפילין?'
+    ]
+  };
+
+  function fillSuggestion(text) {
+    const input = document.getElementById('chat-input');
+    input.value = text;
+    const wrap = document.querySelector('.chat-suggestions');
+    if (wrap) wrap.remove();
+    input.focus();
+    input.dispatchEvent(new Event('input'));
+  }
+
   function buildWelcome() {
     const shuffled = ALL_SOURCES.slice().sort(() => Math.random() - .5);
     const picked = shuffled.slice(0, 5 + Math.floor(Math.random() * 2)); // 5 ou 6
     const sourceList = picked.map(s => `• ${s}`).join('<br>');
     const msgs = {
-      fr: `Chalom ! 🌿 Je suis RebSam, ton compagnon d'étude halakhique.<br><br>Pose-moi n'importe quelle question : Kacherout, Chabbat, Niddah, Tefila, relations, business… Je réponds avec les sources exactes, sans jugement, 24h/24.<br><br>📚 <b>Sources consultées aujourd'hui :</b><br>${sourceList}<br><br>Par où veux-tu commencer ?`,
-      en: `Shalom! 🌿 I am RebSam, your halachic study companion.<br><br>Ask me any question: Kashrut, Shabbat, Niddah, Tefila, relationships, business… I answer with exact sources, without judgment, 24/7.<br><br>📚 <b>Sources consulted today:</b><br>${sourceList}<br><br>Where would you like to start?`,
-      he: `!שלום 🌿 אני רבסם, חבר הלימוד ההלכתי שלך.<br><br>שאל אותי כל שאלה: כשרות, שבת, נידה, תפילה, יחסים, עסקים… אני עונה עם המקורות המדויקים, ללא שיפוטיות, 24/7.<br><br>📚 <b>:מקורות שנבדקו היום</b><br>${sourceList}<br><br>?מאיפה רוצה להתחיל`
+      fr: `Chalom Aléikhem,<br>Comment puis-je t'aider aujourd'hui&nbsp;?`,
+      en: `Shalom Aleichem,<br>How can I help you today?`,
+      he: `שלום עליכם,<br>?במה אוכל לעזור לך היום`
     };
-    return msgs[currentLang] || msgs.fr;
+    const examples = CHAT_EXAMPLES[currentLang] || CHAT_EXAMPLES.fr;
+    const chips = examples.map(q => `<button class="chat-suggestion" onclick="fillSuggestion(${JSON.stringify(q)})">${q}</button>`).join('');
+    const suggestionsHtml = `<div class="chat-suggestions">${chips}</div>`;
+    return (msgs[currentLang] || msgs.fr) + suggestionsHtml;
   }
 
   function hasHebrew(text) {
@@ -1822,14 +2326,23 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
     }
     // Fallback si marked pas encore chargé
     return raw
+      .replace(/^---+$/gm, '<hr>')
       .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
-      .replace(/\*(.+?)\*/g, '<b>$1</b>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/^#{1,3}\s+(.+)$/gm, '<strong>$1</strong>')
       .replace(/\n\n/g, '<br><br>')
       .replace(/\n/g, '<br>');
   }
 
   function escapeHtml(str) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // Décoder entités HTML + strip balises (snippets Vertex AI contiennent du HTML brut)
+  function stripHtmlToText(html) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return (tmp.textContent || tmp.innerText || '').trim();
   }
 
   function appendMsg(role, html, isHebrew) {
@@ -1856,8 +2369,33 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
     return row;
   }
 
+  function renderSources(sources) {
+    if (!sources || !sources.length) return null;
+    const wrap = document.createElement('div');
+    wrap.className = 'msg-sources';
+    const label = { fr: 'Séfarim consultés', en: 'Sources', he: 'מקורות' }[currentLang] || 'Séfarim consultés';
+    wrap.innerHTML = `<div class="msg-sources-label">${label}</div>`;
+    const list = document.createElement('div');
+    list.className = 'msg-sources-list';
+    sources.slice(0, 6).forEach(s => {
+      const chip = document.createElement('div');
+      chip.className = 'msg-source-chip';
+      // Vertex AI Search retourne des snippets avec HTML brut (<b>, entités) → on nettoie avant affichage
+      const _snipRaw = stripHtmlToText(s.snippet || '');
+      const _snipOk = _snipRaw && !_snipRaw.toLowerCase().includes('no snippet');
+      const snippet = _snipOk ? `<span class="msg-source-snippet">${escapeHtml(_snipRaw.slice(0, 200))}${_snipRaw.length > 200 ? '…' : ''}</span>` : '';
+      const bookIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`;
+      chip.innerHTML = `<span class="msg-source-icon">${bookIcon}</span><span class="msg-source-body"><span class="msg-source-title">${escapeHtml(s.title)}</span>${snippet}</span>`;
+      list.appendChild(chip);
+    });
+    wrap.appendChild(list);
+    return wrap;
+  }
+
   function openChat() {
-    document.getElementById('chat-overlay').classList.add('open');
+    const overlay = document.getElementById('chat-overlay');
+    overlay.style.cssText = '';
+    overlay.classList.add('open');
     const chatBox = document.getElementById('chat-box');
     if (chatBox.children.length === 0) {
       appendMsg('sam', buildWelcome());
@@ -1866,7 +2404,27 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
   }
 
   function closeChat() {
-    document.getElementById('chat-overlay').classList.remove('open');
+    const overlay = document.getElementById('chat-overlay');
+    overlay.classList.remove('open');
+    overlay.style.cssText = '';
+  }
+
+  // Fix Android keyboard: reposition overlay to cover only the visual viewport
+  if (window.visualViewport) {
+    function _onVVResize() {
+      const overlay = document.getElementById('chat-overlay');
+      if (!overlay.classList.contains('open') || window.innerWidth > 640) return;
+      const vv = window.visualViewport;
+      overlay.style.top    = vv.offsetTop  + 'px';
+      overlay.style.left   = vv.offsetLeft + 'px';
+      overlay.style.width  = vv.width      + 'px';
+      overlay.style.height = vv.height     + 'px';
+      // Le modal hérite height:100% de l'overlay — force le recalcul
+      const modal = document.getElementById('chat-modal');
+      if (modal) modal.style.maxHeight = vv.height + 'px';
+    }
+    window.visualViewport.addEventListener('resize',  _onVVResize);
+    window.visualViewport.addEventListener('scroll',  _onVVResize);
   }
 
   async function sendMessage() {
@@ -1883,8 +2441,11 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
     chatSending = true;
     input.disabled = true;
     sendBtn.disabled = true;
+    const sendIcon = sendBtn.innerHTML;
+    sendBtn.innerHTML = '<div class="send-spinner"></div>';
 
     const loadingRow = appendMsg('sam', '<div class="loading-dots"><span></span><span></span><span></span></div>');
+    const bubble = loadingRow.querySelector('.msg-bubble');
 
     try {
       const langInstruction = LANG_INSTRUCTIONS[currentLang] || LANG_INSTRUCTIONS.fr;
@@ -1892,44 +2453,41 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
       const namePrefix = name ? ({ fr:`L'utilisateur s'appelle ${name}. `, en:`The user's name is ${name}. `, he:`שם המשתמש הוא ${name}. `}[currentLang] || `The user's name is ${name}. `) : '';
       const systemPrompt = namePrefix + langInstruction + getJewishDateInfo();
 
-      // Ajout du message courant à l'historique AVANT l'envoi
       conversationHistory.push({ role: 'user', content: message });
 
-      const res = await fetch(MAKE_WEBHOOK_URL, {
+      const res = await fetch(PROXY_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-secret-token': 'rebsam-make-2026' },
         body: JSON.stringify({
-          // Champ rétrocompatible (Make.com peut encore lire "prompt")
-          prompt: systemPrompt + message,
-          // Nouveaux champs pour la mémoire conversationnelle
-          systemPrompt,
           message,
-          history: conversationHistory.slice(-20), // 10 derniers échanges max
+          history: conversationHistory.slice(-20),
           lang: currentLang,
           name: name || 'Anonyme',
           timestamp: new Date().toISOString(),
           sessionId: _sid()
         })
       });
-      const rawText = await res.text();
-      let reply;
-      try {
-        const data = JSON.parse(rawText);
-        reply = data.reply || data.text || data.response || data.message || rawText;
-      } catch {
-        reply = rawText;
-      }
-      const cleaned = cleanMarkdown(reply);
-      const bubble = loadingRow.querySelector('.msg-bubble');
-      bubble.innerHTML = cleaned;
+
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+
+      const data = await res.json();
+      const fullReply = data.reply || '';
+      const sources = data.sources || [];
+
+      bubble.innerHTML = cleanMarkdown(fullReply);
       bubble.setAttribute('dir', currentLang === 'he' ? 'rtl' : 'ltr');
 
-      // Mémoriser la réponse de l'IA pour le prochain tour
-      conversationHistory.push({ role: 'model', content: reply });
-      saveToHistory(message, reply);
+      if (sources.length) {
+        const sourcesEl = renderSources(sources);
+        if (sourcesEl) loadingRow.after(sourcesEl);
+      }
+
+      conversationHistory.push({ role: 'model', content: fullReply });
+      saveToHistory(message, fullReply);
+
     } catch (err) {
       console.error('[RebSam chat error]', err);
-      loadingRow.querySelector('.msg-bubble').textContent =
+      bubble.textContent =
         currentLang === 'he' ? 'שגיאה. נסה שוב.' :
         currentLang === 'en' ? 'Error. Please try again.' :
         'Erreur. Veuillez réessayer.';
@@ -1937,19 +2495,26 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
       chatSending = false;
       input.disabled = false;
       sendBtn.disabled = false;
+      sendBtn.innerHTML = sendIcon;
       input.focus();
     }
   }
 
   // Mobile Menu Toggle
   document.getElementById('hamburger').addEventListener('click', function() {
-    this.classList.toggle('open');
-    document.getElementById('mobile-menu').classList.toggle('open');
+    const isOpen = this.classList.toggle('open');
+    document.getElementById('mobile-menu').classList.toggle('open', isOpen);
+    document.getElementById('menu-overlay').classList.toggle('open', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    this.setAttribute('aria-expanded', isOpen);
   });
 
   function closeMobileMenu() {
     document.getElementById('hamburger').classList.remove('open');
     document.getElementById('mobile-menu').classList.remove('open');
+    document.getElementById('menu-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+    document.getElementById('hamburger').setAttribute('aria-expanded', 'false');
   }
 
   // Header Scroll Effect
@@ -2016,6 +2581,23 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
       });
     }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
     document.querySelectorAll('[data-reveal]').forEach(function(el) { obs.observe(el); });
+  })();
+
+  /* ═══════════════════════════════════════════════
+     FLOAT BUTTONS — masquer quand le hero est visible
+  ═══════════════════════════════════════════════ */
+  (function() {
+    const hero = document.getElementById('hero');
+    const floats = document.querySelectorAll('.float-btn');
+    if (!hero || !floats.length) return;
+    const heroObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        floats.forEach(function(btn) {
+          btn.classList.toggle('hero-visible', e.isIntersecting);
+        });
+      });
+    }, { threshold: 0.1 });
+    heroObs.observe(hero);
   })();
 
   /* ═══════════════════════════════════════════════
@@ -2219,6 +2801,6 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
 
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/@calj.net/jdates/dist/cdn/calj.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@calj.net/jdates/dist/cdn/calj.min.js" integrity="sha384-fpl/43T5FvDyqueGJNXx1j8XEGiF9K/F4ZlB2Lwe57zcZVaIGoCTf4vXSaJgCYRU" crossorigin="anonymous" defer></script>
 </body>
 </html>

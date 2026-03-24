@@ -29,11 +29,26 @@ Reb Sam est un expert rabbinique augmenté — système expert qui navigue dans 
 modifier fichiers
 → git add . && git commit -m "description" && git push
 → Netlify auto-deploy déclenché sur branche main  (frontend)
-→ Cloud Run auto-deploy déclenché sur branche main (proxy) [À CONFIGURER]
+→ Cloud Run auto-deploy déclenché sur branche main (proxy) ✅ CONFIGURÉ
 → prod live sur rebsam.fr
 ```
 
-> **Cloud Run GitHub auto-deploy** : pas encore configuré. À faire : Cloud Run → Edit & Deploy New Revision → Continuously deploy from a repository → repo `gityoni/rebsam.github.io` → branch `^main$` → Dockerfile `/proxy/Dockerfile`.
+> **Cloud Run GitHub auto-deploy** : ✅ Configuré et actif. Chaque push sur `main` déclenche automatiquement un nouveau build/deploy via Cloud Build.
+
+## Cloud Build — Trigger proxy (Cloud Run)
+| Paramètre | Valeur |
+|---|---|
+| Projet GCP | `rebbe-sam-agent` |
+| Service Cloud Run | `rebsam-proxy` |
+| Région | `europe-west1` |
+| Artifact Registry | `europe-west1-docker.pkg.dev` |
+| Repository AR | `cloud-run-source-deploy` |
+| Branche déclencheur | `main` |
+| Config build | Inline YAML (Intégré — pas de cloudbuild.yaml dans le repo) |
+| Compte de service | `217121855341-compute@developer.gserviceaccount.com` |
+| Trigger ID | `f0a9130a-3562-435f-835c-a939c67c2f21` |
+
+> Le YAML de build est intégré directement dans le trigger GCP (emplacement "Intégré"). Aucun fichier `cloudbuild.yaml` n'est requis dans le repo.
 
 ## Règles importantes
 - Ne jamais committer de clés API ou secrets
@@ -41,6 +56,45 @@ modifier fichiers
 - Les icônes PNG réelles sont dans icon-192.png et icon-512.png
 - Le proxy tourne sur Cloud Run, séparé du frontend
 
+## Design system — Chat UI
+
+### Dégradé identitaire (à utiliser partout en remplacement de l'or)
+```
+linear-gradient(135deg, #5B8EF0 0%, #7C6FCD 50%, #E07B5A 100%)
+```
+Ce dégradé bleu→violet→corail est le fil conducteur visuel :
+- Bouton CTA hero "Pose ta première question à RebSam"
+- `<hr>` séparateurs dans les bulles Sam
+- Titres h1/h2/h3 dans les bulles Sam
+- Label "Séfarim consultés" (gradient text)
+- Bordure gauche des source chips
+- Avatar Sam
+
+### Icônes
+- Source chips : SVG Feather book (inline), PAS d'emoji
+- Éviter les emoji décoratifs dans l'UI chrome (réservés au contenu IA)
+
+### Typographie chat
+- Corps bulles Sam : `font-family: 'Outfit', 'Inter', sans-serif`
+- Titres (h1/h2/h3 markdown) : `Outfit` + gradient text
+
+### Markdown dans les bulles
+- `marked.js` (cdn.jsdelivr.net/npm/marked) — `gfm: true, breaks: true`
+- Fallback JS si marked non chargé : gère `---` → `<hr>`, `**` → `<b>`, `*` → `<em>`, `#` → `<strong>`
+- `---` du prompt → `<hr>` stylé avec le dégradé identitaire (hauteur 2px)
+
+## PWA — manifest.json (état [2026-03-23])
+| Champ | Valeur |
+|---|---|
+| `id` | `fr.rebsam.app` |
+| `display_override` | `["window-controls-overlay", "standalone", "minimal-ui"]` |
+| `related_applications` | Play Store `com.rebsam.app` |
+| `iarc_rating_id` | placeholder à remplacer (Play Console → Classification du contenu) |
+| `screenshots` | `screenshot-mobile.png` (1170×2526) + `screenshot-wide.png` (997×900) |
+| Score PWABuilder | ~23/45 avant deploy — à re-tester après merge |
+
 ## État actuel / En cours
-<!-- Mettre à jour cette section à chaque session avant de fermer -->
 - Voir TASKS.md
+- Branche active : `claude/update-claude-docs-WytQh` — PWA manifest complet + fixes sources/emoji
+- À merger sur main pour activer tous les changements
+- Problème sources non résolu en prod : hiérarchie primaire/secondaire à fixer dans prompt.txt
