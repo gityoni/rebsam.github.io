@@ -1041,7 +1041,7 @@ def call_gemini(system_prompt: str, history: list, message: str) -> tuple:
 
 
 # ── Routeur LLM universel ─────────────────────────────────
-GEMINI_FALLBACK_MODEL = os.environ.get("GEMINI_FALLBACK_MODEL", "gemini-3.1-flash-lite-preview")
+GEMINI_FALLBACK_MODEL = os.environ.get("GEMINI_FALLBACK_MODEL", "gemini-2.0-flash")
 
 
 def call_llm(system_prompt: str, history: list, message: str, session_id: str = "") -> tuple:
