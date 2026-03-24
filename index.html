@@ -558,6 +558,8 @@
     .footer-contact-item { display: flex; align-items: flex-start; gap: .6rem; font-size: .9375rem; color: rgba(203,213,225,.7); margin-bottom: .875rem; }
     .footer-contact-item svg { color: #5B8EF0; flex-shrink: 0; margin-top: 3px; }
     .footer-contact-support { font-size: .8125rem; color: rgba(203,213,225,.72); margin-top: .35rem; }
+    .footer-contact-email { color: #fff; font-weight: 700; font-size: .9375rem; text-decoration: none; transition: color .2s; }
+    .footer-contact-email:hover { color: #5B8EF0; }
     .footer-bottom { border-top: 1px solid rgba(255,255,255,.07); padding: 1.5rem 0; margin-top: .5rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; font-size: .875rem; color: rgba(203,213,225,.72); }
     .footer-bottom-links { display: flex; gap: 1.5rem; }
     .footer-bottom-links a { color: rgba(203,213,225,.72); transition: color .2s; }
@@ -1735,7 +1737,10 @@
       </div>
       <div class="footer-col">
         <p class="footer-col-title" data-i18n="footer_contact_title">Contact</p>
-        <a href="mailto:rebbesam@rebsam.fr" class="footer-contact-email">rebbesam@rebsam.fr</a>
+        <div class="footer-contact-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+          <a href="mailto:contact@rebsam.fr" class="footer-contact-email">contact@rebsam.fr</a>
+        </div>
         <div class="footer-contact-item">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           <span data-i18n="footer_location">Jérusalem, Israël</span>
