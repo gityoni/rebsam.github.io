@@ -1,8 +1,19 @@
 {
-  "name": "rebsam-proxy",
+  "name": "rebsam-app",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "RebSam — Expert Halakha IA (iOS/Android via Capacitor)",
+  "private": true,
+  "scripts": {
+    "cap:sync": "npx cap sync",
+    "cap:ios": "npx cap open ios",
+    "cap:build:ios": "npx cap sync ios"
+  },
   "dependencies": {
-    "google-auth-library": "^9.0.0"
+    "@capacitor/core": "^6.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/ios": "^6.0.0",
+    "typescript": "^6.0.2"
   }
 }
