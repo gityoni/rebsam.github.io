@@ -2485,6 +2485,7 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let sseBuffer = '';
+      let lastRender = 0;
 
       while (!streamDone) {
         const { done, value } = await reader.read();
@@ -2500,8 +2501,12 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
             const evt = JSON.parse(raw);
             if (evt.type === 'text') {
               fullReply += evt.text;
-              bubble.textContent = fullReply;
-              bubble.scrollIntoView({ behavior: 'smooth', block: 'end' });
+              const now = Date.now();
+              if (now - lastRender > 120) {
+                bubble.innerHTML = cleanMarkdown(fullReply);
+                bubble.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                lastRender = now;
+              }
             } else if (evt.type === 'sources') {
               sources = evt.sources || [];
             } else if (evt.type === 'error') {
