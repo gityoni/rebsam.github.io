@@ -116,10 +116,20 @@ Ce dégradé bleu→violet→corail est le fil conducteur visuel :
 
 > Prochaine étape pour affiner : ajouter un champ `source_category` dans les métadonnées Vertex AI pour booster par sous-catégorie (ex. Sifrey Halacha > Parashat Shavua dans un profil halacha).
 
+## Hébergement frontend
+| Paramètre | Valeur |
+|---|---|
+| Plateforme | Cloudflare Pages (remplace Netlify) |
+| Projet CF | `rebsam-github-io` |
+| URL CF | `rebsam-github-io.pages.dev` |
+| Domaine custom | `rebsam.fr` |
+| Auto-deploy | Push sur `main` → deploy instantané |
+| Config | `_redirects` + `_headers` (racine du repo) |
+| Netlify | Désactivé (conservé pour rollback) |
+
 ## État actuel / En cours
 - Voir TASKS.md
-- Branche active : `claude/update-claude-docs-WytQh` — PWA manifest + fixes sources/emoji + boost profiles recalibrés + fix UI chat (fond neutre, gradient header)
-- À merger sur main pour activer tous les changements
+- Migration Netlify → Cloudflare Pages ✅ terminée (2026-03-25)
 
 ## Design system — Couleurs de fond
 | Zone | Couleur | Note |
