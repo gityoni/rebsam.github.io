@@ -1,0 +1,65 @@
+workflows:
+  ios-app-store:
+    name: RebSam — iOS App Store
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: fr.rebsam.app
+      vars:
+        XCODE_PROJECT: "ios/App/App.xcodeproj"
+        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
+        XCODE_SCHEME: "App"
+        BUNDLE_ID: "fr.rebsam.app"
+        APP_STORE_APPLE_ID: $APP_STORE_APPLE_ID   # à définir dans Codemagic UI
+      node: v22.22.0
+      xcode: latest
+      cocoapods: default
+
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+
+    scripts:
+      - name: Install npm dependencies
+        script: npm ci
+
+      - name: Capacitor sync iOS
+        script: npx cap sync ios
+
+      - name: Install CocoaPods
+        script: |
+          cd ios/App
+          pod install
+
+      - name: Set build number (= timestamp)
+        script: |
+          BUILD_NUMBER=$(date +%Y%m%d%H%M)
+          agvtool new-version -all $BUILD_NUMBER
+
+      - name: Build IPA
+        script: |
+          xcode-project build-ipa \
+            --workspace "$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      app_store_connect:
+        auth: integration   # OAuth via Codemagic UI (pas besoin d'API key manuelle)
+        submit_to_testflight: true
+        submit_to_app_store: false   # passer à true quand prêt pour prod
+      email:
+        recipients:
+          - yonatan26@gmail.com
+        notify:
+          success: true
+          failure: true

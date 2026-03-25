@@ -12,3 +12,12 @@ Thumbs.db
 
 # Node
 node_modules/
+package-lock.json
+
+# Capacitor iOS — fichiers générés localement
+ios/App/Pods/
+ios/App/App.xcworkspace/
+ios/App/DerivedData/
+ios/App/build/
+*.xcuserstate
+xcuserdata/
