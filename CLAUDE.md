@@ -138,11 +138,37 @@ Ce dégradé bleu→violet→corail est le fil conducteur visuel :
 | Canaux loggés | `web` (chat rebsam.fr) + `whatsapp` |
 | Fonction proxy | `log_to_make()` → fire & forget, non-bloquant |
 
-## iOS App Store — Prochaine étape
-- Stack cible : **Capacitor** (wrap PWA → app native iOS)
-- Compte Apple Developer requis (99$/an)
-- Valeur ajoutée native : notifications push (Chabbat, fêtes)
-- Build final nécessite Mac + Xcode (ou CI Codemagic)
+## iOS App Store — Capacitor (état [2026-03-25])
+
+### Setup effectué (branche `claude/setup-capacitor-ios-uZ5n6`)
+| Fichier | Rôle |
+|---|---|
+| `capacitor.config.ts` | `appId: fr.rebsam.app`, `server.url: https://rebsam.fr`, `webDir: www` |
+| `package.json` | Deps : `@capacitor/core`, `@capacitor/cli`, `@capacitor/ios`, `typescript` |
+| `ios/App/App.xcodeproj/` | Projet Xcode — bundle ID `fr.rebsam.app`, iOS 13+ |
+| `ios/App/App/Info.plist` | `WKAppBoundDomains: rebsam.fr`, portrait only, privacy strings |
+| `ios/App/Podfile` | CocoaPods — pod install sur Mac |
+| `www/index.html` | Placeholder webDir (contenu réel depuis rebsam.fr) |
+| `codemagic.yaml` | Build cloud Mac mini M2 → TestFlight auto |
+
+### Build sans Mac → Codemagic CI
+- Compte Apple Developer 99$/an requis (pas encore souscrit)
+- Flow : push `main` → Codemagic (mac_mini_m2) → pod install → xcodebuild → IPA → TestFlight
+- À configurer dans Codemagic UI : signing Apple Developer + `APP_STORE_APPLE_ID`
+
+### Icônes iOS
+- 18 tailles générées depuis `icon-512.png` (upscalé)
+- **À remplacer** : icône finale à décider (version A dégradé+RebSam ou B dégradé+RS)
+- L'utilisateur fournira l'image source 2026-03-26
+
+### Prochaines étapes iOS
+1. Valider l'icône finale → régénérer toutes les tailles
+2. Splash screen iOS (LaunchScreen.storyboard)
+3. Screenshots App Store (FR/EN/HE)
+4. Souscrire Apple Developer Program (99$/an)
+5. Connecter Codemagic + lancer premier build
+6. Metadata App Store Connect
+
 - Public cible : US + Israël (majorité iPhone)
 
 ## État actuel / En cours
