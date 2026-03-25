@@ -1,4 +1,4 @@
-const CACHE = 'rebsam-v5';
+const CACHE = 'rebsam-v6';
 const ASSETS = ['/','index.html','manifest.json'];
 
 self.addEventListener('install', e => {
