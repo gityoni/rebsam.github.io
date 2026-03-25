@@ -1648,11 +1648,20 @@ def chat_stream():
                 "system": system_block, "messages": msgs_t2,
                 "stream": True,
             }
-            resp2 = http_requests.post(
-                CLAUDE_API_URL, headers=api_headers, json=payload2,
-                timeout=120, stream=True
-            )
-            resp2.raise_for_status()
+            for _attempt in range(3):
+                resp2 = http_requests.post(
+                    CLAUDE_API_URL, headers=api_headers, json=payload2,
+                    timeout=120, stream=True
+                )
+                if resp2.status_code == 429:
+                    retry_after = int(resp2.headers.get("retry-after", 5))
+                    logging.warning(f"[RebSam/Stream] Tour 2 — 429 rate limit, retry in {retry_after}s (attempt {_attempt+1}/3)")
+                    import time; time.sleep(min(retry_after, 15))
+                    continue
+                resp2.raise_for_status()
+                break
+            else:
+                raise Exception("Claude API rate limit (429) après 3 tentatives")
 
             full_reply = ""
             out_tokens = 0
