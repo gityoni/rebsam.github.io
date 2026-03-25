@@ -20,19 +20,16 @@
 - **[2026-03-23] PWA manifest complet** — `id`, `screenshots` (mobile 1170×2526 + wide 997×900), `display_override`, `related_applications` (Play Store), `iarc_rating_id` placeholder
 - **[2026-03-24] Boost profiles recalibrés** — Répartition réelle corpus analysée (1972 docs). Niveau 3 (141 docs Sifrey Halacha) = moteur halacha principal → boost 0.8. Niveau 2 (29 docs Responsa) → 0.7. Niveau 4 kabbalah/Breslav écarté des questions pratiques (-0.2). Commentaires de répartition ajoutés dans le code.
 - **[2026-03-24] Fix UI chat** — Fond `#chat-box` saumon → `#f8fafc` neutre. Zone input `#fef5f0` → `#f0f4fb` bleuté. Header gradient harmonisé bleu→violet→corail (design system).
+- **[2026-03-25] Streaming SSE** — Frontend migré vers `/stream` (SSE). Texte affiché token par token. Latence perçue ~1s vs ~10s avant.
+- **[2026-03-25] Migration Cloudflare Pages** — Netlify → Cloudflare Pages. `_redirects` + `_headers` créés. DNS rebsam.fr → Cloudflare. Netlify désactivé (conservé rollback).
 
 ## 🔄 En cours
 
-- Branche `claude/update-claude-docs-WytQh` → à merger sur `main`
+- 12 testeurs Play Store test fermé → compteur 14 jours en cours
 
 ## 🔴 PRIORITÉ
 
-### 1. Merger la branche → main
-- `git checkout main && git merge claude/update-claude-docs-WytQh && git push`
-- Déclenche Cloud Run deploy automatique (proxy + boost profiles)
-- Re-tester PWABuilder après deploy (score attendu > 30/45)
-
-### 2. IARC Rating ID réel
+### 1. IARC Rating ID réel
 - Google Play Console → ton app → Contenu de l'app → Classification du contenu
 - Remplir le questionnaire IARC → copier l'ID généré
 - Remplacer le placeholder dans `manifest.json` et committer
@@ -67,4 +64,4 @@ INTERDIT : citer un ouvrage thématique moderne si une source primaire couvre le
 - **IARC rating** : placeholder dans manifest.json, à remplacer par ID réel
 
 ---
-*Dernière mise à jour : 2026-03-24 (session WytQh)*
+*Dernière mise à jour : 2026-03-25*
