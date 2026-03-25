@@ -1,10 +1,4 @@
 # RebSam — Cloudflare Pages redirects
-# Même logique que netlify.toml
-
-# Proxies vers Cloud Run / APIs externes
-/api/zmanim  https://www.hebcal.com/zmanim  200
-/api/whatsapp  https://rebsam-proxy-217121855341.europe-west1.run.app/whatsapp  200
-/api  https://rebsam-proxy-217121855341.europe-west1.run.app  200
 
 # Redirects SEO
 /eng   /en/  301
@@ -14,6 +8,3 @@
 /halakha  /#faq     301
 /ask      /#hero    301
 /torah    /#sources 301
-
-# Fallback SPA
-/*  /index.html  200
