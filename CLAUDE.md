@@ -127,9 +127,28 @@ Ce dégradé bleu→violet→corail est le fil conducteur visuel :
 | Config | `_redirects` + `_headers` (racine du repo) |
 | Netlify | Désactivé (conservé pour rollback) |
 
+## Logging conversations — Make.com → Google Sheets
+| Paramètre | Valeur |
+|---|---|
+| Scénario Make.com | "Chat Web Reb Sam" (ID 4651925, team 1121479) |
+| Webhook Make.com | `https://hook.eu1.make.com/7p7pv9nkm8tqeyhc8sspve9u3nnarxt8` |
+| Variable Cloud Run | `MAKE_LOG_WEBHOOK` |
+| Google Sheet | "RebSam Testeurs" (yonatan26@gmail.com) |
+| Colonnes | Date, Canal, Nom, Langue, Question, Réponse (500 chars), Session, Tours |
+| Canaux loggés | `web` (chat rebsam.fr) + `whatsapp` |
+| Fonction proxy | `log_to_make()` → fire & forget, non-bloquant |
+
+## iOS App Store — Prochaine étape
+- Stack cible : **Capacitor** (wrap PWA → app native iOS)
+- Compte Apple Developer requis (99$/an)
+- Valeur ajoutée native : notifications push (Chabbat, fêtes)
+- Build final nécessite Mac + Xcode (ou CI Codemagic)
+- Public cible : US + Israël (majorité iPhone)
+
 ## État actuel / En cours
 - Voir TASKS.md
 - Migration Netlify → Cloudflare Pages ✅ terminée (2026-03-25)
+- Make.com logging ✅ configuré (2026-03-25)
 
 ## Design system — Couleurs de fond
 | Zone | Couleur | Note |

@@ -26,6 +26,8 @@
 ## 🔄 En cours
 
 - 12 testeurs Play Store test fermé → compteur 14 jours en cours
+- **[2026-03-25] Make.com Google Sheets logging** — `MAKE_LOG_WEBHOOK` configuré dans Cloud Run. Scénario "Chat Web Reb Sam" actif. Colonnes : Date, Canal, Nom, Langue, Question, Réponse (500 chars), Session, Tours. Canaux web + WhatsApp.
+- **[2026-03-25] Placeholder nom testeurs** — champ `#chat-name` → "Prénom + initiale (ex: Yoni A.)"
 
 ## 🔴 PRIORITÉ
 
@@ -48,6 +50,15 @@ ORDRE OBLIGATOIRE DES SOURCES (du plus primaire au plus récent) :
 5. Ouvrages thématiques modernes EN DERNIER
 INTERDIT : citer un ouvrage thématique moderne si une source primaire couvre le même point.
 ```
+
+## 🔴 PRIORITÉ — iOS App Store (Capacitor)
+1. Setup Capacitor dans le repo (`ios/` folder)
+2. Config `capacitor.config.ts` → pointe vers rebsam.fr
+3. Build iOS + Xcode project
+4. Notifications push natives (Chabbat, fêtes)
+5. Screenshots App Store + metadata (FR/EN/HE)
+6. Compte Apple Developer (99$/an)
+7. Soumission + review Apple (~1-7 jours)
 
 ## 📋 À faire (suite)
 
