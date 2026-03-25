@@ -2462,7 +2462,7 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
 
       conversationHistory.push({ role: 'user', content: message });
 
-      const res = await fetch(PROXY_URL, {
+      const res = await fetch(PROXY_URL + 'stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-secret-token': 'rebsam-make-2026' },
         body: JSON.stringify({
@@ -2477,9 +2477,39 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
 
       if (!res.ok) throw new Error('HTTP ' + res.status);
 
-      const data = await res.json();
-      const fullReply = data.reply || '';
-      const sources = data.sources || [];
+      let fullReply = '';
+      let sources = [];
+      let streamDone = false;
+      bubble.setAttribute('dir', currentLang === 'he' ? 'rtl' : 'ltr');
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let sseBuffer = '';
+
+      while (!streamDone) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        sseBuffer += decoder.decode(value, { stream: true });
+        const lines = sseBuffer.split('\n');
+        sseBuffer = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const raw = line.slice(6);
+          if (raw === '[DONE]') { streamDone = true; break; }
+          try {
+            const evt = JSON.parse(raw);
+            if (evt.type === 'text') {
+              fullReply += evt.text;
+              bubble.textContent = fullReply;
+              bubble.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            } else if (evt.type === 'sources') {
+              sources = evt.sources || [];
+            } else if (evt.type === 'error') {
+              throw new Error(evt.error);
+            }
+          } catch (e) { if (e.message && !e.message.startsWith('JSON')) throw e; }
+        }
+      }
 
       bubble.innerHTML = cleanMarkdown(fullReply);
       bubble.setAttribute('dir', currentLang === 'he' ? 'rtl' : 'ltr');
