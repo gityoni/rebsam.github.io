@@ -492,7 +492,7 @@ def log_to_make(data: dict, reply: str):
         "name":      data.get("name", "Anonyme"),
         "lang":      data.get("lang", "fr"),
         "message":   data.get("message", ""),
-        "reply":     reply,
+        "reply":     reply[:500] + ("…" if len(reply) > 500 else ""),
         "timestamp": data.get("timestamp", ""),
         "turns":     len(data.get("history", [])),
         "channel":   data.get("channel", "web"),
