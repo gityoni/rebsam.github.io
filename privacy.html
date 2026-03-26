@@ -3,64 +3,174 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Politique de confidentialité — Reb Sam</title>
+  <title>Politique de confidentialité — RebSam</title>
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       max-width: 800px;
       margin: 0 auto;
-      padding: 2rem 1.5rem;
-      color: #222;
-      line-height: 1.7;
+      padding: 2.5rem 1.5rem 4rem;
+      color: #1a1a2e;
+      line-height: 1.75;
+      background: #fafafa;
     }
-    h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
-    h2 { font-size: 1.2rem; margin-top: 2rem; color: #333; }
-    p, li { font-size: 1rem; }
-    a { color: #0066cc; }
-    .date { color: #666; font-size: 0.9rem; margin-bottom: 2rem; }
+    header { margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid #e5e7eb; }
+    h1 { font-size: 1.9rem; font-weight: 800; color: #1a1a2e; margin-bottom: 0.4rem; }
+    .subtitle { color: #5B8EF0; font-weight: 600; font-size: 1rem; }
+    .date { color: #888; font-size: 0.875rem; margin-top: 0.5rem; }
+    h2 { font-size: 1.1rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 0.75rem;
+         color: #fff; background: linear-gradient(135deg, #5B8EF0, #7C6FCD);
+         padding: 0.5rem 1rem; border-radius: 8px; }
+    p { margin-bottom: 0.75rem; font-size: 0.975rem; color: #333; }
+    ul { margin: 0.5rem 0 0.75rem 1.5rem; }
+    li { font-size: 0.975rem; margin-bottom: 0.4rem; color: #333; }
+    strong { color: #1a1a2e; }
+    .tag { display: inline-block; background: #f0f4ff; color: #5B8EF0; font-size: 0.8rem;
+           font-weight: 600; padding: 2px 10px; border-radius: 20px; margin-left: 6px;
+           vertical-align: middle; }
+    .back { display: inline-block; margin-top: 3rem; color: #5B8EF0; text-decoration: none;
+            font-weight: 600; font-size: 0.95rem; }
+    .back:hover { text-decoration: underline; }
+    .lang-switch { text-align: right; margin-bottom: 1.5rem; }
+    .lang-switch a { color: #5B8EF0; text-decoration: none; font-size: 0.875rem; font-weight: 600; margin-left: 1rem; }
+    .section-en { display: none; }
+    @media (max-width: 600px) { body { padding: 1.5rem 1rem 3rem; } }
   </style>
 </head>
 <body>
-  <h1>Politique de confidentialité</h1>
-  <p class="date">Dernière mise à jour : 17 mars 2026</p>
 
-  <p>Cette politique de confidentialité s'applique à l'application <strong>Reb Sam</strong> et au site <strong>rebsam.fr</strong>, édités par Reb Sam.</p>
+  <div class="lang-switch">
+    <a href="#" onclick="showLang('fr');return false;">🇫🇷 Français</a>
+    <a href="#" onclick="showLang('en');return false;">🇺🇸 English</a>
+  </div>
 
-  <h2>1. Données collectées</h2>
-  <p>Reb Sam ne collecte <strong>aucune donnée personnelle</strong> identifiable. L'application ne nécessite pas de création de compte.</p>
-  <p>Les seules données traitées sont :</p>
-  <ul>
-    <li>Les <strong>messages saisis</strong> par l'utilisateur, transmis à une API tierce pour générer une réponse. Ces messages ne sont pas stockés de manière permanente.</li>
-    <li>Des <strong>données techniques anonymes</strong> (logs d'erreurs, performances) via les services Google Play et les hébergeurs.</li>
-  </ul>
+  <!-- ══ FRANÇAIS ══ -->
+  <div class="section-fr">
+    <header>
+      <h1>Politique de confidentialité</h1>
+      <div class="subtitle">RebSam — Expert Halakha IA</div>
+      <div class="date">Dernière mise à jour : 26 mars 2026</div>
+    </header>
 
-  <h2>2. Utilisation des données</h2>
-  <p>Les messages saisis sont envoyés à un service d'intelligence artificielle (API) uniquement pour produire une réponse rabbinique. Ils ne sont pas utilisés à des fins publicitaires, de profilage ou de revente.</p>
+    <p>Cette politique s'applique à l'application <strong>RebSam</strong> (iOS, Android, Web) et au site <strong>rebsam.fr</strong>.</p>
 
-  <h2>3. Partage avec des tiers</h2>
-  <p>Reb Sam utilise les services suivants :</p>
-  <ul>
-    <li><strong>Anthropic / OpenAI</strong> (ou équivalent) : traitement des requêtes via API.</li>
-    <li><strong>Netlify</strong> : hébergement du site web.</li>
-    <li><strong>Google Play</strong> : distribution de l'application Android.</li>
-  </ul>
-  <p>Aucune donnée n'est vendue ou partagée avec d'autres tiers.</p>
+    <h2>1. Données collectées</h2>
+    <p>RebSam ne collecte <strong>aucune donnée personnelle identifiable</strong>. Aucun compte n'est requis.</p>
+    <p>Les données traitées sont :</p>
+    <ul>
+      <li><strong>Questions posées</strong> — transmises à notre API pour générer une réponse. Enregistrées dans un journal interne (Google Sheets) à des fins d'amélioration du service.</li>
+      <li><strong>Identifiant de session anonyme</strong> — généré aléatoirement, stocké localement (localStorage), non lié à une identité réelle. Affiché comme "Visiteur #XXXX" dans les journaux.</li>
+      <li><strong>Langue détectée</strong> (français, hébreu, anglais).</li>
+      <li><strong>Canal d'accès</strong> (web, WhatsApp, iOS, Android).</li>
+    </ul>
+    <p>Aucun nom réel, email, numéro de téléphone ou donnée de localisation n'est collecté depuis l'application web ou iOS.</p>
 
-  <h2>4. Sécurité</h2>
-  <p>Les communications entre l'application et nos serveurs sont chiffrées via HTTPS.</p>
+    <h2>2. Utilisation des données</h2>
+    <ul>
+      <li>Générer des réponses halakhiques via intelligence artificielle (Anthropic Claude + Google Vertex AI).</li>
+      <li>Améliorer la qualité des réponses et détecter les dysfonctionnements.</li>
+      <li>Statistiques d'usage anonymes (nombre de questions, langues utilisées).</li>
+    </ul>
+    <p>Aucune utilisation publicitaire, aucun profilage, aucune revente.</p>
 
-  <h2>5. Enfants</h2>
-  <p>L'application n'est pas destinée aux enfants de moins de 13 ans. Nous ne collectons sciemment aucune donnée relative à des mineurs.</p>
+    <h2>3. Services tiers utilisés</h2>
+    <ul>
+      <li><strong>Anthropic</strong> — traitement des questions par IA (Claude). <span class="tag">USA</span></li>
+      <li><strong>Google Cloud / Vertex AI</strong> — recherche dans le corpus Torah (RAG). <span class="tag">EU</span></li>
+      <li><strong>Google Cloud Run</strong> — hébergement du serveur proxy. <span class="tag">EU</span></li>
+      <li><strong>Cloudflare Pages</strong> — hébergement du site web. <span class="tag">Global</span></li>
+      <li><strong>Make.com</strong> — automatisation du journal de conversations. <span class="tag">EU</span></li>
+      <li><strong>Google Sheets</strong> — stockage du journal anonyme. <span class="tag">USA</span></li>
+      <li><strong>Apple App Store</strong> — distribution iOS. <span class="tag">USA</span></li>
+      <li><strong>Google Play</strong> — distribution Android. <span class="tag">USA</span></li>
+    </ul>
 
-  <h2>6. Vos droits</h2>
-  <p>Conformément au RGPD, vous pouvez exercer vos droits (accès, rectification, suppression) en nous contactant à l'adresse ci-dessous.</p>
+    <h2>4. Conservation des données</h2>
+    <p>Le journal de conversations (questions + réponses anonymisées) est conservé 12 mois maximum, puis supprimé. L'identifiant de session est stocké localement sur votre appareil — vous pouvez le supprimer en effaçant les données de votre navigateur/application.</p>
 
-  <h2>7. Contact</h2>
-  <p>Pour toute question relative à cette politique : <a href="mailto:contact@rebsam.fr">contact@rebsam.fr</a></p>
+    <h2>5. Sécurité</h2>
+    <p>Toutes les communications sont chiffrées via HTTPS/TLS. L'accès aux journaux est restreint à l'équipe RebSam.</p>
 
-  <h2>8. Modifications</h2>
-  <p>Cette politique peut être mise à jour. La date de dernière modification est indiquée en haut de cette page.</p>
+    <h2>6. Enfants</h2>
+    <p>RebSam n'est pas destiné aux enfants de moins de 13 ans. Aucune donnée relative à des mineurs n'est sciemment collectée.</p>
 
-  <p style="margin-top:3rem;"><a href="/">← Retour à Reb Sam</a></p>
+    <h2>7. Vos droits (RGPD)</h2>
+    <p>Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification et de suppression. Contactez-nous à : <a href="mailto:contact@rebsam.fr">contact@rebsam.fr</a></p>
+
+    <h2>8. Contact</h2>
+    <p>Pour toute question : <a href="mailto:contact@rebsam.fr">contact@rebsam.fr</a></p>
+
+    <a href="/" class="back">← Retour à RebSam</a>
+  </div>
+
+  <!-- ══ ENGLISH ══ -->
+  <div class="section-en" style="display:none">
+    <header>
+      <h1>Privacy Policy</h1>
+      <div class="subtitle">RebSam — AI Halacha Expert</div>
+      <div class="date">Last updated: March 26, 2026</div>
+    </header>
+
+    <p>This policy applies to the <strong>RebSam</strong> application (iOS, Android, Web) and the website <strong>rebsam.fr</strong>.</p>
+
+    <h2>1. Data Collected</h2>
+    <p>RebSam does <strong>not collect any personally identifiable information</strong>. No account is required.</p>
+    <p>Data processed includes:</p>
+    <ul>
+      <li><strong>Questions submitted</strong> — sent to our API to generate a response. Logged internally (Google Sheets) for service improvement.</li>
+      <li><strong>Anonymous session ID</strong> — randomly generated, stored locally (localStorage), not linked to any real identity. Displayed as "Visitor #XXXX" in logs.</li>
+      <li><strong>Detected language</strong> (French, Hebrew, English).</li>
+      <li><strong>Access channel</strong> (web, WhatsApp, iOS, Android).</li>
+    </ul>
+    <p>No real name, email, phone number, or location data is collected from the web or iOS app.</p>
+
+    <h2>2. Use of Data</h2>
+    <ul>
+      <li>Generate halachic responses via artificial intelligence (Anthropic Claude + Google Vertex AI).</li>
+      <li>Improve response quality and detect issues.</li>
+      <li>Anonymous usage statistics (number of questions, languages used).</li>
+    </ul>
+    <p>No advertising use, no profiling, no data resale.</p>
+
+    <h2>3. Third-Party Services</h2>
+    <ul>
+      <li><strong>Anthropic</strong> — AI processing (Claude). <span class="tag">USA</span></li>
+      <li><strong>Google Cloud / Vertex AI</strong> — Torah corpus search (RAG). <span class="tag">EU</span></li>
+      <li><strong>Google Cloud Run</strong> — proxy server hosting. <span class="tag">EU</span></li>
+      <li><strong>Cloudflare Pages</strong> — website hosting. <span class="tag">Global</span></li>
+      <li><strong>Make.com</strong> — conversation log automation. <span class="tag">EU</span></li>
+      <li><strong>Google Sheets</strong> — anonymous log storage. <span class="tag">USA</span></li>
+      <li><strong>Apple App Store</strong> — iOS distribution. <span class="tag">USA</span></li>
+      <li><strong>Google Play</strong> — Android distribution. <span class="tag">USA</span></li>
+    </ul>
+
+    <h2>4. Data Retention</h2>
+    <p>The conversation log (anonymized questions + responses) is kept for a maximum of 12 months, then deleted. The session ID is stored locally on your device — you can delete it by clearing your browser/app data.</p>
+
+    <h2>5. Security</h2>
+    <p>All communications are encrypted via HTTPS/TLS. Access to logs is restricted to the RebSam team.</p>
+
+    <h2>6. Children</h2>
+    <p>RebSam is not intended for children under 13. We do not knowingly collect data from minors.</p>
+
+    <h2>7. Your Rights (GDPR)</h2>
+    <p>You have the right to access, correct, or delete your data. Contact us at: <a href="mailto:contact@rebsam.fr">contact@rebsam.fr</a></p>
+
+    <h2>8. Contact</h2>
+    <p>For any questions: <a href="mailto:contact@rebsam.fr">contact@rebsam.fr</a></p>
+
+    <a href="/" class="back">← Back to RebSam</a>
+  </div>
+
+  <script>
+    function showLang(lang) {
+      document.querySelector('.section-fr').style.display = lang === 'fr' ? '' : 'none';
+      document.querySelector('.section-en').style.display = lang === 'en' ? '' : 'none';
+    }
+    // Auto-detect browser language
+    if (navigator.language && navigator.language.startsWith('en')) showLang('en');
+  </script>
+
 </body>
 </html>
