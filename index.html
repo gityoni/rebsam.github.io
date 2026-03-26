@@ -2470,7 +2470,7 @@ Utilise ces horaires précis pour répondre aux questions sur les zmanim.`;
           message,
           history: conversationHistory.slice(-20),
           lang: currentLang,
-          name: name || 'Anonyme',
+          name: name || ('Visiteur #' + _sid().slice(-4).toUpperCase()),
           timestamp: new Date().toISOString(),
           sessionId: _sid()
         })
