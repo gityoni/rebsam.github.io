@@ -62,7 +62,7 @@ INTERDIT : citer un ouvrage thématique moderne si une source primaire couvre le
 **Reste à faire (bloqué sur activation Apple) :**
 1. **Codemagic** — connecter GitHub + Apple Developer + lancer premier build → TestFlight
 2. **App Store Connect** — créer la fiche, copier metadata, uploader screenshots
-3. **Screenshots App Store** (FR/EN/HE) — 6.5" + 5.5" iPhone (à générer)
+3. **Screenshots App Store** ✅ base générée — à affiner (cadre iPhone, hébreu RTL, contenu plus dense)
 4. **Soumission + review Apple** (~1-7 jours)
 5. **Notifications push** natives (Chabbat, fêtes) — après v1 soumise
 
