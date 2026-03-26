@@ -739,15 +739,29 @@ CLAUDE_AGENTIC_TOOL = {
                 "type": "array",
                 "items": {"type": "string"},
                 "description": (
-                    "OBLIGATOIRE : effectue TOUJOURS 3 requêtes distinctes (sauf salutations TYPE 0) : "
-                    "1) La source principale nommée dans la question (ex: תוספות + sujet). "
-                    "2) Les sources parallèles ou divergentes du même niveau. "
-                    "3) La profondeur spirituelle ou kabbalistique liée (ex: ליקוטי הלכות). "
-                    "TOUTES les requêtes en hébreu script (כתב עברי) — jamais en translittération ni français. "
-                    "Exemples (question sur Tosafot) : "
-                    "requête 1: 'תוספות מיני תרגימא מצה עשירה', "
-                    "requête 2: 'ראשונים מיני תרגימא פסח', "
-                    "requête 3: 'מצה עשירה ליקוטי הלכות'."
+                    "OBLIGATOIRE : effectue TOUJOURS 3 requêtes distinctes en hébreu (כתב עברי). "
+                    "Adapte les 3 requêtes au TYPE de question : "
+                    ""
+                    "— Question sur une SOURCE PRÉCISE (siman, daf, auteur) : "
+                    "  1) Nom exact du séfer + sujet en hébreu (ex: 'רמא הלכות פסח מצה שרויה'). "
+                    "  2) Variante terminologique du même sujet (ex: 'גברוץ מנהג אשכנז פסח'). "
+                    "  3) Source parallèle du même niveau (ex: 'משנה ברורה מצה שרויה'). "
+                    ""
+                    "— Question HALAKHIQUE générale : "
+                    "  1) Sujet principal en hébreu (termes techniques exacts). "
+                    "  2) Source codificatrice principale (שו\"ע / רמב\"ם / טור + sujet). "
+                    "  3) Source acharonim (משנה ברורה / ילקוט יוסף + sujet). "
+                    ""
+                    "— Question SPIRITUELLE/AGGADA : "
+                    "  1) Sujet + source principale. "
+                    "  2) Dimension hassidique (ליקוטי מוהרן / ליקוטי הלכות + sujet). "
+                    "  3) Dimension kabbalistique (זוהר / תניא + sujet). "
+                    ""
+                    "JAMAIS translittération ni français dans les requêtes. "
+                    "Exemple question précise 'où le Rama parle de matsa shruya' : "
+                    "  requête 1: 'רמא מצה שרויה פסח הגה', "
+                    "  requête 2: 'גברוץ מנהג אשכנז שלא לאכול', "
+                    "  requête 3: 'משנה ברורה מצה שרויה היתר איסור'."
                 ),
                 "minItems": 3,
                 "maxItems": 3,
