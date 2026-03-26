@@ -1017,7 +1017,7 @@ def call_claude(system_prompt: str, history: list, message: str, session_id: str
     seen_titles: set  = set()
     with ThreadPoolExecutor(max_workers=len(queries)) as ex:
         results = list(ex.map(
-            lambda q: search_rag(q, top_k=4, session_id=session_id, boost_profile=source_type),
+            lambda q: search_rag(q, top_k=6, session_id=session_id, boost_profile=source_type),
             queries
         ))
     for result in results:
