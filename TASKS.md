@@ -52,13 +52,19 @@ INTERDIT : citer un ouvrage thématique moderne si une source primaire couvre le
 ```
 
 ## 🔴 PRIORITÉ — iOS App Store (Capacitor)
-1. Setup Capacitor dans le repo (`ios/` folder)
-2. Config `capacitor.config.ts` → pointe vers rebsam.fr
-3. Build iOS + Xcode project
-4. Notifications push natives (Chabbat, fêtes)
-5. Screenshots App Store + metadata (FR/EN/HE)
-6. Compte Apple Developer (99$/an)
-7. Soumission + review Apple (~1-7 jours)
+- **[2026-03-25] Setup Capacitor** ✅ — `capacitor.config.ts`, projet Xcode `ios/`, 18 icônes générées, `codemagic.yaml` prêt
+- ~~Setup Capacitor dans le repo (`ios/` folder)~~ ✅
+- ~~Config `capacitor.config.ts` → pointe vers rebsam.fr~~ ✅
+
+**Reste à faire :**
+1. **Icône finale** — utilisateur fournit image source 2026-03-26 → régénérer 18 tailles
+2. **Splash screen iOS** — LaunchScreen.storyboard aux couleurs RebSam
+3. **Compte Apple Developer** (99$/an) — souscrire sur developer.apple.com
+4. **Codemagic** — connecter GitHub + Apple Developer + lancer premier build
+5. **Screenshots App Store** (FR/EN/HE) — 6.5" + 5.5" iPhone
+6. **Metadata App Store Connect** — titre, description, mots-clés, catégorie
+7. **Notifications push** natives (Chabbat, fêtes) — après v1 soumise
+8. **Soumission + review Apple** (~1-7 jours)
 
 ## 📋 À faire (suite)
 
@@ -75,4 +81,4 @@ INTERDIT : citer un ouvrage thématique moderne si une source primaire couvre le
 - **IARC rating** : placeholder dans manifest.json, à remplacer par ID réel
 
 ---
-*Dernière mise à jour : 2026-03-25*
+*Dernière mise à jour : 2026-03-25 (soir) — Setup Capacitor iOS terminé*
