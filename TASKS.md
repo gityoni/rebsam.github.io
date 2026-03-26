@@ -52,19 +52,19 @@ INTERDIT : citer un ouvrage thématique moderne si une source primaire couvre le
 ```
 
 ## 🔴 PRIORITÉ — iOS App Store (Capacitor)
-- **[2026-03-25] Setup Capacitor** ✅ — `capacitor.config.ts`, projet Xcode `ios/`, 18 icônes générées, `codemagic.yaml` prêt
-- ~~Setup Capacitor dans le repo (`ios/` folder)~~ ✅
-- ~~Config `capacitor.config.ts` → pointe vers rebsam.fr~~ ✅
+- **[2026-03-25] Setup Capacitor** ✅ — `capacitor.config.ts`, projet Xcode `ios/`, `codemagic.yaml`
+- **[2026-03-26] Icônes iOS** ✅ — 18 tailles depuis `icon-source-ios.png` (rouleau Torah)
+- **[2026-03-26] Splash screen** ✅ — 2732×2732 fond blanc, logo + dégradé
+- **[2026-03-26] Apple Developer Program** ✅ — $99 payé, activation sous 2j ouvrés
+- **[2026-03-26] Metadata App Store** ✅ — FR/EN/HE dans `store-assets/appstore-metadata.md`
+- **[2026-03-26] Pseudo web** ✅ — "Visiteur #XXXX" au lieu d'"Anonyme" dans le log
 
-**Reste à faire :**
-1. **Icône finale** — utilisateur fournit image source 2026-03-26 → régénérer 18 tailles
-2. **Splash screen iOS** — LaunchScreen.storyboard aux couleurs RebSam
-3. **Compte Apple Developer** (99$/an) — souscrire sur developer.apple.com
-4. **Codemagic** — connecter GitHub + Apple Developer + lancer premier build
-5. **Screenshots App Store** (FR/EN/HE) — 6.5" + 5.5" iPhone
-6. **Metadata App Store Connect** — titre, description, mots-clés, catégorie
-7. **Notifications push** natives (Chabbat, fêtes) — après v1 soumise
-8. **Soumission + review Apple** (~1-7 jours)
+**Reste à faire (bloqué sur activation Apple) :**
+1. **Codemagic** — connecter GitHub + Apple Developer + lancer premier build → TestFlight
+2. **App Store Connect** — créer la fiche, copier metadata, uploader screenshots
+3. **Screenshots App Store** (FR/EN/HE) — 6.5" + 5.5" iPhone (à générer)
+4. **Soumission + review Apple** (~1-7 jours)
+5. **Notifications push** natives (Chabbat, fêtes) — après v1 soumise
 
 ## 📋 À faire (suite)
 
@@ -81,4 +81,4 @@ INTERDIT : citer un ouvrage thématique moderne si une source primaire couvre le
 - **IARC rating** : placeholder dans manifest.json, à remplacer par ID réel
 
 ---
-*Dernière mise à jour : 2026-03-25 (soir) — Setup Capacitor iOS terminé*
+*Dernière mise à jour : 2026-03-26 — Apple Developer payé, tout prêt pour Codemagic*
